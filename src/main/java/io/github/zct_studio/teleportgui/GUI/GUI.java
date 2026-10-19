@@ -506,10 +506,12 @@ public final class GUI {
                 int slot = base + i;
                 slotNames[slot] = home.getName();
                 MutableComponent name = Component.literal(home.getName()).withStyle(ChatFormatting.AQUA);
-                if (home.getName().equals(def)) {
+                boolean isDefault = home.getName().equals(def);
+                if (isDefault) {
                     name.append(Tr(player, "gui.teleportgui.home.homegui.defaulthome"));
                 }
-                c.setItem(slot, stack(Items.BED.red(), name, infoLore(home)));
+                c.setItem(slot, stack(isDefault ? Items.BED.red() : Items.BED.white(),
+                        name, infoLore(home)));
             }
         }
 
@@ -520,7 +522,7 @@ public final class GUI {
                         Tr(player, "commands.teleportgui.common.maxCountReached",
                                 String.valueOf(addLimit())).withStyle(ChatFormatting.RED), null));
             } else {
-                c.setItem(0, stack(Items.EMERALD,
+                c.setItem(0, stack(Items.NETHER_STAR,
                         Tr(player, "gui.teleportgui.universal.gui.add").withStyle(ChatFormatting.GREEN),
                         homes.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.home.homegui.empty")
@@ -612,7 +614,7 @@ public final class GUI {
 
         @Override
         protected boolean hasAdd() {
-            return true;
+            return canManage(player);
         }
 
         @Override
@@ -660,7 +662,7 @@ public final class GUI {
                         Tr(player, "commands.teleportgui.common.maxCountReached",
                                 String.valueOf(addLimit())).withStyle(ChatFormatting.RED), null));
             } else {
-                c.setItem(0, stack(Items.EMERALD,
+                c.setItem(0, stack(Items.NETHER_STAR,
                         Tr(player, "gui.teleportgui.universal.gui.add").withStyle(ChatFormatting.GREEN),
                         warps.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.warp.warpgui.empty")
