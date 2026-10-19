@@ -8,6 +8,15 @@ base {
     archivesName.set("TeleportGUI-${mod.loader}")
 }
 
+// Loader-specific entrypoints live in one folder per loader instead of being copied into
+// every versions/<mc>-<loader>/src directory. Only the matching folder is added to the
+// source set, so a new Minecraft version needs no new Java files.
+sourceSets {
+    main {
+        java.srcDir(rootProject.file("src/${mod.loader}/java"))
+    }
+}
+
 repositories {
     mavenCentral()
     maven("https://repo.opencollab.dev/main/")

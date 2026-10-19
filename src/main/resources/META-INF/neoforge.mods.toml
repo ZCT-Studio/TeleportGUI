@@ -8,7 +8,7 @@ modId = "teleportgui"
 version = "${version}"
 displayName = "${name}"
 displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
-authors = [${authors}]
+authors = ${authors}
 description = '''
 ${description}
 '''
