@@ -1,0 +1,11 @@
+package io.github.zct_studio.teleportgui.utils.config;
+
+public class CommandNode {
+    public Integer cooldownSeconds;    // null = inherit, 0 = no cooldown
+    public Integer maxDistance;        // null = inherit, -1 = no limit
+    public PermissionNode permission;  // null = inherit
+    public Integer expireSeconds;      // null = inherit, 0 = no expire
+    public Integer requestExpireSeconds;
+    public Boolean safetyCheck;        // null = inherit, false = off, true = on
+    public Integer maxCount;
+}

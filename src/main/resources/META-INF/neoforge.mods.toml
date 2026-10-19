@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "*"
+issueTrackerURL = "https://github.com/ZCT-Stuido/TeleportGUI/issues"
+license = "${license}"
+
+[[mods]]
+modId = "teleportgui"
+version = "${version}"
+displayName = "${name}"
+displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
+authors = [${authors}]
+description = '''
+${description}
+'''
+
+[[dependencies.teleportgui]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${maven_mc_version_range}"
+ordering = "NONE"
+side = "*"
+
+[[dependencies.teleportgui]]
+modId = "neoforge"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "*"
+
+[[dependencies.teleportgui]]
+modId = "architectury-api"
+mandatory = true
+versionRange = "*"
+ordering = "AFTER"
+side = "*"

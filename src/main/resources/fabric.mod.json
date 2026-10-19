@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "teleportgui",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [${authors}],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/TeleportGUI",
+    "sources": "https://github.com/ZCT-Stuido/TeleportGUI",
+    "issues": "https://github.com/ZCT-Stuido/TeleportGUI/issues"
+  },
+  "license": "${license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.zct_studio.teleportgui.FabricEntry"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "${semver_mc_version_range}"
+  },
+  "suggests": {
+    "geyser": "*",
+    "floodgate": "*"
+  }
+}
