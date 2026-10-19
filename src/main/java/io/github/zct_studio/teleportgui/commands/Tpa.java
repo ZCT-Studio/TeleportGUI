@@ -211,8 +211,8 @@ public final class Tpa {
                 .findFirst();
 
         if (reqOpt.isEmpty()) {
-            from.sendSystemMessage(
-                    Tr_i18n.tr("commands.teleportgui.tpa.notFound", from)
+            to.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
                             .withStyle(ChatFormatting.RED),
                     true);
             return;
@@ -223,9 +223,8 @@ public final class Tpa {
         int expireSec = CommandLoader.getRequestExpireSeconds(
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
         if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
-            Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", from)
+            Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(ChatFormatting.RED);
-            from.sendSystemMessage(expired, true);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
             return;
@@ -259,8 +258,8 @@ public final class Tpa {
                 .findFirst();
 
         if (reqOpt.isEmpty()) {
-            from.sendSystemMessage(
-                    Tr_i18n.tr("commands.teleportgui.tpa.notFound", from)
+            to.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
                             .withStyle(ChatFormatting.RED),
                     true);
             return;
@@ -271,9 +270,8 @@ public final class Tpa {
         int expireSec = CommandLoader.getRequestExpireSeconds(
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
         if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
-            Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", from)
+            Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(ChatFormatting.RED);
-            from.sendSystemMessage(expired, true);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
             return;
@@ -281,13 +279,13 @@ public final class Tpa {
 
         REQUESTS.remove(req);
 
-        to.sendSystemMessage(
-                Tr_i18n.tr("commands.teleportgui.tpa.denied", to)
-                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
-                true);
         from.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", from)
                         .withStyle(ChatFormatting.WHITE),
+                true);
+        to.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.tpa.denied", to)
+                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
                 true);
     }
 
