@@ -9,7 +9,8 @@ build/
 **/build/
 out/
 classes/
-versions/*-*/**
+# Stonecutter per-version sources (versions/<mc>-<loader>/src) are tracked.
+# Generated outputs inside them (.gradle/, build/, out/) are ignored above.
 !gradle-wrapper.jar
 
 # Ignore Gradle GUI config
