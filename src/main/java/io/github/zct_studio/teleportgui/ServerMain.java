@@ -28,8 +28,8 @@ public final class ServerMain {
 
     private ServerMain() {}
 
-    public static void init() {
-        Constants.LOGGER.info("Initializing {} v{}", Constants.MOD_NAME, Constants.VERSION);
+    public static void init(String Loader) {
+        Constants.LOGGER.info("Initializing {} v{}, on {}", Constants.MOD_NAME, Constants.VERSION, Loader);
 
         boolean geyserLoaded = isClassPresent("org.geysermc.geyser.api.GeyserApi");
         boolean floodgateLoaded = isClassPresent("org.geysermc.floodgate.api.FloodgateApi");

@@ -6,6 +6,6 @@ public final class FabricEntry implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ServerMain.init();
+        ServerMain.init("Fabric");
     }
 }

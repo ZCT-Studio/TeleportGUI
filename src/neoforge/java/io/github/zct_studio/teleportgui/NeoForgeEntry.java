@@ -6,6 +6,6 @@ import net.neoforged.fml.common.Mod;
 public final class NeoForgeEntry {
 
     public NeoForgeEntry() {
-        ServerMain.init();
+        ServerMain.init("NeoForge");
     }
 }
