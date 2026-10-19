@@ -84,6 +84,12 @@ public final class Create extends AnvilMenu {
 
     @Override
     public void clicked(int slotIndex, int button, @NonNull ContainerInput input, @NonNull Player clicker) {
+        if (input == ContainerInput.SWAP) {
+            if (clicker instanceof ServerPlayer sp) {
+                sp.inventoryMenu.sendAllDataToRemote();
+            }
+            return;
+        }
         if (clicker instanceof ServerPlayer sp && slotIndex >= 0 && slotIndex <= 2) {
             if (slotIndex == 0) {
                 openList(sp);

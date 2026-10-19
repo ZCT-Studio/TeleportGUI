@@ -52,8 +52,12 @@ public final class SecondlyActions extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotIndex, int button, @NonNull ContainerInput input, @NonNull Player clicker) {
-        if (!(clicker instanceof ServerPlayer)) {
+        if (!(clicker instanceof ServerPlayer sp)) {
             super.clicked(slotIndex, button, input, clicker);
+            return;
+        }
+        if (input == ContainerInput.SWAP) {
+            sp.inventoryMenu.sendAllDataToRemote();
             return;
         }
         if (slotIndex >= 0 && slotIndex < SIZE) {

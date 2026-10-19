@@ -366,6 +366,20 @@ public final class GUI {
                 super.clicked(slotIndex, button, input, clicker);
                 return;
             }
+
+            if (input == ContainerInput.SWAP) {
+                int navBase = contentRows * 9;
+                boolean isContentSlot = slotIndex >= 0 && slotIndex < navBase
+                        && !(hasAdd() && page == 0 && slotIndex == 0);
+                if (isContentSlot && button == 40) {
+                    String id = slotNames[slotIndex];
+                    if (id != null) {
+                        onSwap(sp, id);
+                    }
+                }
+                resyncInventory(sp);
+                return;
+            }
             int size = (contentRows + 1) * 9;
             if (slotIndex < 0 || slotIndex >= size) {
                 super.clicked(slotIndex, button, input, clicker);
@@ -397,11 +411,11 @@ public final class GUI {
 
             String id = slotNames[slotIndex];
             if (id == null) return;
-            if (input == ContainerInput.SWAP && button == 40) {
-                onSwap(sp, id);
-                return;
-            }
             onEntryClick(sp, id, button, input);
+        }
+
+        private static void resyncInventory(ServerPlayer sp) {
+            sp.inventoryMenu.sendAllDataToRemote();
         }
 
         private void sendGuide(ServerPlayer sp) {
