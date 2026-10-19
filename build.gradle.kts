@@ -24,16 +24,19 @@ dependencies {
         implementation("dev.architectury:architectury-neoforge:$archVersion")
     }
 
-    implementation("dev.architectury:architectury:$archVersion")
-
-    // SQLite for optional persistent storage backend
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
 
-    // SnakeYAML for mod settings YAML parsing
     implementation("org.yaml:snakeyaml:2.2")
 
-    // Optional Bedrock support (Geyser/Floodgate/Cumulus) — added manually when present on the server.
-    // Disabled here due to OpenCollab TLS issues; code uses Class.forName detection.
+}
+
+if (mod.isNeoforge) {
+    val loom = extensions.getByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()
+    loom.runs.configureEach {
+        if (name == "client") {
+            mainClass.set("net.neoforged.fml.startup.Client")
+        }
+    }
 }
 
 modSettings {
