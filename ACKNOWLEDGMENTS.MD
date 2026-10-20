@@ -9,4 +9,6 @@
 - 语言文件
 #### zichuan-az [(?)](https://github.com/zichuan-az)
 - 给我Token
+- 语言文件
+- 部分文档
 #### 
