@@ -14,23 +14,23 @@ description = '''
 ${description}
 '''
 
-[[dependencies.teleportgui]]
+[[dependencies.${id}]]
 modId = "minecraft"
 mandatory = true
 versionRange = "${maven_mc_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.teleportgui]]
+[[dependencies.${id}]]
 modId = "neoforge"
 mandatory = true
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.teleportgui]]
+[[dependencies.${id}]]
 modId = "architectury"
 mandatory = true
-versionRange = "*"
+versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
