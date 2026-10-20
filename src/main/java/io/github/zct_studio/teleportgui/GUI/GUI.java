@@ -69,7 +69,7 @@ public final class GUI {
 
     public static void openHome(ServerPlayer player, int page) {
         if (bedrockForm(player)) {
-            Form.openHomeForm(player, page);
+            Form.openHomeForm(player);
             return;
         }
         player.openMenu(new HomeMenuProvider(player, page, bedrockHopper(player)));
@@ -81,7 +81,7 @@ public final class GUI {
 
     public static void openWarp(ServerPlayer player, int page) {
         if (bedrockForm(player)) {
-            Form.openWarpForm(player, page);
+            Form.openWarpForm(player);
             return;
         }
         player.openMenu(new WarpMenuProvider(player, page, bedrockHopper(player)));
@@ -97,7 +97,7 @@ public final class GUI {
 
     public static void openTpa(ServerPlayer player, int page, int mode) {
         if (bedrockForm(player)) {
-            Form.openTpaForm(player, page);
+            Form.openTpaForm(player);
             return;
         }
         player.openMenu(new TpaMenuProvider(player, page, mode, bedrockHopper(player)));

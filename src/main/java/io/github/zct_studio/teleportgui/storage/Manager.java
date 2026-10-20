@@ -22,10 +22,6 @@ public final class Manager {
     private Manager() {
     }
 
-    public static void init(Path saveDir) {
-        init(saveDir, "json");
-    }
-
     public static void init(Path saveDir, String type) {
         if (LAST_INIT_TYPE != null && !LAST_INIT_TYPE.equalsIgnoreCase(type)) {
             Constants.LOGGER.warn(

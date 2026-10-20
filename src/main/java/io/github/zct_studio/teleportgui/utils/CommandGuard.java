@@ -4,9 +4,7 @@ import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
@@ -38,25 +36,6 @@ public final class CommandGuard {
         return values[clamped];
     }
 
-    public static boolean checkMaxDistance(ServerPlayer player, String module, String node,
-                                           ServerLevel level, BlockPos targetPos) {
-        int maxDist = CommandLoader.getMaxDistance(module, node);
-        if (maxDist < 0) return true;
-        if (!player.level().dimension().equals(level.dimension())) return true;
-        double dist = Math.sqrt(player.distanceToSqr(
-                targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5));
-        if (dist > maxDist) {
-            player.sendSystemMessage(
-                    Tr_i18n.tr("commands.teleportgui.common.tooFar", player,
-                                    Component.literal(String.valueOf((int) dist)),
-                                    Component.literal(String.valueOf(maxDist)))
-                            .withStyle(Styles.ERROR),
-                    true);
-            return false;
-        }
-        return true;
-    }
-
     public static int checkCooldown(ServerPlayer player, String module, String node) {
         int cooldownSec = CommandLoader.getCooldown(module, node);
         if (cooldownSec <= 0) return 0;
@@ -83,11 +62,6 @@ public final class CommandGuard {
     public static void recordSuccess(ServerPlayer player, String module, String node) {
         String key = makeKey(player, module, node);
         LAST_SUCCESS.put(key, System.currentTimeMillis() / 1000);
-    }
-
-    public static void clearCooldown(ServerPlayer player) {
-        String prefix = player.getStringUUID() + ":";
-        LAST_SUCCESS.entrySet().removeIf(e -> e.getKey().startsWith(prefix));
     }
 
     private static String makeKey(ServerPlayer player, String module, String node) {

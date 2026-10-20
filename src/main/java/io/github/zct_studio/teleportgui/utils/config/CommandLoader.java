@@ -76,16 +76,6 @@ public final class CommandLoader {
         return level;
     }
 
-    public static int getMaxDistance(String module, String node) {
-        Integer v = resolveInt(module, node, ConfigKeys.FIELD_MAX_DISTANCE);
-        return v == null ? -1 : v;
-    }
-
-    public static int getExpireSeconds(String module, String node) {
-        Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE);
-        return v == null ? 0 : v;
-    }
-
     public static int getRequestExpireSeconds(String module, String node) {
         Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE_REQUEST);
         return v == null ? 0 : v;

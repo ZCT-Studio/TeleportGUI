@@ -41,7 +41,7 @@ public final class Form {
 
     private static final Map<UUID, Integer> FORM_SEQ = new ConcurrentHashMap<>();
 
-    public static void openHomeForm(ServerPlayer player, int page) {
+    public static void openHomeForm(ServerPlayer player) {
         Optional<PlayerData> opt = Manager.getPlayer(player.getStringUUID());
         List<NamedLoc> homes = opt.map(PlayerData::getHomes).orElseGet(List::of);
         String def = opt.map(PlayerData::getDefaultHome).orElse("");
@@ -76,10 +76,10 @@ public final class Form {
                     case 0 -> reopen(player, () -> Home.goHome(player, name));
                     case 1 -> afterAction(player,
                             () -> Home.deleteHome(player, name),
-                            () -> openHomeForm(player, page));
+                            () -> openHomeForm(player));
                     case 2 -> afterAction(player,
                             () -> Home.setDefaultHome(player, name),
-                            () -> openHomeForm(player, page));
+                            () -> openHomeForm(player));
                     case 3 -> reopen(player, () -> openRenameForm(player, name, false));
                     default -> reopen(player, () -> openCreateForm(player, false));
                 }
@@ -90,7 +90,7 @@ public final class Form {
         }
     }
 
-    public static void openWarpForm(ServerPlayer player, int page) {
+    public static void openWarpForm(ServerPlayer player) {
         List<NamedLoc> warps = Manager.getWarps();
         String title = text(player, "gui.teleportgui.warp.warpgui.title");
 
@@ -130,7 +130,7 @@ public final class Form {
                 } else if (action == 1 && canManage) {
                     afterAction(player,
                             () -> Warp.deleteWarp(player, name),
-                            () -> openWarpForm(player, page));
+                            () -> openWarpForm(player));
                 } else if (action == 2 && canManage) {
                     reopen(player, () -> openRenameForm(player, name, true));
                 } else if (canManage && action == addIndex) {
@@ -167,7 +167,7 @@ public final class Form {
                     Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
                             .withStyle(Styles.ERROR_STRONG),
                     true);
-            reopen(player, () -> openWarpForm(player, 0));
+            reopen(player, () -> openWarpForm(player));
             return;
         }
         int max = CommandLoader.getMaxCount(
@@ -184,8 +184,8 @@ public final class Form {
                             .withStyle(Styles.ERROR),
                     true);
             reopen(player, () -> {
-                if (warp) openWarpForm(player, 0);
-                else openHomeForm(player, 0);
+                if (warp) openWarpForm(player);
+                else openHomeForm(player);
             });
             return;
         }
@@ -203,10 +203,10 @@ public final class Form {
                     reopen(player, () -> openCreateForm(player, warp));
                 } else if (warp) {
                     Warp.setWarp(player, newName);
-                    reopen(player, () -> openWarpForm(player, 0));
+                    reopen(player, () -> openWarpForm(player));
                 } else {
                     Home.setHome(player, newName);
-                    reopen(player, () -> openHomeForm(player, 0));
+                    reopen(player, () -> openHomeForm(player));
                 }
             });
             send(player, build(b));
@@ -232,10 +232,10 @@ public final class Form {
                     reopen(player, () -> openRenameForm(player, oldName, warp));
                 } else if (warp) {
                     Warp.renameWarp(player, oldName, newName);
-                    reopen(player, () -> openWarpForm(player, 0));
+                    reopen(player, () -> openWarpForm(player));
                 } else {
                     Home.renameHome(player, oldName, newName);
-                    reopen(player, () -> openHomeForm(player, 0));
+                    reopen(player, () -> openHomeForm(player));
                 }
             });
             send(player, build(b));
@@ -245,10 +245,6 @@ public final class Form {
     }
 
     public static void openTpaForm(ServerPlayer player) {
-        openTpaForm(player, 0);
-    }
-
-    public static void openTpaForm(ServerPlayer player, int page) {
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpagui.title"));

@@ -10,8 +10,8 @@ import java.util.stream.StreamSupport;
 
 public class DeathPoint {
 
-    private BlockPos pos;
-    private String worldId;
+    private final BlockPos pos;
+    private final String worldId;
 
     public DeathPoint(BlockPos pos, String worldId) {
         this.pos = pos;
@@ -32,13 +32,5 @@ public class DeathPoint {
         return StreamSupport.stream(server.getAllLevels().spliterator(), false)
                 .filter(level -> Objects.equals(level.dimension().identifier().toString(), worldId))
                 .findFirst();
-    }
-
-    public void setBlockPos(BlockPos pos) {
-        this.pos = pos;
-    }
-
-    public void setWorldId(String worldId) {
-        this.worldId = worldId;
     }
 }
