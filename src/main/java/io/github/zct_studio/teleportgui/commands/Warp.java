@@ -192,7 +192,8 @@ public final class Warp {
     }
 
     public static void setWarp(ServerPlayer player, String warpName) {
-        warpName = warpName.toLowerCase();
+        warpName = warpName.trim().toLowerCase();
+        if (!isValidName(player, warpName)) return;
 
         boolean alreadyExists = Manager.getWarp(warpName).isPresent();
         int maxCount = CommandLoader.getMaxCount(ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE);
@@ -291,8 +292,9 @@ public final class Warp {
     }
 
     public static void renameWarp(ServerPlayer player, String warpName, String newWarpName) {
-        warpName = warpName.toLowerCase();
-        newWarpName = newWarpName.toLowerCase();
+        warpName = warpName.trim().toLowerCase();
+        newWarpName = newWarpName.trim().toLowerCase();
+        if (!isValidName(player, newWarpName)) return;
 
         if (Manager.getWarp(newWarpName).isPresent()) {
             player.sendSystemMessage(
@@ -378,23 +380,17 @@ public final class Warp {
                                 .withStyle(Styles.SUCCESS)
                                 .withStyle(style -> style.withClickEvent(
                                         new ClickEvent.RunCommand(
-                                                String.format("/warp \"%s\"", currentWarp.getName())))))
+                                                String.format("/warp go %s", quote(currentWarp.getName())))))
+                        )
                         .append(" ");
 
                 if (canModify) {
                     message.append(
-                                    Tr_i18n.tr("commands.teleportgui.common.rename", player)
-                                            .withStyle(Styles.ACTION_LINK)
-                                            .withStyle(style -> style.withClickEvent(
-                                                    new ClickEvent.SuggestCommand(
-                                                            String.format("/renamewarp \"%s\" ", currentWarp.getName())))))
-                            .append(" ")
-                            .append(
-                                    Tr_i18n.tr("commands.teleportgui.common.delete", player)
-                                            .withStyle(Styles.ERROR)
-                                            .withStyle(style -> style.withClickEvent(
-                                                    new ClickEvent.SuggestCommand(
-                                                            String.format("/delwarp \"%s\"", currentWarp.getName())))));
+                            Tr_i18n.tr("commands.teleportgui.common.delete", player)
+                                    .withStyle(Styles.ERROR)
+                                    .withStyle(style -> style.withClickEvent(
+                                            new ClickEvent.SuggestCommand(
+                                                    String.format("/warp del %s", quote(currentWarp.getName()))))));
                 }
             }
 
@@ -402,5 +398,21 @@ public final class Warp {
         }
 
         player.sendSystemMessage(message, false);
+    }
+
+    private static boolean isValidName(ServerPlayer player, String name) {
+        if (name.isEmpty() || name.indexOf('"') >= 0 || name.indexOf('\'') >= 0) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.common.invalidName", player)
+                            .withStyle(Styles.ERROR),
+                    true);
+            return false;
+        }
+        return true;
+    }
+
+    /** 用双引号包裹名字，保证名字里有空格时点击聊天消息也能正确解析。 */
+    private static String quote(String name) {
+        return "\"" + name.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 }

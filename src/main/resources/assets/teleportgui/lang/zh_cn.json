@@ -1,5 +1,6 @@
 {
   "commands.teleportgui.common.error": "呜哇，发生未知错误啦！请查看服务器日志哦。",
+  "commands.teleportgui.common.invalidName": "名字不能为空，也不能包含引号哦。",
   "commands.teleportgui.common.noLocation": "呜呜，还没有记录你的死亡地点呢。",
   "commands.teleportgui.common.worldNotFound": "找不到世界「%0%」啦！可用世界：%1%",
   "commands.teleportgui.common.noSafeLocation": "附近没有找到安全的位置，再换个地方试试吧？",
@@ -34,7 +35,7 @@
   "commands.teleportgui.home.go": "正在回家啦，马上就到～",
   "commands.teleportgui.home.goError": "传送回家失败了，再试一次吧。",
   "commands.teleportgui.home.goSame": "你已经到家啦！还传什么传嘛～",
-  "commands.teleportgui.home.homeless": "还没有自己的家呢！快用 /home set 安个小窝吧～",
+  "commands.teleportgui.home.homeless": "还没有自己的家呢！快用 /home add <名字> 安个小窝吧～",
   "commands.teleportgui.home.notFound": "没有找到这个家哦。",
   "commands.teleportgui.home.default": "默认家已经设为「%0%」啦！",
   "commands.teleportgui.home.defaultNone": "还没有设置默认家呢，选一个喜欢的吧！",

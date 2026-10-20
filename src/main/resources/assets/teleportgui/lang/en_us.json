@@ -1,5 +1,6 @@
 {
   "commands.teleportgui.common.error": "An unexpected error occurred. Check server logs.",
+  "commands.teleportgui.common.invalidName": "Names cannot be empty or contain quote characters.",
   "commands.teleportgui.common.noLocation": "You don't have a death location.",
   "commands.teleportgui.common.worldNotFound": "World not found: %0%. Available: %1%",
   "commands.teleportgui.common.noSafeLocation": "No safe location found near the target.",
@@ -34,7 +35,7 @@
   "commands.teleportgui.home.go": "Teleporting to home...",
   "commands.teleportgui.home.goError": "Failed to teleport to home.",
   "commands.teleportgui.home.goSame": "You are already at that home.",
-  "commands.teleportgui.home.homeless": "You don't have any homes. Use /home set.",
+  "commands.teleportgui.home.homeless": "You don't have any homes. Use /home add <name>.",
   "commands.teleportgui.home.notFound": "Home not found.",
   "commands.teleportgui.home.default": "Default home set to: %0%",
   "commands.teleportgui.home.defaultNone": "No default home is set.",
