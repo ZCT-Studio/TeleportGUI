@@ -258,7 +258,7 @@ public final class GUI {
     public static void openSafetyConfirm(ServerPlayer sp, Runnable onForce) {
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
-                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.no"), null),
+                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.cancel"), null),
                 sp::closeContainer);
         slots[4] = new SecondlyActions.Action(
                 stack(Items.ENDER_PEARL, Tr(sp, "commands.teleportgui.common.forceTeleport"), null),

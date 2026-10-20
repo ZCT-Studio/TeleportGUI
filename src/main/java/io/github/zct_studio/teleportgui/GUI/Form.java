@@ -35,6 +35,7 @@ public final class Form {
 
     private static final String CUMULUS_CUSTOM = "org.geysermc.cumulus.form.CustomForm";
     private static final String CUMULUS_SIMPLE = "org.geysermc.cumulus.form.SimpleForm";
+    private static final String CUMULUS_MODAL = "org.geysermc.cumulus.form.ModalForm";
     private static final String CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
     private static final String FLOODGATE_API = "org.geysermc.floodgate.api.FloodgateApi";
 
@@ -390,19 +391,14 @@ public final class Form {
 
     public static void openSafetyConfirm(ServerPlayer player, Runnable onForce) {
         try {
-            Object b = newBuilder(CUMULUS_SIMPLE);
+            Object b = newBuilder(CUMULUS_MODAL);
             call(b, "title", text(player, "commands.teleportgui.common.noSafeLocation"));
             call(b, "content", text(player, "commands.teleportgui.common.safetyIsForLosers"));
-
-            List<Runnable> actions = new ArrayList<>();
-            call(b, "button", text(player, "gui.teleportgui.universal.gui.no"));
-            actions.add(() -> { });
-            call(b, "button", text(player, "commands.teleportgui.common.forceTeleport"));
-            actions.add(onForce);
+            call(b, "button1", text(player, "gui.teleportgui.universal.gui.cancel"));
+            call(b, "button2", text(player, "commands.teleportgui.common.forceTeleport"));
 
             onValid(b, response -> {
-                int id = intValue(response, "clickedButtonId");
-                if (id >= 0 && id < actions.size()) actions.get(id).run();
+                if (intValue(response, "getClickedButtonId") == 1) onForce.run();
             });
             send(player, build(b));
         } catch (Throwable t) {
