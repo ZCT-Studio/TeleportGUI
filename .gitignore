@@ -1,5 +1,9 @@
 # minecraft
-run/
+run/*
+
+# minecraft eula
+
+!run/eula.txt
 
 # gradle
 secrets.gradle
