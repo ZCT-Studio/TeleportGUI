@@ -255,7 +255,7 @@ public final class Form {
         }
     }
 
-    private static void openTpaRequestsForm(ServerPlayer player, int page) {
+    public static void openTpaRequestsForm(ServerPlayer player, int page) {
         List<Tpa.TpaRequest> requests = Tpa.getRequestsFor(player.getStringUUID());
         int perPage = 45;
         int totalPages = Math.max(1, (requests.size() + perPage - 1) / perPage);

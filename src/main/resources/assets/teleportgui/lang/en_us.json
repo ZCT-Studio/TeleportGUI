@@ -70,8 +70,10 @@
   "commands.teleportgui.warps.warps": "--- Warps ---",
 
   "commands.teleportgui.tpa.self": "You cannot teleport to yourself.",
-  "commands.teleportgui.tpa.sent": "%0% request sent to %1%.",
+  "commands.teleportgui.tpa.sent": "Teleport request sent to %0%.",
+  "commands.teleportgui.tpa.sentHere": "Sent %0% a request to teleport to you.",
   "commands.teleportgui.tpa.received": "%0% has sent you a teleport request.",
+  "commands.teleportgui.tpa.receivedHere": "%0% has asked you to teleport to them.",
   "commands.teleportgui.tpa.accept": "[Accept]",
   "commands.teleportgui.tpa.deny": "[Deny]",
   "commands.teleportgui.tpa.be.hint": "Tip: type /gtpa to open your request list.",

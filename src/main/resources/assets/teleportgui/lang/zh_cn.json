@@ -70,8 +70,10 @@
   "commands.teleportgui.warps.warps": "—— 传送点一览 ——",
 
   "commands.teleportgui.tpa.self": "不可以传送到自己身上啦！",
-  "commands.teleportgui.tpa.sent": "已经把请求发送给 %1% 啦！",
+  "commands.teleportgui.tpa.sent": "已经把请求发送给 %0% 啦！",
+  "commands.teleportgui.tpa.sentHere": "已向 %0% 发送「请传送到我这里」的请求啦！",
   "commands.teleportgui.tpa.received": "%0% 想传送到你这里来，快看看要不要答应吧～",
+  "commands.teleportgui.tpa.receivedHere": "%0% 想让你传送到他那里去，快看看要不要答应吧～",
   "commands.teleportgui.tpa.accept": "【接受】",
   "commands.teleportgui.tpa.deny": "【拒绝】",
   "commands.teleportgui.tpa.be.hint": "提示：输入 /gtpa 可以打开请求列表哦～",

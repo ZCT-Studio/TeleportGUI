@@ -143,14 +143,20 @@ public final class Tpa {
 
         new TpaRequest(from.getStringUUID(), to.getStringUUID(), here);
 
-        String hereText = here ? "Here" : "";
-
         from.sendSystemMessage(
-                Tr_i18n.tr("commands.teleportgui.tpa.sent", from,
-                        Component.literal(hereText),
+                Tr_i18n.tr(here
+                                ? "commands.teleportgui.tpa.sentHere"
+                                : "commands.teleportgui.tpa.sent", from,
                         Component.literal(to.getName().getString())
                                 .withStyle(ChatFormatting.BOLD)),
                 true);
+
+        MutableComponent receivedMsg = Tr_i18n.tr(here
+                        ? "commands.teleportgui.tpa.receivedHere"
+                        : "commands.teleportgui.tpa.received", to,
+                        Component.literal(from.getName().getString())
+                                .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
+                .withStyle(ChatFormatting.AQUA);
 
         if (TeleportUtils.isBedrockPlayer(to)) {
             boolean autoPop = Manager
@@ -159,11 +165,7 @@ public final class Tpa {
                     .orElse(true);
 
             MutableComponent bedrockMsg = Component.empty()
-                    .append(Tr_i18n.tr("commands.teleportgui.tpa.received", to,
-                                    Component.literal(hereText),
-                                    Component.literal(from.getName().getString())
-                                            .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
-                            .withStyle(ChatFormatting.AQUA));
+                    .append(receivedMsg);
 
             if (!autoPop) {
                 bedrockMsg.append("\n")
@@ -174,7 +176,8 @@ public final class Tpa {
 
             if (autoPop) {
                 if (TeleportUtils.hasFloodgate()) {
-                    Form.openTpaForm(to);
+                    // 直接打开请求列表，让接收方第一时间看到是谁发起的请求
+                    Form.openTpaRequestsForm(to, 0);
                 } else {
                     GUI.openTpaRequests(to);
                 }
@@ -182,11 +185,7 @@ public final class Tpa {
         } else {
             to.sendSystemMessage(
                     Component.empty()
-                            .append(Tr_i18n.tr("commands.teleportgui.tpa.received", to,
-                                    Component.literal(hereText),
-                                    Component.literal(from.getName().getString())
-                                            .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
-                                    .withStyle(ChatFormatting.AQUA))
+                            .append(receivedMsg)
                             .append("\n")
                             .append(Tr_i18n.tr("commands.teleportgui.tpa.accept", to)
                                     .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
