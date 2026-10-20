@@ -31,8 +31,8 @@ public final class ServerMain {
     public static void init(String Loader) {
         Constants.LOGGER.info("Initializing {} v{}, on {}", Constants.MOD_NAME, Constants.VERSION, Loader);
 
-        boolean geyserLoaded = isClassPresent("org.geysermc.geyser.api.GeyserApi");
-        boolean floodgateLoaded = isClassPresent("org.geysermc.floodgate.api.FloodgateApi");
+        boolean geyserLoaded = isClassPresent(Constants.CLASS_GEYSER_API);
+        boolean floodgateLoaded = isClassPresent(Constants.CLASS_FLOODGATE_API);
         if (geyserLoaded && !floodgateLoaded) {
             Constants.LOGGER.warn("Geyser present but Floodgate missing — Bedrock forms unavailable");
         }
