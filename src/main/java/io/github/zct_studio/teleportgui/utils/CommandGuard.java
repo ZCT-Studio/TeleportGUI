@@ -1,9 +1,9 @@
 package io.github.zct_studio.teleportgui.utils;
 
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +27,7 @@ public final class CommandGuard {
                 player.getName().getString(), module, node, requiredLevel);
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                        .withStyle(Styles.ERROR_STRONG),
                 true);
         return false;
     }
@@ -50,7 +50,7 @@ public final class CommandGuard {
                     Tr_i18n.tr("commands.teleportgui.common.tooFar", player,
                                     Component.literal(String.valueOf((int) dist)),
                                     Component.literal(String.valueOf(maxDist)))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return false;
         }
@@ -75,7 +75,7 @@ public final class CommandGuard {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.common.cooldown", player,
                                 Component.literal(String.valueOf(remaining)))
-                        .withStyle(ChatFormatting.AQUA),
+                        .withStyle(Styles.INFO),
                 true);
         return false;
     }

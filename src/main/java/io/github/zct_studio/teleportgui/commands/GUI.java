@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.commands;
 
+import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -13,7 +14,6 @@ import io.github.zct_studio.teleportgui.utils.config.CommandNode;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.utils.config.PermissionNode;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -77,7 +77,7 @@ public final class GUI {
                                 ? "commands.teleportgui.teleportgui.notificationGui.on"
                                 : "commands.teleportgui.teleportgui.notificationGui.off",
                                 player)
-                        .withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.YELLOW),
+                        .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
                 true);
         return 0;
     }
@@ -89,7 +89,7 @@ public final class GUI {
         if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -98,7 +98,7 @@ public final class GUI {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.teleportgui.config.unknown", player,
                                     Component.literal(key))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return 1;
         }
@@ -107,7 +107,7 @@ public final class GUI {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.config.set", player,
                                 Component.literal(key), Component.literal(String.valueOf(value)))
-                        .withStyle(ChatFormatting.GREEN),
+                        .withStyle(Styles.SUCCESS),
                 true);
         return 0;
     }

@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.commands;
 
+import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,7 +15,6 @@ import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -102,7 +102,7 @@ public final class Home {
             Constants.LOGGER.error("Error while setting a home!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.setError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -118,7 +118,7 @@ public final class Home {
             Constants.LOGGER.error("Error while going to a home!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.goError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -135,7 +135,7 @@ public final class Home {
             Constants.LOGGER.error("Error while deleting a home!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.deleteError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -152,7 +152,7 @@ public final class Home {
             Constants.LOGGER.error("Error while renaming a home!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.renameError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -169,7 +169,7 @@ public final class Home {
             Constants.LOGGER.error("Error while setting the default home!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.defaultError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -185,7 +185,7 @@ public final class Home {
             Constants.LOGGER.error("Error while printing homes!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.homes.error", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -210,7 +210,7 @@ public final class Home {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.maxCountReached", player,
                                     Component.literal(String.valueOf(maxCount)))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -225,7 +225,7 @@ public final class Home {
         if (homeExists) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.exists", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
         } else {
             if (playerStorage.getHomes().size() == 1) {
@@ -246,7 +246,7 @@ public final class Home {
         if (optStorage.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -258,7 +258,7 @@ public final class Home {
             if (defaultHome.isEmpty()) {
                 player.sendSystemMessage(
                         Tr_i18n.tr("commands.teleportgui.home.defaultNone", player)
-                                .withStyle(ChatFormatting.AQUA),
+                                .withStyle(Styles.INFO),
                         true);
                 return;
             }
@@ -269,7 +269,7 @@ public final class Home {
         if (optHome.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.notFound", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -290,7 +290,7 @@ public final class Home {
                                     player,
                                     Component.literal(home.getWorldId()),
                                     available)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return;
         }
@@ -301,7 +301,7 @@ public final class Home {
         if (player.blockPosition().equals(teleportPos) && player.level() == homeWorld) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.goSame", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             CommandGuard.recordSuccess(player, ConfigKeys.MODULE_HOME, ConfigKeys.HOME_GO);
         } else if (SafetyGuard.tryTeleport(player, homeWorld, teleportPos,
@@ -319,7 +319,7 @@ public final class Home {
         if (optStorage.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -330,7 +330,7 @@ public final class Home {
         if (optHome.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -355,7 +355,7 @@ public final class Home {
         if (optStorage.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -365,7 +365,7 @@ public final class Home {
         if (playerStorage.getHome(newName).isPresent()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.nameExists", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -374,7 +374,7 @@ public final class Home {
         if (optHome.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -398,7 +398,7 @@ public final class Home {
         if (optStorage.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -408,7 +408,7 @@ public final class Home {
         if (playerStorage.getHome(homeName).isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -416,7 +416,7 @@ public final class Home {
         if (playerStorage.getDefaultHome().equals(homeName)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.defaultSame", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -435,7 +435,7 @@ public final class Home {
         if (optStorage.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -446,7 +446,7 @@ public final class Home {
         if (homes.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -455,7 +455,7 @@ public final class Home {
 
         message.append(
                 Tr_i18n.tr("commands.teleportgui.homes.homes", player)
-                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
+                        .withStyle(Styles.HEADER)
         );
 
         for (NamedLoc currentHome : homes) {
@@ -466,13 +466,13 @@ public final class Home {
             message.append("\n");
 
             message.append(Component.literal(name)
-                    .withStyle(ChatFormatting.AQUA)
+                    .withStyle(Styles.INFO)
             );
 
             if (playerStorage.getDefaultHome().equals(currentHome.getName())) {
                 message.append(" ")
                         .append(Tr_i18n.tr("commands.teleportgui.common.default", player)
-                                .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+                                .withStyle(Styles.INFO_STRONG)
                         );
             }
 
@@ -482,10 +482,10 @@ public final class Home {
             final String worldId = currentHome.getWorldId();
 
             message.append(Component.literal("     | ")
-                            .withStyle(ChatFormatting.AQUA)
+                            .withStyle(Styles.INFO)
                     )
                     .append(Component.literal(coords)
-                            .withStyle(ChatFormatting.LIGHT_PURPLE)
+                            .withStyle(Styles.ACTION)
                             .withStyle(style -> style.withClickEvent(
                                     new ClickEvent.CopyToClipboard(coordString)))
                             .withStyle(style -> style.withHoverEvent(
@@ -493,7 +493,7 @@ public final class Home {
                                             Tr_i18n.tr("commands.teleportgui.common.hoverCopy", player))))
                     )
                     .append(Component.literal(dimension)
-                            .withStyle(ChatFormatting.DARK_PURPLE)
+                            .withStyle(Styles.ACTION_SECONDARY)
                             .withStyle(style -> style.withClickEvent(
                                     new ClickEvent.CopyToClipboard(worldId)))
                             .withStyle(style -> style.withHoverEvent(
@@ -508,17 +508,17 @@ public final class Home {
                         .append(Component.literal(" /ghome"));
             } else {
                 message.append(Component.literal("     | ")
-                                .withStyle(ChatFormatting.AQUA)
+                                .withStyle(Styles.INFO)
                         )
                         .append(Tr_i18n.tr("commands.teleportgui.common.tp", player)
-                                .withStyle(ChatFormatting.GREEN)
+                                .withStyle(Styles.SUCCESS)
                                 .withStyle(style -> style.withClickEvent(
                                         new ClickEvent.RunCommand(
                                                 String.format("/home \"%s\"", currentHome.getName()))))
                         )
                         .append(" ")
                         .append(Tr_i18n.tr("commands.teleportgui.common.rename", player)
-                                .withStyle(ChatFormatting.BLUE)
+                                .withStyle(Styles.ACTION_LINK)
                                 .withStyle(style -> style.withClickEvent(
                                         new ClickEvent.SuggestCommand(
                                                 String.format("/renamehome \"%s\" ", currentHome.getName()))))
@@ -527,7 +527,7 @@ public final class Home {
 
                 if (!playerStorage.getDefaultHome().equals(currentHome.getName())) {
                     message.append(Tr_i18n.tr("commands.teleportgui.common.defaultPrompt", player)
-                                    .withStyle(ChatFormatting.DARK_AQUA)
+                                    .withStyle(Styles.ACTION_SOFT)
                                     .withStyle(style -> style.withClickEvent(
                                             new ClickEvent.RunCommand(
                                                     String.format("/defaulthome \"%s\"", currentHome.getName()))))
@@ -536,7 +536,7 @@ public final class Home {
                 }
 
                 message.append(Tr_i18n.tr("commands.teleportgui.common.delete", player)
-                        .withStyle(ChatFormatting.RED)
+                        .withStyle(Styles.ERROR)
                         .withStyle(style -> style.withClickEvent(
                                 new ClickEvent.SuggestCommand(
                                         String.format("/delhome \"%s\"", currentHome.getName()))))

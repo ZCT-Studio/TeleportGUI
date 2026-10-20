@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.commands;
 
+import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
@@ -9,7 +10,6 @@ import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -27,29 +27,24 @@ public final class TpPoints {
     private TpPoints() {}
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // /back 回到上一次传送前位置
         dispatcher.register(Commands.literal("back")
                 .executes(ctx -> cmdBack(ctx.getSource())));
 
-        // /tpdeathpoint | /tpdp 死亡点
         dispatcher.register(Commands.literal("tpdeathpoint")
                 .executes(ctx -> cmdDeathPoint(ctx.getSource())));
         dispatcher.register(Commands.literal("tpdp")
                 .executes(ctx -> cmdDeathPoint(ctx.getSource())));
 
-        // /tpworldspawn | /tpws 世界出生点
         dispatcher.register(Commands.literal("tpworldspawn")
                 .executes(ctx -> cmdWorldSpawn(ctx.getSource())));
         dispatcher.register(Commands.literal("tpws")
                 .executes(ctx -> cmdWorldSpawn(ctx.getSource())));
 
-        // /tpspawnpoint | /tpsp 个人出生点
         dispatcher.register(Commands.literal("tpspawnpoint")
                 .executes(ctx -> cmdTpSpawnPoint(ctx.getSource())));
         dispatcher.register(Commands.literal("tpsp")
                 .executes(ctx -> cmdTpSpawnPoint(ctx.getSource())));
 
-        // /tpforce 执行因安全检查而待定的强制传送
         dispatcher.register(Commands.literal("tpforce")
                 .executes(ctx -> cmdForce(ctx.getSource())));
     }
@@ -63,7 +58,7 @@ public final class TpPoints {
         if (prevOpt.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.back.noLocation", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return 1;
         }
@@ -73,7 +68,7 @@ public final class TpPoints {
         if (prevWorld == null) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.dimUnavailable", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return 1;
         }
@@ -82,7 +77,7 @@ public final class TpPoints {
                 ConfigKeys.MODULE_TELEPORT, ConfigKeys.TP_BACK)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.back.go", player)
-                            .withStyle(ChatFormatting.GREEN),
+                            .withStyle(Styles.SUCCESS),
                     true);
             TeleportUtils.clearPreviousPos(player.getStringUUID());
         }
@@ -98,7 +93,7 @@ public final class TpPoints {
         if (opt.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.noLocation", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return 1;
         }
@@ -107,7 +102,7 @@ public final class TpPoints {
         if (optWorld.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.dimUnavailable", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return 1;
         }
@@ -116,7 +111,7 @@ public final class TpPoints {
                 ConfigKeys.MODULE_TELEPORT, ConfigKeys.TP_DEATH_POINT)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpdeathpoint.go", player)
-                            .withStyle(ChatFormatting.GREEN),
+                            .withStyle(Styles.SUCCESS),
                     true);
         }
         return 0;
@@ -134,7 +129,7 @@ public final class TpPoints {
                 ConfigKeys.MODULE_TELEPORT, ConfigKeys.TP_WORLD_SPAWN)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.worldspawn.go", player)
-                            .withStyle(ChatFormatting.GREEN),
+                            .withStyle(Styles.SUCCESS),
                     true);
         }
         return 0;
@@ -158,7 +153,7 @@ public final class TpPoints {
                         ConfigKeys.MODULE_TELEPORT, ConfigKeys.TP_SPAWN_POINT)) {
                     player.sendSystemMessage(
                             Tr_i18n.tr("commands.teleportgui.tpspawnpoint.goPersonal", player)
-                                    .withStyle(ChatFormatting.GREEN),
+                                    .withStyle(Styles.SUCCESS),
                             true);
                 }
                 return 0;

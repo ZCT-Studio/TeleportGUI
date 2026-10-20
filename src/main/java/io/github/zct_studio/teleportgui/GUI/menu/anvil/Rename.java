@@ -1,10 +1,10 @@
 package io.github.zct_studio.teleportgui.gui.menu.anvil;
 
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.gui.GUI;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -42,12 +42,12 @@ public final class Rename extends AnvilMenu {
         ItemStack back = new ItemStack(Items.FEATHER);
         back.set(DataComponents.ITEM_NAME, Component.empty());
         back.set(DataComponents.LORE, new ItemLore(List.of(
-                GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(ChatFormatting.YELLOW))));
+                GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(Styles.WARNING))));
         this.inputSlots.setItem(0, back);
 
         ItemStack old = new ItemStack(Items.BED.red());
         old.set(DataComponents.ITEM_NAME,
-                GUI.Tr(player, "gui.teleportgui.rename.old", oldName).withStyle(ChatFormatting.AQUA));
+                GUI.Tr(player, "gui.teleportgui.rename.old", oldName).withStyle(Styles.INFO));
         this.inputSlots.setItem(1, old);
 
         refresh();
@@ -61,8 +61,8 @@ public final class Rename extends AnvilMenu {
                 : GUI.Tr(player, "gui.teleportgui.rename.new", shown);
         MutableComponent hint = GUI.Tr(player, "gui.teleportgui.rename.confirm");
         resultSlots.setItem(0, GUI.stack(Items.NAME_TAG,
-                label.withStyle(ChatFormatting.GREEN),
-                List.of(hint.withStyle(ChatFormatting.YELLOW))));
+                label.withStyle(Styles.SUCCESS),
+                List.of(hint.withStyle(Styles.WARNING))));
     }
 
     @Override
@@ -109,7 +109,7 @@ public final class Rename extends AnvilMenu {
         if (target.isEmpty()) {
             sp.sendSystemMessage(
                     GUI.Tr(sp, "gui.teleportgui.rename.newEmpty")
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }

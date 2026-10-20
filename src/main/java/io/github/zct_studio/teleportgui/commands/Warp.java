@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.commands;
 
+import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -13,7 +14,6 @@ import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -96,7 +96,7 @@ public final class Warp {
             Constants.LOGGER.error("Error while setting the warp!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.setError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -113,7 +113,7 @@ public final class Warp {
             Constants.LOGGER.error("Error while going to the warp!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.goError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -128,7 +128,7 @@ public final class Warp {
             if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
                 player.sendSystemMessage(
                         Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                                .withStyle(Styles.ERROR_STRONG),
                         true);
                 return 1;
             }
@@ -137,7 +137,7 @@ public final class Warp {
             Constants.LOGGER.error("Error while deleting the warp!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.deleteError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -152,7 +152,7 @@ public final class Warp {
             if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
                 player.sendSystemMessage(
                         Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                                .withStyle(Styles.ERROR_STRONG),
                         true);
                 return 1;
             }
@@ -161,7 +161,7 @@ public final class Warp {
             Constants.LOGGER.error("Error while renaming the warp!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.renameError", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -177,7 +177,7 @@ public final class Warp {
             Constants.LOGGER.error("Error while printing warps!", e);
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warps.error", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return 1;
         }
@@ -200,7 +200,7 @@ public final class Warp {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.maxCountReached", player,
                                     Component.literal(String.valueOf(maxCount)))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -214,7 +214,7 @@ public final class Warp {
         if (exists) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.exists", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
         } else {
             player.sendSystemMessage(
@@ -231,7 +231,7 @@ public final class Warp {
         if (optionalWarp.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -249,7 +249,7 @@ public final class Warp {
 
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.worldNotFound", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return;
         }
@@ -260,7 +260,7 @@ public final class Warp {
         if (player.blockPosition().equals(teleportBlockPos) && player.level() == warpWorld) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.goSame", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             CommandGuard.recordSuccess(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_GO);
         } else if (SafetyGuard.tryTeleport(player, warpWorld, teleportBlockPos,
@@ -285,7 +285,7 @@ public final class Warp {
         } else {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
         }
     }
@@ -297,7 +297,7 @@ public final class Warp {
         if (Manager.getWarp(newWarpName).isPresent()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.nameExists", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -313,7 +313,7 @@ public final class Warp {
         } else {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.notFound", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
         }
     }
@@ -324,7 +324,7 @@ public final class Warp {
         if (warps.isEmpty()) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.homeless", player)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return;
         }
@@ -333,7 +333,7 @@ public final class Warp {
 
         message.append(
                 Tr_i18n.tr("commands.teleportgui.warps.warps", player)
-                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD));
+                        .withStyle(Styles.HEADER));
 
         for (NamedLoc currentWarp : warps) {
 
@@ -345,12 +345,12 @@ public final class Warp {
                     new Permission.HasCommandLevel(PermissionLevel.OWNERS));
 
             message.append("\n");
-            message.append(Component.literal(name).withStyle(ChatFormatting.AQUA));
+            message.append(Component.literal(name).withStyle(Styles.INFO));
 
             message.append("\n");
-            message.append(Component.literal("     | ").withStyle(ChatFormatting.AQUA))
+            message.append(Component.literal("     | ").withStyle(Styles.INFO))
                     .append(Component.literal(coords)
-                            .withStyle(ChatFormatting.LIGHT_PURPLE)
+                            .withStyle(Styles.ACTION)
                             .withStyle(style -> style.withClickEvent(
                                     new ClickEvent.CopyToClipboard(
                                             String.format("X%d Y%d Z%d",
@@ -359,7 +359,7 @@ public final class Warp {
                                     new HoverEvent.ShowText(
                                             Tr_i18n.tr("commands.teleportgui.common.hoverCopy", player)))))
                     .append(Component.literal(dimension)
-                            .withStyle(ChatFormatting.DARK_PURPLE)
+                            .withStyle(Styles.ACTION_SECONDARY)
                             .withStyle(style -> style.withClickEvent(
                                     new ClickEvent.CopyToClipboard(currentWarp.getWorldId())))
                             .withStyle(style -> style.withHoverEvent(
@@ -373,9 +373,9 @@ public final class Warp {
                                 Tr_i18n.tr("commands.teleportgui.common.be.prompt", player))
                         .append(Component.literal(" /gwarp"));
             } else {
-                message.append(Component.literal("     | ").withStyle(ChatFormatting.AQUA))
+                message.append(Component.literal("     | ").withStyle(Styles.INFO))
                         .append(Tr_i18n.tr("commands.teleportgui.common.tp", player)
-                                .withStyle(ChatFormatting.GREEN)
+                                .withStyle(Styles.SUCCESS)
                                 .withStyle(style -> style.withClickEvent(
                                         new ClickEvent.RunCommand(
                                                 String.format("/warp \"%s\"", currentWarp.getName())))))
@@ -384,14 +384,14 @@ public final class Warp {
                 if (canModify) {
                     message.append(
                                     Tr_i18n.tr("commands.teleportgui.common.rename", player)
-                                            .withStyle(ChatFormatting.BLUE)
+                                            .withStyle(Styles.ACTION_LINK)
                                             .withStyle(style -> style.withClickEvent(
                                                     new ClickEvent.SuggestCommand(
                                                             String.format("/renamewarp \"%s\" ", currentWarp.getName())))))
                             .append(" ")
                             .append(
                                     Tr_i18n.tr("commands.teleportgui.common.delete", player)
-                                            .withStyle(ChatFormatting.RED)
+                                            .withStyle(Styles.ERROR)
                                             .withStyle(style -> style.withClickEvent(
                                                     new ClickEvent.SuggestCommand(
                                                             String.format("/delwarp \"%s\"", currentWarp.getName())))));

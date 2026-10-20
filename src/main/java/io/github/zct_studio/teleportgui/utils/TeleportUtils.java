@@ -66,11 +66,31 @@ public final class TeleportUtils {
 
     public static boolean hasFloodgate() {
         try {
-            Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-            return true;
+            Class.forName("org.geysermc.cumulus.form.Form");
         } catch (Throwable e) {
             return false;
         }
+        return floodgateApi() != null;
+    }
+
+    public static Object floodgateApi() {
+        try {
+            Class<?> apiClass = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+            for (String name : new String[]{"getInstance", "api"}) {
+                java.lang.reflect.Method m;
+                try {
+                    m = apiClass.getMethod(name);
+                } catch (NoSuchMethodException ignored) {
+                    continue;
+                }
+                if (!java.lang.reflect.Modifier.isStatic(m.getModifiers())) continue;
+                m.setAccessible(true);
+                Object api = m.invoke(null);
+                if (api != null) return api;
+            }
+        } catch (Throwable ignored) {
+        }
+        return null;
     }
 
     public static List<String> getWorldIds() {

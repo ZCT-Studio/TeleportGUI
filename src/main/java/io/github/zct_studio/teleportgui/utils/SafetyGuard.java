@@ -1,10 +1,10 @@
 package io.github.zct_studio.teleportgui.utils;
 
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -44,7 +44,7 @@ public final class SafetyGuard {
         if (p == null) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.noPending", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -53,14 +53,14 @@ public final class SafetyGuard {
         if (world == null) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.dimUnavailable", player)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
         doTeleport(player, world, p.pos(), p.module(), p.node());
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.common.forceTeleportDone", player)
-                        .withStyle(ChatFormatting.GREEN),
+                        .withStyle(Styles.SUCCESS),
                 true);
     }
 
@@ -89,13 +89,13 @@ public final class SafetyGuard {
         player.sendSystemMessage(
                 Component.empty()
                         .append(Tr_i18n.tr("commands.teleportgui.common.noSafeLocation", player)
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD))
+                                .withStyle(Styles.ERROR_STRONG))
                         .append("\n")
                         .append(Tr_i18n.tr("commands.teleportgui.common.safetyIsForLosers", player)
-                                .withStyle(ChatFormatting.WHITE))
+                                .withStyle(Styles.BODY))
                         .append("\n")
                         .append(Tr_i18n.tr("commands.teleportgui.common.forceTeleport", player)
-                                .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
+                                .withStyle(Styles.ACTION_FORCE)
                                 .withStyle(s -> s.withClickEvent(
                                         new ClickEvent.RunCommand("/tpforce")))),
                 false);
