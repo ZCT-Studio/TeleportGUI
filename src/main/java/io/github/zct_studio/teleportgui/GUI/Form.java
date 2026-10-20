@@ -67,9 +67,12 @@ public final class Form {
                             text(player, "gui.teleportgui.universal.gui.rename"),
                             text(player, "gui.teleportgui.universal.gui.add")));
 
+            // CustomForm 的响应按“全部组件”的下标读取，label 也会占一个下标。
+            final int entryIdx = def.isEmpty() ? 1 : 2;
+            final int actionIdx = entryIdx + 1;
             onValid(b, response -> {
-                int entry = intValue(response, "getDropdown", 0);
-                int action = intValue(response, "getDropdown", 1);
+                int entry = intValue(response, "getDropdown", entryIdx);
+                int action = intValue(response, "getDropdown", actionIdx);
                 if (entry < 0 || entry >= homes.size()) return;
                 String name = homes.get(entry).getName();
                 switch (action) {
@@ -120,9 +123,12 @@ public final class Form {
                     warps.stream().map(NamedLoc::getName).toList());
             call(b, "dropdown", text(player, "gui.teleportgui.be.selectAction"), actions);
 
+            // 0 是 summary label，1 才是选条目，2 是选操作。
+            final int entryIdx = 1;
+            final int actionIdx = 2;
             onValid(b, response -> {
-                int entry = intValue(response, "getDropdown", 0);
-                int action = intValue(response, "getDropdown", 1);
+                int entry = intValue(response, "getDropdown", entryIdx);
+                int action = intValue(response, "getDropdown", actionIdx);
                 if (entry < 0 || entry >= warps.size()) return;
                 String name = warps.get(entry).getName();
                 if (action == 0) {
@@ -223,7 +229,8 @@ public final class Form {
             call(b, "input", text(player, "gui.teleportgui.rename.input"), "");
 
             onValid(b, response -> {
-                String newName = stringValue(response, "getInput", 0).trim();
+                // 0 是“原名” label，输入框在 1。
+                String newName = stringValue(response, "getInput", 1).trim();
                 if (newName.isEmpty()) {
                     player.sendSystemMessage(
                             Tr_i18n.tr("gui.teleportgui.rename.newEmpty", player)
