@@ -187,7 +187,5 @@ TeleportGUI is licensed under the [MIT License](https://github.com/ZCT-Studio/Te
 
 ## Links
 
-- Source code: [github.com/ZCT-Studio/TeleportGUI](https://github.com/ZCT-Studio/TeleportGUI)
-- Issue tracker: [github.com/ZCT-Studio/TeleportGUI/issues](https://github.com/ZCT-Studio/TeleportGUI/issues)
 - Changelog: [CHANGELOG.MD](https://github.com/ZCT-Studio/TeleportGUI/blob/master/CHANGELOG.MD)
 - Acknowledgments: [ACKNOWLEDGMENTS.MD](https://github.com/ZCT-Studio/TeleportGUI/blob/master/ACKNOWLEDGMENTS.MD)
