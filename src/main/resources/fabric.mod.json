@@ -4,16 +4,11 @@
   "version": "${version}",
   "name": "${name}",
   "description": "${description}",
-  "authors": [${authors}],
+  "authors": [${authors_json}],
   "contact": {
     "homepage": "https://modrinth.com/mod/TeleportGUI",
     "sources": "https://github.com/ZCT-Stuido/TeleportGUI",
     "issues": "https://github.com/ZCT-Stuido/TeleportGUI/issues"
-  },
-  "custom": {
-    "catalogue": {
-      "banner": "banner.png"
-    }
   },
   "license": "${license}",
   "icon": "icon.png",

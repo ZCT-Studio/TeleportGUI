@@ -8,9 +8,6 @@ base {
     archivesName.set("TeleportGUI-${mod.loader}")
 }
 
-// Loader-specific entrypoints live in one folder per loader instead of being copied into
-// every versions/<mc>-<loader>/src directory. Only the matching folder is added to the
-// source set, so a new Minecraft version needs no new Java files.
 sourceSets {
     main {
         java.srcDir(rootProject.file("src/${mod.loader}/java"))
@@ -23,6 +20,19 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
+val authors = providers.gradleProperty("mod.authors")
+    .orElse("")
+    .get()
+    .split(",")
+    .map { it.trim().removeSurrounding("\"") }
+    .filter { it.isNotEmpty() }
+    .map { author ->
+        "\"" + author.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+    }
+
+val authors_json = authors.joinToString(", ")
+val authors_toml = authors.joinToString(", ", "[", "]")
+
 dependencies {
     val archVersion = findProperty("architectury_version") as String? ?: "22.0.5"
 
@@ -34,9 +44,7 @@ dependencies {
     }
 
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
-
     implementation("org.yaml:snakeyaml:2.2")
-
 }
 
 if (mod.isNeoforge) {
@@ -51,7 +59,6 @@ if (mod.isNeoforge) {
 modSettings {
     var mod_id = findProperty("mod.id") ?: "example"
     var mod_license = findProperty("mod.license") ?: ""
-    var mod_authors = findProperty("mod.authors") ?: ""
 
     var architectury_version = findProperty("architectury_version") ?: "22.0.5"
     var semver_mc_version_range = findProperty("semver_mc_version_range") ?: mod.minecraftVersion
@@ -60,7 +67,8 @@ modSettings {
     variableReplacements = mapOf(
         "id" to mod_id,
         "license" to mod_license,
-        "authors" to mod_authors,
+        "authors_json" to authors_json,
+        "authors_toml" to authors_toml,
 
         "architectury_version" to architectury_version,
         "semver_mc_version_range" to semver_mc_version_range,
