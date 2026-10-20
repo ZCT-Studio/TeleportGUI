@@ -17,7 +17,6 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ItemLore;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -40,9 +39,8 @@ public final class Rename extends AnvilMenu {
         this.returnPage = returnPage;
 
         ItemStack back = new ItemStack(Items.FEATHER);
-        back.set(DataComponents.ITEM_NAME, Component.empty());
-        back.set(DataComponents.LORE, new ItemLore(List.of(
-                GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(Styles.WARNING))));
+        back.set(DataComponents.ITEM_NAME,
+                GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(Styles.WARNING));
         this.inputSlots.setItem(0, back);
 
         ItemStack old = new ItemStack(Items.BED.red());
