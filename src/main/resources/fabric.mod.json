@@ -20,6 +20,7 @@
   },
   "depends": {
     "fabricloader": "*",
+    "architectury": ">=${architectury_version}",
     "minecraft": "${semver_mc_version_range}"
   },
   "suggests": {

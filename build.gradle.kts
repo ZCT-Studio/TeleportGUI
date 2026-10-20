@@ -53,6 +53,7 @@ modSettings {
     var mod_license = findProperty("mod.license") ?: ""
     var mod_authors = findProperty("mod.authors") ?: ""
 
+    var architectury_version = findProperty("architectury_version") ?: "22.0.5"
     var semver_mc_version_range = findProperty("semver_mc_version_range") ?: mod.minecraftVersion
     var maven_mc_version_range = findProperty("maven_mc_version_range") ?: "[${mod.minecraftVersion}]"
 
@@ -61,6 +62,7 @@ modSettings {
         "license" to mod_license,
         "authors" to mod_authors,
 
+        "architectury_version" to architectury_version,
         "semver_mc_version_range" to semver_mc_version_range,
         "maven_mc_version_range" to maven_mc_version_range,
     )
