@@ -10,7 +10,7 @@ displayName = "${name}"
 iconFile = "icon.png"
 bannerFile = "banner.png"
 displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
-authors = ${authors}
+authors = ${authors_toml}
 description = '''
 ${description}
 '''

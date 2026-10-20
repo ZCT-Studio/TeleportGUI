@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-rc.2] - 2026-10-20
+
+### Added
+
+- Add authors support
+
+### Removed
+
+- Removed the extra information expressed in the language file
+- Remove Fabric Banner
+
 ## [1.0.0-rc.1] - 2026-10-20
 
 ### Added
