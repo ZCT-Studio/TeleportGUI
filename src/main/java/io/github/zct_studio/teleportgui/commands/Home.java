@@ -506,8 +506,7 @@ public final class Home {
             message.append("\n");
 
             if (TeleportUtils.isBedrockPlayer(player)) {
-                message.append(Tr_i18n.tr("commands.teleportgui.common.be.prompt", player))
-                        .append(Component.literal(" /ghome"));
+                message.append(Tr_i18n.tr("commands.teleportgui.common.be.prompt", player));
             } else {
                 message.append(Component.literal("     | ")
                                 .withStyle(Styles.INFO)
