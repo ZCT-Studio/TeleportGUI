@@ -116,7 +116,7 @@
 
   "gui.teleportgui.home.homegui.title": "我的小窝",
   "gui.teleportgui.home.homegui.defaulthome": "（默认小窝）",
-  "gui.teleportgui.home.homeactiongui.defaulthome": "设为默认小窝",
+  "gui.teleportgui.home.homeactiongui.defaulthome": "【设为默认小窝】",
   "gui.teleportgui.home.homegui.empty": "还没有自己的家呢，先用 /home add <名字> 建一个吧！",
 
   "gui.teleportgui.warp.warpgui.title": "传送点一览",

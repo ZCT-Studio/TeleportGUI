@@ -116,7 +116,7 @@
 
   "gui.teleportgui.home.homegui.title": "Your Homes",
   "gui.teleportgui.home.homegui.defaulthome": " (default)",
-  "gui.teleportgui.home.homeactiongui.defaulthome": "Set as Default",
+  "gui.teleportgui.home.homeactiongui.defaulthome": "[Set as Default]",
   "gui.teleportgui.home.homegui.empty": "You have no homes yet. Use /home add <name>.",
 
   "gui.teleportgui.warp.warpgui.title": "Warps",
