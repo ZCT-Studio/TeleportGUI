@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.gui;
 
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
@@ -10,8 +11,8 @@ import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
+import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,6 +33,7 @@ public final class Form {
 
     private static final String CUMULUS_CUSTOM = "org.geysermc.cumulus.form.CustomForm";
     private static final String CUMULUS_SIMPLE = "org.geysermc.cumulus.form.SimpleForm";
+    private static final String CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
     private static final String FLOODGATE_API = "org.geysermc.floodgate.api.FloodgateApi";
 
     public static void openHomeForm(ServerPlayer player, int page) {
@@ -159,7 +161,7 @@ public final class Form {
                 new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                            .withStyle(Styles.ERROR_STRONG),
                     true);
             return;
         }
@@ -174,7 +176,7 @@ public final class Form {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.maxCountReached", player,
                                     Component.literal(String.valueOf(max)))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -187,7 +189,7 @@ public final class Form {
                 if (newName.isEmpty()) {
                     player.sendSystemMessage(
                             Tr_i18n.tr("gui.teleportgui.rename.newEmpty", player)
-                                    .withStyle(ChatFormatting.RED),
+                                    .withStyle(Styles.ERROR),
                             true);
                 } else if (warp) {
                     Warp.setWarp(player, newName);
@@ -213,7 +215,7 @@ public final class Form {
                 if (newName.isEmpty()) {
                     player.sendSystemMessage(
                             Tr_i18n.tr("gui.teleportgui.rename.newEmpty", player)
-                                    .withStyle(ChatFormatting.RED),
+                                    .withStyle(Styles.ERROR),
                             true);
                 } else if (warp) {
                     Warp.renameWarp(player, oldName, newName);
@@ -497,17 +499,14 @@ public final class Form {
 
     private static void send(ServerPlayer player, Object form) {
         try {
+            Object api = TeleportUtils.floodgateApi();
+            if (api == null) throw new IllegalStateException("Floodgate API not available");
             Class<?> apiClass = Class.forName(FLOODGATE_API);
-            Object api = apiClass.getMethod("api").invoke(null);
-            for (Method m : apiClass.getMethods()) {
-                Class<?>[] p = m.getParameterTypes();
-                if (m.getName().equals("sendForm") && p.length == 2 && p[0] == UUID.class) {
-                    m.setAccessible(true);
-                    m.invoke(api, player.getUUID(), form);
-                    return;
-                }
+            Method m = apiClass.getMethod("sendForm", UUID.class, Class.forName(CUMULUS_FORM));
+            m.setAccessible(true);
+            if (Boolean.FALSE.equals(m.invoke(api, player.getUUID(), form))) {
+                throw new IllegalStateException("Floodgate refused to send the form");
             }
-            throw new NoSuchMethodException("FloodgateApi.sendForm");
         } catch (Throwable t) {
             fallback(player, t);
         }
@@ -517,7 +516,7 @@ public final class Form {
         Constants.LOGGER.error("Bedrock form failed for {}", player.getName().getString(), t);
         player.sendSystemMessage(
                 Tr_i18n.tr("gui.teleportgui.universal.gui.formError", player)
-                        .withStyle(ChatFormatting.RED),
+                        .withStyle(Styles.ERROR),
                 true);
     }
 }

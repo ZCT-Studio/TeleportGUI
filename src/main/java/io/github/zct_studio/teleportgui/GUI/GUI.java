@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.gui;
 
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
@@ -14,7 +15,6 @@ import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -160,14 +160,14 @@ public final class GUI {
     private static List<Component> infoLore(NamedLoc loc) {
         return List.of(
                 Component.literal(String.format("X%d Y%d Z%d", loc.getX(), loc.getY(), loc.getZ()))
-                        .withStyle(ChatFormatting.GRAY),
-                Component.literal(loc.getWorldId()).withStyle(ChatFormatting.DARK_GRAY));
+                        .withStyle(Styles.MUTED),
+                Component.literal(loc.getWorldId()).withStyle(Styles.SUBTLE));
     }
 
     static List<Component> guideLore(ServerPlayer player, String key) {
         List<Component> lines = new ArrayList<>();
         for (String line : Tr_i18n.raw(key, player).split("\n")) {
-            lines.add(Component.literal(line).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.literal(line).withStyle(Styles.MUTED));
         }
         return lines;
     }
@@ -269,14 +269,14 @@ public final class GUI {
     private static void acceptRequest(ServerPlayer sp, String fromUuid) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
         if (from != null) Tpa.accept(from, sp);
-        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(ChatFormatting.RED), true);
+        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
         sp.closeContainer();
     }
 
     private static void denyRequest(ServerPlayer sp, String fromUuid) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
         if (from != null) Tpa.deny(from, sp);
-        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(ChatFormatting.RED), true);
+        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
         sp.closeContainer();
     }
 
@@ -423,7 +423,7 @@ public final class GUI {
             String[] lines = Tr_i18n.raw(guideKey(), sp).split("\n");
             for (int i = 0; i < lines.length; i++) {
                 if (i > 0) msg.append("\n");
-                msg.append(Component.literal(lines[i]).withStyle(ChatFormatting.GRAY));
+                msg.append(Component.literal(lines[i]).withStyle(Styles.MUTED));
             }
             sp.sendSystemMessage(msg, false);
         }
@@ -505,7 +505,7 @@ public final class GUI {
                 NamedLoc home = homes.get(start + i);
                 int slot = base + i;
                 slotNames[slot] = home.getName();
-                MutableComponent name = Component.literal(home.getName()).withStyle(ChatFormatting.AQUA);
+                MutableComponent name = Component.literal(home.getName()).withStyle(Styles.INFO);
                 boolean isDefault = home.getName().equals(def);
                 if (isDefault) {
                     name.append(Tr(player, "gui.teleportgui.home.homegui.defaulthome"));
@@ -520,13 +520,13 @@ public final class GUI {
             if (addLimitReached()) {
                 c.setItem(0, stack(Items.BARRIER,
                         Tr(player, "commands.teleportgui.common.maxCountReached",
-                                String.valueOf(addLimit())).withStyle(ChatFormatting.RED), null));
+                                String.valueOf(addLimit())).withStyle(Styles.ERROR), null));
             } else {
                 c.setItem(0, stack(Items.NETHER_STAR,
-                        Tr(player, "gui.teleportgui.universal.gui.add").withStyle(ChatFormatting.GREEN),
+                        Tr(player, "gui.teleportgui.universal.gui.add").withStyle(Styles.SUCCESS),
                         homes.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.home.homegui.empty")
-                                        .withStyle(ChatFormatting.GRAY))
+                                        .withStyle(Styles.MUTED))
                                 : null));
             }
         }
@@ -572,7 +572,7 @@ public final class GUI {
         private void sendLimitReached(ServerPlayer sp) {
             sp.sendSystemMessage(
                     Tr(sp, "commands.teleportgui.common.maxCountReached",
-                            String.valueOf(addLimit())).withStyle(ChatFormatting.RED),
+                            String.valueOf(addLimit())).withStyle(Styles.ERROR),
                     true);
         }
     }
@@ -628,7 +628,7 @@ public final class GUI {
             if (!canManage(sp)) {
                 sp.sendSystemMessage(
                         Tr(sp, "commands.teleportgui.common.noPermission")
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                                .withStyle(Styles.ERROR_STRONG),
                         true);
                 return;
             }
@@ -650,7 +650,7 @@ public final class GUI {
                 int slot = base + i;
                 slotNames[slot] = warp.getName();
                 c.setItem(slot, stack(Items.ENDER_PEARL,
-                        Component.literal(warp.getName()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                        Component.literal(warp.getName()).withStyle(Styles.ACTION),
                         infoLore(warp)));
             }
         }
@@ -660,13 +660,13 @@ public final class GUI {
             if (addLimitReached()) {
                 c.setItem(0, stack(Items.BARRIER,
                         Tr(player, "commands.teleportgui.common.maxCountReached",
-                                String.valueOf(addLimit())).withStyle(ChatFormatting.RED), null));
+                                String.valueOf(addLimit())).withStyle(Styles.ERROR), null));
             } else {
                 c.setItem(0, stack(Items.NETHER_STAR,
-                        Tr(player, "gui.teleportgui.universal.gui.add").withStyle(ChatFormatting.GREEN),
+                        Tr(player, "gui.teleportgui.universal.gui.add").withStyle(Styles.SUCCESS),
                         warps.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.warp.warpgui.empty")
-                                        .withStyle(ChatFormatting.GRAY))
+                                        .withStyle(Styles.MUTED))
                                 : null));
             }
         }
@@ -691,7 +691,7 @@ public final class GUI {
                 } else {
                     sp.sendSystemMessage(
                             Tr(sp, "commands.teleportgui.common.noPermission")
-                                    .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                                    .withStyle(Styles.ERROR_STRONG),
                             true);
                 }
             }
@@ -702,7 +702,7 @@ public final class GUI {
             if (!canManage(sp)) {
                 sp.sendSystemMessage(
                         Tr(sp, "commands.teleportgui.common.noPermission")
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                                .withStyle(Styles.ERROR_STRONG),
                         true);
                 return true;
             }
@@ -723,7 +723,7 @@ public final class GUI {
         private void sendLimitReached(ServerPlayer sp) {
             sp.sendSystemMessage(
                     Tr(sp, "commands.teleportgui.common.maxCountReached",
-                            String.valueOf(addLimit())).withStyle(ChatFormatting.RED),
+                            String.valueOf(addLimit())).withStyle(Styles.ERROR),
                     true);
         }
     }
@@ -804,9 +804,9 @@ public final class GUI {
                 slotNames[i] = other.getName().getString();
                 List<Component> lore = List.of(
                         Tr(player, "gui.teleportgui.tpa.tpagui.hintPlayers")
-                                .withStyle(ChatFormatting.GRAY));
+                                .withStyle(Styles.MUTED));
                 c.setItem(i, stack(Items.PLAYER_HEAD,
-                        Component.literal(other.getName().getString()).withStyle(ChatFormatting.YELLOW), lore));
+                        Component.literal(other.getName().getString()).withStyle(Styles.WARNING), lore));
             }
             if (others.isEmpty()) {
                 c.setItem(0, stack(Items.PAPER, Tr(player, "gui.teleportgui.tpa.tpagui.noPlayers"), null));
@@ -818,16 +818,16 @@ public final class GUI {
             for (int i = 0; i < contentSize && start + i < requests.size(); i++) {
                 Tpa.TpaRequest req = requests.get(start + i);
                 slotNames[i] = req.fromUuid;
-                MutableComponent name = Component.literal(senderName(req)).withStyle(ChatFormatting.YELLOW);
+                MutableComponent name = Component.literal(senderName(req)).withStyle(Styles.WARNING);
                 List<Component> lore = List.of(
                         Tr(player, req.here
                                         ? "gui.teleportgui.tpa.tpagui.here"
                                         : "gui.teleportgui.tpa.tpagui.tocome")
-                                .withStyle(ChatFormatting.AQUA),
+                                .withStyle(Styles.INFO),
                         Tr(player, "gui.teleportgui.tpa.tpagui.hintRequests")
-                                .withStyle(ChatFormatting.GRAY),
+                                .withStyle(Styles.MUTED),
                         Tr(player, "gui.teleportgui.tpa.tpagui.age", ageText(req))
-                                .withStyle(ChatFormatting.DARK_GRAY));
+                                .withStyle(Styles.SUBTLE));
                 ItemStack head = req.here
                         ? stack(Items.PLAYER_HEAD, name, lore)
                         : stackGlint(Items.PLAYER_HEAD, name, lore);
@@ -872,7 +872,7 @@ public final class GUI {
                 ServerPlayer from = Tpa.resolveOnline(id);
                 if (from == null) {
                     sp.sendSystemMessage(
-                            Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(ChatFormatting.RED), true);
+                            Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
                     reopen(sp, 0);
                 } else if (button == 0) {
                     Tpa.accept(from, sp);
