@@ -10,6 +10,11 @@
     "sources": "https://github.com/ZCT-Stuido/TeleportGUI",
     "issues": "https://github.com/ZCT-Stuido/TeleportGUI/issues"
   },
+  "custom": {
+    "catalogue": {
+      "banner": "banner.png"
+    }
+  },
   "license": "${license}",
   "icon": "icon.png",
   "environment": "*",

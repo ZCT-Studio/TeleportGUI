@@ -8,6 +8,7 @@ modId = "${id}"
 version = "${version}"
 displayName = "${name}"
 iconFile = "icon.png"
+bannerFile = "banner.png"
 displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
 authors = ${authors}
 description = '''
