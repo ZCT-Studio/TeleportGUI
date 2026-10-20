@@ -23,8 +23,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public final class Form {
@@ -35,6 +37,8 @@ public final class Form {
     private static final String CUMULUS_SIMPLE = "org.geysermc.cumulus.form.SimpleForm";
     private static final String CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
     private static final String FLOODGATE_API = "org.geysermc.floodgate.api.FloodgateApi";
+
+    private static final Map<UUID, Integer> FORM_SEQ = new ConcurrentHashMap<>();
 
     public static void openHomeForm(ServerPlayer player, int page) {
         Optional<PlayerData> opt = Manager.getPlayer(player.getStringUUID());
@@ -68,17 +72,15 @@ public final class Form {
                 if (entry < 0 || entry >= homes.size()) return;
                 String name = homes.get(entry).getName();
                 switch (action) {
-                    case 0 -> Home.goHome(player, name);
-                    case 1 -> {
-                        Home.deleteHome(player, name);
-                        openHomeForm(player, 0);
-                    }
-                    case 2 -> {
-                        Home.setDefaultHome(player, name);
-                        openHomeForm(player, 0);
-                    }
-                    case 3 -> openRenameForm(player, name, false);
-                    default -> openCreateForm(player, false);
+                    case 0 -> reopen(player, () -> Home.goHome(player, name));
+                    case 1 -> afterAction(player,
+                            () -> Home.deleteHome(player, name),
+                            () -> openHomeForm(player, page));
+                    case 2 -> afterAction(player,
+                            () -> Home.setDefaultHome(player, name),
+                            () -> openHomeForm(player, page));
+                    case 3 -> reopen(player, () -> openRenameForm(player, name, false));
+                    default -> reopen(player, () -> openCreateForm(player, false));
                 }
             });
             send(player, build(b));
@@ -123,14 +125,15 @@ public final class Form {
                 if (entry < 0 || entry >= warps.size()) return;
                 String name = warps.get(entry).getName();
                 if (action == 0) {
-                    Warp.goToWarp(player, name);
+                    reopen(player, () -> Warp.goToWarp(player, name));
                 } else if (action == 1 && canManage) {
-                    Warp.deleteWarp(player, name);
-                    openWarpForm(player, 0);
+                    afterAction(player,
+                            () -> Warp.deleteWarp(player, name),
+                            () -> openWarpForm(player, page));
                 } else if (action == 2 && canManage) {
-                    openRenameForm(player, name, true);
+                    reopen(player, () -> openRenameForm(player, name, true));
                 } else if (canManage && action == addIndex) {
-                    openCreateForm(player, true);
+                    reopen(player, () -> openCreateForm(player, true));
                 }
             });
             send(player, build(b));
@@ -149,7 +152,7 @@ public final class Form {
             call(b, "title", title);
             call(b, "content", empty);
             call(b, "button", text(player, "gui.teleportgui.universal.gui.add"));
-            onValid(b, response -> openCreateForm(player, warp));
+            onValid(b, response -> reopen(player, () -> openCreateForm(player, warp)));
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -163,6 +166,7 @@ public final class Form {
                     Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
                             .withStyle(Styles.ERROR_STRONG),
                     true);
+            reopen(player, () -> openWarpForm(player, 0));
             return;
         }
         int max = CommandLoader.getMaxCount(
@@ -178,6 +182,10 @@ public final class Form {
                                     Component.literal(String.valueOf(max)))
                             .withStyle(Styles.ERROR),
                     true);
+            reopen(player, () -> {
+                if (warp) openWarpForm(player, 0);
+                else openHomeForm(player, 0);
+            });
             return;
         }
         try {
@@ -191,10 +199,13 @@ public final class Form {
                             Tr_i18n.tr("gui.teleportgui.rename.newEmpty", player)
                                     .withStyle(Styles.ERROR),
                             true);
+                    reopen(player, () -> openCreateForm(player, warp));
                 } else if (warp) {
                     Warp.setWarp(player, newName);
+                    reopen(player, () -> openWarpForm(player, 0));
                 } else {
                     Home.setHome(player, newName);
+                    reopen(player, () -> openHomeForm(player, 0));
                 }
             });
             send(player, build(b));
@@ -217,13 +228,14 @@ public final class Form {
                             Tr_i18n.tr("gui.teleportgui.rename.newEmpty", player)
                                     .withStyle(Styles.ERROR),
                             true);
+                    reopen(player, () -> openRenameForm(player, oldName, warp));
                 } else if (warp) {
                     Warp.renameWarp(player, oldName, newName);
+                    reopen(player, () -> openWarpForm(player, 0));
                 } else {
                     Home.renameHome(player, oldName, newName);
+                    reopen(player, () -> openHomeForm(player, 0));
                 }
-                if (warp) openWarpForm(player, 0);
-                else openHomeForm(player, 0);
             });
             send(player, build(b));
         } catch (Throwable t) {
@@ -243,9 +255,9 @@ public final class Form {
 
             List<Runnable> actions = new ArrayList<>();
             call(b, "button", text(player, "gui.teleportgui.be.viewRequests"));
-            actions.add(() -> openTpaRequestsForm(player, 0));
+            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, 0)));
             call(b, "button", text(player, "gui.teleportgui.tpa.tpagui.new"));
-            actions.add(() -> openTpaRequestForm(player));
+            actions.add(() -> reopen(player, () -> openTpaRequestForm(player)));
 
             onValid(b, response -> {
                 int id = intValue(response, "clickedButtonId");
@@ -272,7 +284,7 @@ public final class Form {
             List<Runnable> actions = new ArrayList<>();
             if (p > 0) {
                 call(b, "button", text(player, "gui.teleportgui.universal.gui.pgup"));
-                actions.add(() -> openTpaRequestsForm(player, p - 1));
+                actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, p - 1)));
             }
 
             if (requests.isEmpty()) {
@@ -290,13 +302,13 @@ public final class Form {
                                     ? "gui.teleportgui.tpa.tpagui.here"
                                     : "gui.teleportgui.tpa.tpagui.tocome"),
                             ageText(req)));
-                    actions.add(() -> openTpaRequestDialog(player, fromUuid));
+                    actions.add(() -> reopen(player, () -> openTpaRequestDialog(player, fromUuid, p)));
                 }
             }
 
             if (p < totalPages - 1) {
                 call(b, "button", text(player, "gui.teleportgui.universal.gui.pgdn"));
-                actions.add(() -> openTpaRequestsForm(player, p + 1));
+                actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, p + 1)));
             }
 
             onValid(b, response -> {
@@ -309,7 +321,7 @@ public final class Form {
         }
     }
 
-    private static void openTpaRequestDialog(ServerPlayer player, String fromUuid) {
+    private static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
@@ -328,7 +340,7 @@ public final class Form {
                 if (from != null) Tpa.deny(from, player);
             });
             call(b, "button", text(player, "gui.teleportgui.universal.gui.back"));
-            actions.add(() -> openTpaRequestsForm(player, 0));
+            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, page)));
 
             onValid(b, response -> {
                 int id = intValue(response, "clickedButtonId");
@@ -368,6 +380,7 @@ public final class Form {
                 if (target >= 0 && target < names.size()) {
                     Tpa.requestByName(player, names.get(target), type == 1);
                 }
+                reopen(player, () -> openTpaForm(player));
             });
             send(player, build(b));
         } catch (Throwable t) {
@@ -412,6 +425,31 @@ public final class Form {
 
     private static String text(ServerPlayer player, String key, String... args) {
         return Tr_i18n.text(key, player, args);
+    }
+
+    private static void afterAction(ServerPlayer player, Runnable action, Runnable opener) {
+        int seq = formSequence(player);
+        action.run();
+        if (formSequence(player) != seq) return;
+        reopen(player, seq, opener);
+    }
+
+    private static void reopen(ServerPlayer player, Runnable opener) {
+        reopen(player, formSequence(player), opener);
+    }
+
+    private static void reopen(ServerPlayer player, int seq, Runnable opener) {
+        MinecraftServer server = ServerMain.SERVER;
+        if (server == null) return;
+        server.execute(() -> {
+            if (server.getPlayerList().getPlayer(player.getUUID()) != player) return;
+            if (formSequence(player) != seq) return;
+            opener.run();
+        });
+    }
+
+    private static int formSequence(ServerPlayer player) {
+        return FORM_SEQ.getOrDefault(player.getUUID(), 0);
     }
 
     private static String senderName(Tpa.TpaRequest req) {
@@ -507,6 +545,7 @@ public final class Form {
             if (Boolean.FALSE.equals(m.invoke(api, player.getUUID(), form))) {
                 throw new IllegalStateException("Floodgate refused to send the form");
             }
+            FORM_SEQ.merge(player.getUUID(), 1, Integer::sum);
         } catch (Throwable t) {
             fallback(player, t);
         }
