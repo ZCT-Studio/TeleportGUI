@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.commands;
 
+import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.storage.Manager;
@@ -11,7 +12,6 @@ import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.Tr_i18n;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -37,7 +37,6 @@ public final class Tpa {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // /tpa <player>  我传送到对方
         dispatcher.register(Commands.literal("tpa")
                 .then(argument("player", EntityArgument.player())
                         .executes(ctx -> {
@@ -46,7 +45,6 @@ public final class Tpa {
                             return cmdSendRequest(sender, target, false);
                         })));
 
-        // /tpahere <player>  对方传送到我
         dispatcher.register(Commands.literal("tpahere")
                 .then(argument("player", EntityArgument.player())
                         .executes(ctx -> {
@@ -55,8 +53,6 @@ public final class Tpa {
                             return cmdSendRequest(sender, target, true);
                         })));
 
-
-        // /tpaaccept <player>  同意
         dispatcher.register(Commands.literal("tpaaccept")
                 .then(argument("player", EntityArgument.player())
                         .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
@@ -66,8 +62,15 @@ public final class Tpa {
                             return cmdAccept(from, to);
                         })));
 
+        dispatcher.register(Commands.literal("tpaY")
+                .then(argument("player", EntityArgument.player())
+                        .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
+                        .executes(ctx -> {
+                            ServerPlayer from = EntityArgument.getPlayer(ctx, "player");
+                            ServerPlayer to = ctx.getSource().getPlayerOrException();
+                            return cmdAccept(from, to);
+                        })));
 
-        // /tpadeny <player>  拒绝
         dispatcher.register(Commands.literal("tpadeny")
                 .then(argument("player", EntityArgument.player())
                         .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
@@ -77,8 +80,15 @@ public final class Tpa {
                             return cmdDeny(from, to);
                         })));
 
+        dispatcher.register(Commands.literal("tpaN")
+                .then(argument("player", EntityArgument.player())
+                        .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
+                        .executes(ctx -> {
+                            ServerPlayer from = EntityArgument.getPlayer(ctx, "player");
+                            ServerPlayer to = ctx.getSource().getPlayerOrException();
+                            return cmdDeny(from, to);
+                        })));
 
-        // /gtpa — Container GUI for incoming tpa requests
         dispatcher.register(Commands.literal("gtpa")
                 .executes(ctx -> {
                     ServerPlayer player = ctx.getSource().getPlayerOrException();
@@ -94,7 +104,6 @@ public final class Tpa {
     }
 
     private static int cmdSendRequest(ServerPlayer from, ServerPlayer to, boolean here) {
-        // CommandGuard permission + cooldown
         if (!CommandGuard.checkPermission(from, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST)) return 1;
         String node = here ? ConfigKeys.TPA_REQUEST_HERE : ConfigKeys.TPA_REQUEST;
         if (!CommandGuard.checkAndWarnCooldown(from, ConfigKeys.MODULE_TPA, node)) return 1;
@@ -121,7 +130,7 @@ public final class Tpa {
         if (from.getUUID().equals(to.getUUID())) {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.self", from)
-                            .withStyle(ChatFormatting.AQUA),
+                            .withStyle(Styles.INFO),
                     true);
             return false;
         }
@@ -135,8 +144,8 @@ public final class Tpa {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.alreadySent", from,
                             Component.literal(to.getName().getString())
-                                    .withStyle(ChatFormatting.BOLD))
-                            .withStyle(ChatFormatting.AQUA),
+                                    .withStyle(Styles.EMPHASIS))
+                            .withStyle(Styles.INFO),
                     true);
             return false;
         }
@@ -148,15 +157,15 @@ public final class Tpa {
                                 ? "commands.teleportgui.tpa.sentHere"
                                 : "commands.teleportgui.tpa.sent", from,
                         Component.literal(to.getName().getString())
-                                .withStyle(ChatFormatting.BOLD)),
+                                .withStyle(Styles.EMPHASIS)),
                 true);
 
         MutableComponent receivedMsg = Tr_i18n.tr(here
                         ? "commands.teleportgui.tpa.receivedHere"
                         : "commands.teleportgui.tpa.received", to,
                         Component.literal(from.getName().getString())
-                                .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
-                .withStyle(ChatFormatting.AQUA);
+                                .withStyle(Styles.INFO_STRONG))
+                .withStyle(Styles.INFO);
 
         if (TeleportUtils.isBedrockPlayer(to)) {
             boolean autoPop = Manager
@@ -170,13 +179,12 @@ public final class Tpa {
             if (!autoPop) {
                 bedrockMsg.append("\n")
                         .append(Tr_i18n.tr("commands.teleportgui.tpa.be.hint", to)
-                                .withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+                                .withStyle(Styles.MUTED_STRONG));
             }
             to.sendSystemMessage(bedrockMsg, false);
 
             if (autoPop) {
                 if (TeleportUtils.hasFloodgate()) {
-                    // 直接打开请求列表，让接收方第一时间看到是谁发起的请求
                     Form.openTpaRequestsForm(to, 0);
                 } else {
                     GUI.openTpaRequests(to);
@@ -188,13 +196,13 @@ public final class Tpa {
                             .append(receivedMsg)
                             .append("\n")
                             .append(Tr_i18n.tr("commands.teleportgui.tpa.accept", to)
-                                    .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
+                                    .withStyle(Styles.SUCCESS_STRONG)
                                     .withStyle(s -> s.withClickEvent(
                                             new ClickEvent.RunCommand(
                                                     "/tpaaccept " + from.getName().getString()))))
                             .append(" ")
                             .append(Tr_i18n.tr("commands.teleportgui.tpa.deny", to)
-                                    .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                                    .withStyle(Styles.ERROR_STRONG)
                                     .withStyle(s -> s.withClickEvent(
                                             new ClickEvent.RunCommand(
                                                     "/tpadeny " + from.getName().getString())))),
@@ -212,7 +220,7 @@ public final class Tpa {
         if (reqOpt.isEmpty()) {
             to.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -223,7 +231,7 @@ public final class Tpa {
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
         if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
-                    .withStyle(ChatFormatting.RED);
+                    .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
             return;
@@ -239,11 +247,11 @@ public final class Tpa {
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT)) {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.accepted", from)
-                            .withStyle(ChatFormatting.WHITE),
+                            .withStyle(Styles.BODY),
                     true);
             to.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.accepted", to)
-                            .withStyle(ChatFormatting.GREEN),
+                            .withStyle(Styles.SUCCESS),
                     true);
         }
 
@@ -259,7 +267,7 @@ public final class Tpa {
         if (reqOpt.isEmpty()) {
             to.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
@@ -270,7 +278,7 @@ public final class Tpa {
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
         if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
-                    .withStyle(ChatFormatting.RED);
+                    .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
             return;
@@ -280,11 +288,11 @@ public final class Tpa {
 
         from.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", from)
-                        .withStyle(ChatFormatting.WHITE),
+                        .withStyle(Styles.BODY),
                 true);
         to.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", to)
-                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD),
+                        .withStyle(Styles.ERROR_STRONG),
                 true);
     }
 
@@ -297,7 +305,7 @@ public final class Tpa {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.playerNotFound", from,
                                     Component.literal(targetName.trim()))
-                            .withStyle(ChatFormatting.RED),
+                            .withStyle(Styles.ERROR),
                     true);
             return;
         }
