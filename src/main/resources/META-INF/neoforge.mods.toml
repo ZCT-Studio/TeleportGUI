@@ -4,9 +4,10 @@ issueTrackerURL = "https://github.com/ZCT-Stuido/TeleportGUI/issues"
 license = "${license}"
 
 [[mods]]
-modId = "teleportgui"
+modId = "${id}"
 version = "${version}"
 displayName = "${name}"
+iconFile = "icon.png"
 displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
 authors = ${authors}
 description = '''

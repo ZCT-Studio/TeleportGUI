@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "teleportgui",
+  "id": "${id}",
   "version": "${version}",
   "name": "${name}",
   "description": "${description}",

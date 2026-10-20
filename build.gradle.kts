@@ -49,6 +49,7 @@ if (mod.isNeoforge) {
 }
 
 modSettings {
+    var mod_id = findProperty("mod.id") ?: "example"
     var mod_license = findProperty("mod.license") ?: ""
     var mod_authors = findProperty("mod.authors") ?: ""
 
@@ -56,6 +57,7 @@ modSettings {
     var maven_mc_version_range = findProperty("maven_mc_version_range") ?: "[${mod.minecraftVersion}]"
 
     variableReplacements = mapOf(
+        "id" to mod_id,
         "license" to mod_license,
         "authors" to mod_authors,
 
