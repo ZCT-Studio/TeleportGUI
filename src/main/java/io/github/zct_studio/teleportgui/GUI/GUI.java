@@ -542,13 +542,13 @@ public final class GUI {
                 return;
             }
             if (input == ContainerInput.QUICK_MOVE) {
-                Home.setDefaultHome(sp, id);
+                Home.deleteHome(sp, id);
                 reopen(sp, page);
             } else if (button == 0) {
                 Home.goHome(sp, id);
                 sp.closeContainer();
             } else if (button == 1) {
-                Home.deleteHome(sp, id);
+                Home.setDefaultHome(sp, id);
                 reopen(sp, page);
             }
         }
@@ -681,10 +681,7 @@ public final class GUI {
                 if (button == 0) openWarpActions(sp, id, page);
                 return;
             }
-            if (button == 0) {
-                Warp.goToWarp(sp, id);
-                sp.closeContainer();
-            } else if (button == 1) {
+            if (input == ContainerInput.QUICK_MOVE) {
                 if (canManage(sp)) {
                     Warp.deleteWarp(sp, id);
                     reopen(sp, page);
@@ -694,6 +691,9 @@ public final class GUI {
                                     .withStyle(Styles.ERROR_STRONG),
                             true);
                 }
+            } else if (button == 0) {
+                Warp.goToWarp(sp, id);
+                sp.closeContainer();
             }
         }
 

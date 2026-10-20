@@ -163,8 +163,8 @@
   "gui.teleportgui.be.tpaSummary": "Choose what to do",
   "gui.teleportgui.be.viewRequests": "View your requests",
 
-  "gui.teleportgui.guide.home": "Guide:\n[+] = add a new home\nLeft click = teleport to home\nRight click = delete home\nShift+left click = set as default home\nPress F on an entry = rename\n[6]Back [7]Prev [8]Next",
-  "gui.teleportgui.guide.warp": "Guide:\n[+] = create a new warp (OP)\nLeft click = teleport to warp\nRight click = delete warp (OP)\nPress F on an entry = rename (OP)\n[6]Back [7]Prev [8]Next",
+  "gui.teleportgui.guide.home": "Guide:\n[+] = add a new home\nLeft click = teleport to home\nRight click = set as default home\nShift+left click = delete home\nPress F on an entry = rename\n[6]Back [7]Prev [8]Next",
+  "gui.teleportgui.guide.warp": "Guide:\n[+] = create a new warp (OP)\nLeft click = teleport to warp\nShift+left click = delete warp (OP)\nPress F on an entry = rename (OP)\n[6]Back [7]Prev [8]Next",
   "gui.teleportgui.guide.tpa": "Guide:\nPlayer list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\n[1]Switch between player list and request list [6]Back [7]Prev [8]Next",
 
   "mod.teleportgui.dependencies.floodgate.noload": "Note: Bedrock GUI requires Floodgate"

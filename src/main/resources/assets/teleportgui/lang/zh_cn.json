@@ -163,8 +163,8 @@
   "gui.teleportgui.be.tpaSummary": "选择要进行的操作",
   "gui.teleportgui.be.viewRequests": "查看自己的请求",
 
-  "gui.teleportgui.guide.home": "操作指南：\n[+] = 添加新家\n左键 = 传送到该家\n右键 = 删除该家\nShift+左键 = 设为默认家\n对准条目按 F = 重命名\n[6]返回 [7]上一页 [8]下一页",
-  "gui.teleportgui.guide.warp": "操作指南：\n[+] = 新建传送点（OP）\n左键 = 传送到该传送点\n右键 = 删除该传送点（OP）\n对准条目按 F = 重命名（OP）\n[6]返回 [7]上一页 [8]下一页",
+  "gui.teleportgui.guide.home": "操作指南：\n[+] = 添加新家\n左键 = 传送到该家\n右键 = 设为默认家\nShift+左键 = 删除该家\n对准条目按 F = 重命名\n[6]返回 [7]上一页 [8]下一页",
+  "gui.teleportgui.guide.warp": "操作指南：\n[+] = 新建传送点（OP）\n左键 = 传送到该传送点\nShift+左键 = 删除该传送点（OP）\n对准条目按 F = 重命名（OP）\n[6]返回 [7]上一页 [8]下一页",
   "gui.teleportgui.guide.tpa": "操作指南：\n玩家列表：左键 = 发起传送请求，右键 = 请求对方过来\n请求列表：左键 = 接受，右键 = 拒绝\n[1] = 在玩家列表与请求列表之间切换 [6]返回 [7]上一页 [8]下一页",
 
   "mod.teleportgui.dependencies.floodgate.noload": "小提示：基岩版 GUI 需要安装 Floodgate 才能使用哦！"
