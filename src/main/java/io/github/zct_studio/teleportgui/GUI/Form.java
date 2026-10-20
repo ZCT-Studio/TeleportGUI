@@ -390,11 +390,11 @@ public final class Form {
             Object b = newBuilder(CUMULUS_MODAL);
             call(b, "title", text(player, "commands.teleportgui.common.noSafeLocation"));
             call(b, "content", text(player, "commands.teleportgui.common.safetyIsForLosers"));
-            call(b, "button1", text(player, "gui.teleportgui.universal.gui.cancel"));
-            call(b, "button2", text(player, "commands.teleportgui.common.forceTeleport"));
+            call(b, "button1", text(player, "commands.teleportgui.common.forceTeleport"));
+            call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
 
             onValid(b, response -> {
-                if (intValue(response, "getClickedButtonId") == 1) onForce.run();
+                if (intValue(response, "getClickedButtonId") == 0) onForce.run();
             });
             send(player, build(b));
         } catch (Throwable t) {
