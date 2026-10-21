@@ -240,7 +240,7 @@ public final class Tpa {
         ServerPlayer destination = req.here ? from : to;
         ServerPlayer toTeleport = req.here ? to : from;
 
-        BlockPos destPos = destination.blockPosition();
+        BlockPos destPos = TeleportUtils.getTeleportPos(destination);
         ServerLevel level = destination.level();
 
         if (SafetyGuard.tryTeleport(toTeleport, level, destPos,

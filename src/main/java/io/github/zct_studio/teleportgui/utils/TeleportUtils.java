@@ -2,14 +2,17 @@ package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.ServerMain;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +49,30 @@ public final class TeleportUtils {
 
     public static net.minecraft.server.MinecraftServer getServer() {
         return ServerMain.SERVER;
+    }
+
+    public static BlockPos getTeleportPos(Entity entity) {
+        return new BlockPos(
+                (int) Math.floor(entity.getX()),
+                (int) Math.floor(entity.getY() + 0.5D),
+                (int) Math.floor(entity.getZ()));
+    }
+
+    public static BlockPos getStandablePos(ServerLevel world, BlockPos pos) {
+        BlockPos.MutableBlockPos cursor = pos.mutable();
+        for (int i = 0; i < 8 && !hasRoomForFeet(world, cursor); i++) {
+            cursor.move(Direction.UP);
+        }
+        return cursor.immutable();
+    }
+
+    private static boolean hasRoomForFeet(ServerLevel world, BlockPos feet) {
+        if (!world.getBlockState(feet).getCollisionShape(world, feet).isEmpty()) {
+            return false;
+        }
+        BlockPos below = feet.below();
+        VoxelShape belowShape = world.getBlockState(below).getCollisionShape(world, below);
+        return belowShape.isEmpty() || belowShape.max(Direction.Axis.Y) <= 1.0D;
     }
 
     private TeleportUtils() {}
@@ -121,6 +148,7 @@ public final class TeleportUtils {
     }
 
     public static Optional<BlockPos> findSafeBlock(BlockPos pos, ServerLevel world) {
+        if (isSafe(pos, world)) return Optional.of(pos);
         int[] rowArr = {1, 2, 3};
         for (int row : rowArr) {
             for (int z = -row; z <= row; z++) {

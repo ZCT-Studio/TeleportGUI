@@ -206,7 +206,7 @@ public final class Warp {
             return;
         }
 
-        BlockPos blockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+        BlockPos blockPos = TeleportUtils.getTeleportPos(player);
         String worldString = player.level().dimension().identifier().toString();
 
         NamedLoc warp = new NamedLoc(warpName, blockPos, worldString);
@@ -258,7 +258,7 @@ public final class Warp {
         ServerLevel warpWorld = optionalWorld.get();
         BlockPos teleportBlockPos = warp.getBlockPos();
 
-        if (player.blockPosition().equals(teleportBlockPos) && player.level() == warpWorld) {
+        if (TeleportUtils.getTeleportPos(player).equals(teleportBlockPos) && player.level() == warpWorld) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.warp.goSame", player)
                             .withStyle(Styles.INFO),

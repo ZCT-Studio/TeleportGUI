@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1-rc1] - 2026-10-20
+
+### Fixed
+
+- Teleporting to a home, warp, death point, or player standing on a non-full block (such as a path, farmland, or slab) no longer places the player below that block. Saved positions now round the Y coordinate, and teleport targets are lifted out of any occupied block, including positions saved by older versions.
+
 ## [1.0.0-rc.2] - 2026-10-20
 
 ### Added

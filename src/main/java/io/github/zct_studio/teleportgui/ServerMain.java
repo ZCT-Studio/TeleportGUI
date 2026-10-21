@@ -11,6 +11,7 @@ import io.github.zct_studio.teleportgui.commands.TpPoints;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ModSettingsLoader;
 import net.minecraft.server.MinecraftServer;
@@ -60,7 +61,7 @@ public final class ServerMain {
             if (entity instanceof ServerPlayer sp) {
                 DeathPoint.set(
                         sp.getStringUUID(),
-                        sp.blockPosition(),
+                        TeleportUtils.getTeleportPos(sp),
                         sp.level().dimension().identifier().toString()
                 );
             }

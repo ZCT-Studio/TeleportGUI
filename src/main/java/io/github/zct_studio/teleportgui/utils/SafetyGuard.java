@@ -27,14 +27,15 @@ public final class SafetyGuard {
 
     public static boolean tryTeleport(ServerPlayer player, ServerLevel world, BlockPos target,
                                       String module, String node) {
+        BlockPos destination = TeleportUtils.getStandablePos(world, target);
         if (!CommandLoader.isSafetyCheckEnabled(module, node)) {
-            return doTeleport(player, world, center(target), module, node);
+            return doTeleport(player, world, center(destination), module, node);
         }
-        var safe = TeleportUtils.findSafeBlock(target, world);
+        var safe = TeleportUtils.findSafeBlock(destination, world);
         if (safe.isPresent()) {
             return doTeleport(player, world, center(safe.get()), module, node);
         }
-        PENDING.put(player.getStringUUID(), new Pending(world.dimension(), center(target), module, node));
+        PENDING.put(player.getStringUUID(), new Pending(world.dimension(), center(destination), module, node));
         prompt(player);
         return false;
     }

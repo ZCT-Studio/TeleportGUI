@@ -216,7 +216,7 @@ public final class Home {
             return;
         }
 
-        BlockPos blockPos = player.blockPosition();
+        BlockPos blockPos = TeleportUtils.getTeleportPos(player);
         String worldString = player.level().dimension().identifier().toString();
 
         NamedLoc home = new NamedLoc(homeName, blockPos, worldString);
@@ -299,7 +299,7 @@ public final class Home {
         ServerLevel homeWorld = optWorld.get();
         BlockPos teleportPos = home.getBlockPos();
 
-        if (player.blockPosition().equals(teleportPos) && player.level() == homeWorld) {
+        if (TeleportUtils.getTeleportPos(player).equals(teleportPos) && player.level() == homeWorld) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.home.goSame", player)
                             .withStyle(Styles.INFO),
