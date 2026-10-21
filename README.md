@@ -88,7 +88,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 ### 其他
 
 - 家园、传送点与 TPA 命令支持名称 Tab 补全；Java 版聊天栏中的坐标和维度可点击复制。
-- 内置简体中文与英文语言文件。
+- 内置简体中文、繁体中文（香港/台湾）与英文语言文件。
 - 使用 JSON 存储后端。
 - 支持 Fabric 与 NeoForge，通过 Architectury API 共享同一套逻辑。
 

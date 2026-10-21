@@ -89,7 +89,7 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 
 - Name tab-completion for home, warp, and TPA commands.
 - Clickable coordinates and dimension IDs in Java Edition chat.
-- Built-in English and Simplified Chinese language files.
+- Built-in English, Simplified Chinese, and Traditional Chinese (Hong Kong/Taiwan) language files.
 - JSON storage backend.
 - Fabric and NeoForge support through a shared Architectury API codebase.
 

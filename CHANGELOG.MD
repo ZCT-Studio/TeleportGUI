@@ -15,6 +15,7 @@
 - 新增 `/teleportgui reload command` 与 `/teleportgui reload config`：前者重建当前命令树，后者重新读取 `config.json` 后再重建。
 - `/reload` 现在会同时重新加载 `config.json` 并更新命令树。
 - `config.json` 新增 `teleport.random` 节点，可配置 `minDistance`、`maxDistance`、`cooldownSeconds` 与 `permission.level`。
+- 新增 `zh_hk`（繁体中文·香港）与 `zh_tw`（繁体中文·台湾）语言文件。
 
 ### 变更
 

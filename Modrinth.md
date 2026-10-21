@@ -15,7 +15,7 @@ The mod runs on the server. Java players can join with a vanilla client; no clie
 - **Bedrock forms** — dropdown-based Cumulus forms for homes, warps, and TPA; automatic fallback to hopper menus when Floodgate is unavailable.
 - **Configurable** — per-command cooldowns, permission levels, home/warp limits, TPA expiry, and safety checks.
 - **Storage** — JSON backend.
-- **Localization** — English and Simplified Chinese included.
+- **Localization** — English, Simplified Chinese, and Traditional Chinese (Hong Kong/Taiwan) included.
 
 ## Requirements
 
