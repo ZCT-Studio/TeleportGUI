@@ -103,8 +103,14 @@ public final class Registry {
     }
 
     private static void ensureGuiCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        if (dispatcher.getRoot().getChild("teleportgui") == null) {
-            GUI.register(dispatcher);
+        if (dispatcher.getRoot().getChild(ConfigKeys.TG_PLAYER) == null) {
+            GUI.registerPlayer(dispatcher);
+        }
+        if (dispatcher.getRoot().getChild(ConfigKeys.TG_ADMIN) == null) {
+            GUI.registerAdmin(dispatcher);
+        }
+        if (dispatcher.getRoot().getChild(ConfigKeys.TG_BE_ROOT) == null) {
+            GUI.registerBe(dispatcher);
         }
     }
 

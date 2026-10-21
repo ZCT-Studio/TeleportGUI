@@ -2,7 +2,6 @@ package io.github.zct_studio.teleportgui.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.zct_studio.teleportgui.Styles;
@@ -25,7 +24,6 @@ import java.util.List;
 
 public final class GUI {
 
-    private static final String LITERAL_NOTIFICATION_GUI = "notification_gui";
     private static final List<String> NODE_FIELDS = List.of(
             ConfigKeys.FIELD_COOLDOWN,
             ConfigKeys.FIELD_MIN_DISTANCE,
@@ -39,22 +37,33 @@ public final class GUI {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("teleportgui")
-                .then(Commands.literal(ConfigKeys.TG_BE)
-                        .then(Commands.literal(LITERAL_NOTIFICATION_GUI)
-                                .executes(context -> cmdGetNotificationGui(context.getSource()))
-                                .then(Commands.argument("value", BoolArgumentType.bool())
-                                        .executes(context -> cmdNotificationGui(context.getSource(),
-                                                BoolArgumentType.getBool(context, "value"))))))
+        registerPlayer(dispatcher);
+        registerAdmin(dispatcher);
+        registerBe(dispatcher);
+    }
+
+    public static void registerPlayer(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal(ConfigKeys.TG_PLAYER)
+                .then(Commands.literal(ConfigKeys.TG_ALLOW_REQUEST)
+                        .executes(context -> cmdGetAllowRequest(context.getSource()))
+                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                .executes(context -> cmdSetAllowRequest(context.getSource(),
+                                        BoolArgumentType.getBool(context, "value"))))));
+    }
+
+    public static void registerAdmin(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal(ConfigKeys.TG_ADMIN)
+                .requires(source -> source.permissions().hasPermission(
+                        new Permission.HasCommandLevel(PermissionLevel.OWNERS)))
                 .then(Commands.literal(ConfigKeys.TG_CONFIG)
                         .then(Commands.argument("key", StringArgumentType.string())
                                 .suggests(new ConfigKey())
                                 .executes(context -> cmdGetConfig(context.getSource(),
                                         StringArgumentType.getString(context, "key")))
-                                .then(Commands.argument("value", IntegerArgumentType.integer())
+                                .then(Commands.argument("value", StringArgumentType.word())
                                         .executes(context -> cmdConfig(context.getSource(),
                                                 StringArgumentType.getString(context, "key"),
-                                                IntegerArgumentType.getInteger(context, "value"))))))
+                                                StringArgumentType.getString(context, "value"))))))
                 .then(Commands.literal(ConfigKeys.TG_COMMAND)
                         .then(Commands.argument("command", StringArgumentType.word())
                                 .suggests(new CommandGroup())
@@ -69,6 +78,45 @@ public final class GUI {
                                 .executes(context -> cmdReloadCommand(context.getSource())))
                         .then(Commands.literal(ConfigKeys.TG_CONFIG)
                                 .executes(context -> cmdReloadConfig(context.getSource())))));
+    }
+
+    public static void registerBe(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal(ConfigKeys.TG_BE_ROOT)
+                .then(Commands.literal(ConfigKeys.TG_NOTIF_GUI)
+                        .executes(context -> cmdGetNotificationGui(context.getSource()))
+                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                .executes(context -> cmdNotificationGui(context.getSource(),
+                                        BoolArgumentType.getBool(context, "value"))))));
+    }
+
+    private static int cmdGetAllowRequest(CommandSourceStack source)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        boolean allowed = Manager.getPlayer(player.getStringUUID())
+                .map(PlayerData::isRequestAllowed)
+                .orElse(true);
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.allowRequest.get", player,
+                                Component.literal(allowed ? "true" : "false"))
+                        .withStyle(Styles.SUCCESS),
+                false);
+        return 0;
+    }
+
+    private static int cmdSetAllowRequest(CommandSourceStack source, boolean allowed)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        PlayerData data = Manager.getPlayer(player.getStringUUID())
+                .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+        data.setRequestAllowed(allowed);
+        player.sendSystemMessage(
+                Tr_i18n.tr(allowed
+                                        ? "commands.teleportgui.teleportgui.allowRequest.on"
+                                        : "commands.teleportgui.teleportgui.allowRequest.off",
+                                player)
+                        .withStyle(allowed ? Styles.SUCCESS : Styles.WARNING),
+                false);
+        return 0;
     }
 
     private static int cmdNotificationGui(CommandSourceStack source, boolean enabled)
@@ -93,7 +141,7 @@ public final class GUI {
         ServerPlayer player = source.getPlayerOrException();
         boolean enabled = Manager.getPlayer(player.getStringUUID())
                 .map(PlayerData::isNotificationGuiEnabled)
-                .orElse(true);
+                .orElse(CommandLoader.isNotifGuiDefaultEnabled());
 
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.notificationGui.get", player,
@@ -135,12 +183,13 @@ public final class GUI {
         return 0;
     }
 
-    private static int cmdConfig(CommandSourceStack source, String key, int value)
+    private static int cmdConfig(CommandSourceStack source, String key, String rawValue)
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         if (!requireOwner(player)) return 1;
 
-        if (!configKeys().contains(key) || !applyConfig(key, value)) {
+        Integer parsed = parseConfigValue(key, rawValue);
+        if (!configKeys().contains(key) || parsed == null || !applyConfig(key, parsed)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.teleportgui.config.unknown", player,
                                     Component.literal(key))
@@ -150,12 +199,27 @@ public final class GUI {
         }
 
         CommandLoader.save();
+        String shownValue = ConfigKeys.KEY_NOTIF_GUI_DEFAULT.equals(key)
+                ? (parsed == 1 ? "true" : "false")
+                : String.valueOf(parsed);
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.config.set", player,
-                                Component.literal(key), Component.literal(String.valueOf(value)))
+                                Component.literal(key), Component.literal(shownValue))
                         .withStyle(Styles.SUCCESS),
                 false);
         return 0;
+    }
+
+    private static Integer parseConfigValue(String key, String rawValue) {
+        if (ConfigKeys.KEY_NOTIF_GUI_DEFAULT.equals(key)) {
+            if ("true".equalsIgnoreCase(rawValue)) return 1;
+            if ("false".equalsIgnoreCase(rawValue)) return 0;
+        }
+        try {
+            return Integer.parseInt(rawValue);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private static int cmdGetCommand(CommandSourceStack source, String command)
@@ -254,6 +318,7 @@ public final class GUI {
 
     public static List<String> configKeys() {
         List<String> keys = new ArrayList<>();
+        keys.add(ConfigKeys.KEY_NOTIF_GUI_DEFAULT);
         collect(keys, ConfigKeys.MODULE_HOME, CommandLoader.CONFIG.home);
         collect(keys, ConfigKeys.MODULE_WARP, CommandLoader.CONFIG.warp);
         collect(keys, ConfigKeys.MODULE_TPA, CommandLoader.CONFIG.tpa);
@@ -272,6 +337,11 @@ public final class GUI {
     }
 
     static boolean applyConfig(String key, int value) {
+        if (ConfigKeys.KEY_NOTIF_GUI_DEFAULT.equals(key)) {
+            if (value != 0 && value != 1) return false;
+            CommandLoader.setNotifGuiDefault(value == 1);
+            return true;
+        }
         String[] parts = key.split("\\.");
         if (parts.length == 3) {
             CommandNode node = nodeOf(parts[0], parts[1]);
@@ -303,6 +373,9 @@ public final class GUI {
     }
 
     static String currentConfigValue(String key) {
+        if (ConfigKeys.KEY_NOTIF_GUI_DEFAULT.equals(key)) {
+            return String.valueOf(CommandLoader.isNotifGuiDefaultEnabled());
+        }
         String[] parts = key.split("\\.");
         if (parts.length == 3) {
             if (nodeOf(parts[0], parts[1]) == null) return null;

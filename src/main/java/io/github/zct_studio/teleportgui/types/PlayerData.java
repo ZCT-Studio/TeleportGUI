@@ -1,6 +1,7 @@
 package io.github.zct_studio.teleportgui.types;
 
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,8 @@ public class PlayerData {
     private final String uuid;
     private final List<NamedLoc> homes = new ArrayList<>();
     private String defaultHome = "";
-    private Boolean notificationGui = Boolean.TRUE;
+    private Boolean notificationGui;
+    private Boolean allowRequest = Boolean.TRUE;
 
     public PlayerData(String uuid) {
         this.uuid = uuid;
@@ -33,11 +35,22 @@ public class PlayerData {
     }
 
     public boolean isNotificationGuiEnabled() {
-        return notificationGui == null || notificationGui;
+        return notificationGui == null
+                ? CommandLoader.isNotifGuiDefaultEnabled()
+                : notificationGui;
     }
 
     public void setNotificationGuiEnabled(boolean enabled) {
         this.notificationGui = enabled;
+        Manager.save();
+    }
+
+    public boolean isRequestAllowed() {
+        return allowRequest == null || allowRequest;
+    }
+
+    public void setRequestAllowed(boolean allowed) {
+        this.allowRequest = allowed;
         Manager.save();
     }
 

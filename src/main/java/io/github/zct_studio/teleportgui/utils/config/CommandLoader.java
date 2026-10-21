@@ -92,6 +92,14 @@ public final class CommandLoader {
         return v == null ? 0 : v;
     }
 
+    public static boolean isNotifGuiDefaultEnabled() {
+        return CONFIG.notifGuiDefault == null || CONFIG.notifGuiDefault;
+    }
+
+    public static void setNotifGuiDefault(boolean enabled) {
+        CONFIG.notifGuiDefault = enabled;
+    }
+
     public static boolean isSafetyCheckEnabled(String module, String node) {
         Boolean v = resolveBool(module, node, ConfigKeys.FIELD_SAFETY);
         return v != null && v;

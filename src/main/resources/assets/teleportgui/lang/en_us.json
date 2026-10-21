@@ -67,6 +67,10 @@
   "commands.teleportgui.tpa.alreadySent": "You already sent a request to %0%.",
   "commands.teleportgui.tpa.expired": "That teleport request has expired.",
   "commands.teleportgui.tpa.playerNotFound": "Player '%0%' was not found.",
+  "commands.teleportgui.tpa.targetDisabled": "%0% is not accepting teleport requests.",
+  "commands.teleportgui.teleportgui.allowRequest.on": "You are now allowing other players to send you teleport requests.",
+  "commands.teleportgui.teleportgui.allowRequest.off": "You are no longer accepting teleport requests from other players.",
+  "commands.teleportgui.teleportgui.allowRequest.get": "allow_request is currently %0%.",
   "commands.teleportgui.teleportgui.notificationGui.on": "Enabled: Bedrock players auto-open a form on incoming teleport requests.",
   "commands.teleportgui.teleportgui.notificationGui.off": "Disabled: Bedrock players only get a chat notice on incoming teleport requests.",
   "commands.teleportgui.teleportgui.notificationGui.get": "Bedrock request forms are currently %0%.",
@@ -114,6 +118,9 @@
   "gui.teleportgui.tpa.tpagui.new": "Send Request",
   "gui.teleportgui.tpa.tpagui.viewRequests": "View Requests",
   "gui.teleportgui.tpa.tpagui.backToPlayers": "Back to Player List",
+  "gui.teleportgui.tpa.tpagui.allowOn": "Accept Teleport Requests: ON",
+  "gui.teleportgui.tpa.tpagui.allowOff": "Accept Teleport Requests: OFF",
+  "gui.teleportgui.tpa.tpagui.allowHint": "Click to toggle",
   "gui.teleportgui.tpa.tpagui.hintPlayers": "Left click: send request / Right click: ask them to come",
   "gui.teleportgui.tpa.tpagui.hintRequests": "Left click: accept / Right click: deny",
   "gui.teleportgui.tpa.tpagui.target": "Select Player",
@@ -143,5 +150,5 @@
   "gui.teleportgui.be.viewRequests": "View your requests",
   "gui.teleportgui.guide.home": "Left click = teleport to home\nRight click = set as default home\nShift+left click = delete home\nPress F on an entry = rename\n[6]Back [7]Prev [8]Next",
   "gui.teleportgui.guide.warp": "Left click = teleport to warp\nShift+left click = delete warp (permission)\nPress F on an entry = rename (permission)\n[6]Back [7]Prev [8]Next",
-  "gui.teleportgui.guide.tpa": "Player list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\n[1]Switch between player list and request list [6]Back [7]Prev [8]Next"
+  "gui.teleportgui.guide.tpa": "Player list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\nEmerald block = accept requests, Redstone block = deny requests\n[2]Switch between player list and request list [6]Close [7]Prev [8]Next"
 }

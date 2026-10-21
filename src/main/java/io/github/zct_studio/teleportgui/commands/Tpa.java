@@ -8,6 +8,7 @@ import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.storage.RuntimeStore;
+import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
@@ -140,6 +141,19 @@ public final class Tpa {
             return false;
         }
 
+        boolean allowed = Manager.getPlayer(to.getStringUUID())
+                .map(PlayerData::isRequestAllowed)
+                .orElse(true);
+        if (!allowed) {
+            from.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.tpa.targetDisabled", from,
+                                    Component.literal(to.getName().getString())
+                                            .withStyle(Styles.EMPHASIS))
+                            .withStyle(Styles.ERROR),
+                    false);
+            return false;
+        }
+
         long now = currentTick();
         boolean purged = false;
         for (TpaRequest request : REQUESTS) {
@@ -189,8 +203,8 @@ public final class Tpa {
         if (TeleportUtils.isBedrockPlayer(to)) {
             boolean autoPop = Manager
                     .getPlayer(to.getStringUUID())
-                    .map(io.github.zct_studio.teleportgui.types.PlayerData::isNotificationGuiEnabled)
-                    .orElse(true);
+                    .map(PlayerData::isNotificationGuiEnabled)
+                    .orElse(CommandLoader.isNotifGuiDefaultEnabled());
 
             MutableComponent bedrockMsg = Component.empty()
                     .append(receivedMsg);

@@ -67,6 +67,10 @@
   "commands.teleportgui.tpa.alreadySent": "你已經向 %0% 發送過請求啦，耐心等一等吧～",
   "commands.teleportgui.tpa.expired": "這個傳送請求已經過期啦。",
   "commands.teleportgui.tpa.playerNotFound": "找不到玩家「%0%」呀。",
+  "commands.teleportgui.tpa.targetDisabled": "%0% 目前不接受傳送請求。",
+  "commands.teleportgui.teleportgui.allowRequest.on": "已允許其他玩家向自己發送傳送請求。",
+  "commands.teleportgui.teleportgui.allowRequest.off": "已禁止其他玩家向自己發送傳送請求。",
+  "commands.teleportgui.teleportgui.allowRequest.get": "allow_request 目前為 %0%。",
   "commands.teleportgui.teleportgui.notificationGui.on": "已開啟：基岩版收到傳送請求時自動彈出表單。",
   "commands.teleportgui.teleportgui.notificationGui.off": "已關閉：基岩版收到傳送請求時只發文字提示。",
   "commands.teleportgui.teleportgui.notificationGui.get": "基岩版傳送請求彈窗目前為 %0%。",
@@ -114,6 +118,9 @@
   "gui.teleportgui.tpa.tpagui.new": "發起傳送請求",
   "gui.teleportgui.tpa.tpagui.viewRequests": "查看請求",
   "gui.teleportgui.tpa.tpagui.backToPlayers": "返回玩家列表",
+  "gui.teleportgui.tpa.tpagui.allowOn": "接受傳送請求：開",
+  "gui.teleportgui.tpa.tpagui.allowOff": "接受傳送請求：關",
+  "gui.teleportgui.tpa.tpagui.allowHint": "點擊切換",
   "gui.teleportgui.tpa.tpagui.hintPlayers": "左鍵：發起傳送請求 / 右鍵：請求對方過來",
   "gui.teleportgui.tpa.tpagui.hintRequests": "左鍵：接受 / 右鍵：拒絕",
   "gui.teleportgui.tpa.tpagui.target": "選擇玩家",
@@ -143,5 +150,5 @@
   "gui.teleportgui.be.viewRequests": "查看自己的請求",
   "gui.teleportgui.guide.home": "左鍵 = 傳送到該家\n右鍵 = 設為預設家\nShift+左鍵 = 刪除該家\n對準項目按 F = 重新命名\n[6]返回 [7]上一頁 [8]下一頁",
   "gui.teleportgui.guide.warp": "左鍵 = 傳送到該傳送點\nShift+左鍵 = 刪除該傳送點（需權限）\n對準項目按 F = 重新命名（需權限）\n[6]返回 [7]上一頁 [8]下一頁",
-  "gui.teleportgui.guide.tpa": "玩家列表：左鍵 = 發起傳送請求，右鍵 = 請求對方過來\n請求列表：左鍵 = 接受，右鍵 = 拒絕\n[1] = 在玩家列表與請求列表之間切換 [6]返回 [7]上一頁 [8]下一頁"
+  "gui.teleportgui.guide.tpa": "玩家列表：左鍵 = 發起傳送請求，右鍵 = 請求對方過來\n請求列表：左鍵 = 接受，右鍵 = 拒絕\n綠寶石塊 = 接受請求，紅石塊 = 拒絕請求\n[2] = 在玩家列表與請求列表之間切換 [6]關閉 [7]上一頁 [8]下一頁"
 }

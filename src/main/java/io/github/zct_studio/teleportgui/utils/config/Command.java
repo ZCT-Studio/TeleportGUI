@@ -8,6 +8,7 @@ public class Command {
 
     public int configVersion = CURRENT_CONFIG_VERSION;
     public CommandNode defaults = new CommandNode();
+    public Boolean notifGuiDefault = Boolean.TRUE;
 
     public LinkedHashMap<String, Boolean> commands = new LinkedHashMap<>();
 
@@ -42,6 +43,10 @@ public class Command {
         }
         if (commands == null) {
             commands = new LinkedHashMap<>();
+            changed = true;
+        }
+        if (notifGuiDefault == null) {
+            notifGuiDefault = Boolean.TRUE;
             changed = true;
         }
         for (String command : ConfigKeys.ALL_COMMANDS) {
