@@ -67,7 +67,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 - `/tpa <玩家>`：请求传送到对方身边。
 - `/tpahere <玩家>`：请求对方传送到你身边。
 - 请求可以通过聊天栏按钮、`/tpaaccept`、`/tpadeny` 或 `/gtpa` 请求列表处理。
-- 支持请求过期时间；默认永不过期。
+- 支持请求过期时间，默认 120 秒；`/tpa` 与 `/tpahere` 可分别配置，设为 `0` 表示永不过期。
 - 基岩版玩家收到请求时可自动弹出表单，也可用 `/teleportgui_be notif_gui false` 关闭自动弹出。
 - 玩家可用 `/teleportgui allow_request false` 禁止其他玩家向自己发送请求；默认允许。
 
@@ -280,7 +280,8 @@ runtimePersistence: true
     "go": { "cooldownSeconds": 5 }
   },
   "tpa": {
-    "request": { "cooldownSeconds": 30, "requestExpireSeconds": 0 }
+    "request": { "cooldownSeconds": 30, "expireSeconds": 120 },
+    "requestHere": { "cooldownSeconds": 30, "expireSeconds": 120 }
   },
   "teleport": {
     "deathPoint": { "safetyCheck": true },
@@ -301,17 +302,17 @@ runtimePersistence: true
 
 常用字段：
 
-| 字段                     | 说明                                                 |
-|------------------------|----------------------------------------------------|
-| `cooldownSeconds`      | 冷却秒数；`0` 表示无冷却                                     |
-| `permission.level`     | 原版命令权限等级 `0`–`4`；`-1` 表示继承 `defaults` 中的值          |
-| `maxCount`             | 家园/传送点数量上限；`-1` 表示无限制                              |
-| `requestExpireSeconds` | TPA 请求过期秒数；`0` 表示永不过期（在 `tpa.request` 下设置，对两种请求生效） |
-| `safetyCheck`          | 是否启用安全位置检测                                         |
-| `minDistance`          | `/randomtp` 的最小水平距离（格）                             |
-| `maxDistance`          | `/randomtp` 的最大水平距离（格）；`/randomtp` 必须为正数           |
+| 字段                     | 说明                                                                        |
+|------------------------|---------------------------------------------------------------------------|
+| `cooldownSeconds`      | 冷却秒数；`0` 表示无冷却                                                            |
+| `permission.level`     | 原版命令权限等级 `0`–`4`；`-1` 表示继承 `defaults` 中的值                                 |
+| `maxCount`             | 家园/传送点数量上限；`-1` 表示无限制                                                     |
+| `expireSeconds`        | 过期秒数；`0` 表示永不过期。`tpa.request` 与 `tpa.requestHere` 分别设置，默认 `120`，其余节点为预留字段 |
+| `safetyCheck`          | 是否启用安全位置检测                                                                |
+| `minDistance`          | `/randomtp` 的最小水平距离（格）                                                    |
+| `maxDistance`          | `/randomtp` 的最大水平距离（格）；`/randomtp` 必须为正数                                  |
 
-> `expireSeconds` 目前是预留字段。`maxDistance` 目前仅用于 `/randomtp`。
+> `expireSeconds` 目前仅对 `tpa.request`（`/tpa`）与 `tpa.requestHere`（`/tpahere`）生效，也只有这两项可用 `/teleportgui_admin config` 修改。`maxDistance` 目前仅用于 `/randomtp`。
 
 ## <a id="permissions"></a>权限
 

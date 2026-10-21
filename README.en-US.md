@@ -67,7 +67,7 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 - `/tpa <player>`: ask to teleport to another player.
 - `/tpahere <player>`: ask another player to teleport to you.
 - Requests can be handled through chat buttons, `/tpaaccept`, `/tpadeny`, or the `/gtpa` request list.
-- Request expiry is configurable; requests never expire by default.
+- Request expiry is configurable, defaults to 120 seconds, and can be set separately for `/tpa` and `/tpahere`; `0` disables expiry.
 - Bedrock players can receive an automatic form when a request arrives, or disable it with `/teleportgui_be notif_gui false`.
 - Players can block incoming requests with `/teleportgui allow_request false`; requests are allowed by default.
 
@@ -281,7 +281,8 @@ runtimePersistence: true
     "go": { "cooldownSeconds": 5 }
   },
   "tpa": {
-    "request": { "cooldownSeconds": 30, "requestExpireSeconds": 0 }
+    "request": { "cooldownSeconds": 30, "expireSeconds": 120 },
+    "requestHere": { "cooldownSeconds": 30, "expireSeconds": 120 }
   },
   "teleport": {
     "deathPoint": { "safetyCheck": true },
@@ -302,17 +303,17 @@ Each key in `commands` enables or disables a command group. Every command except
 
 Common fields:
 
-| Field                  | Description                                                                                               |
-|------------------------|-----------------------------------------------------------------------------------------------------------|
-| `cooldownSeconds`      | Cooldown in seconds; `0` disables the cooldown                                                            |
-| `permission.level`     | Vanilla permission level `0`–`4`; `-1` inherits from `defaults`                                           |
-| `maxCount`             | Home/warp limit; `-1` means unlimited                                                                     |
-| `requestExpireSeconds` | TPA request expiry in seconds; `0` never expires (set under `tpa.request`; applies to both request types) |
-| `safetyCheck`          | Whether safe-position checks are enabled                                                                  |
-| `minDistance`          | `/randomtp` minimum horizontal distance in blocks                                                         |
-| `maxDistance`          | `/randomtp` maximum horizontal distance in blocks; must be positive for `/randomtp`                       |
+| Field                  | Description                                                                                                |
+|------------------------|------------------------------------------------------------------------------------------------------------|
+| `cooldownSeconds`      | Cooldown in seconds; `0` disables the cooldown                                                             |
+| `permission.level`     | Vanilla permission level `0`–`4`; `-1` inherits from `defaults`                                            |
+| `maxCount`             | Home/warp limit; `-1` means unlimited                                                                      |
+| `expireSeconds`        | Expiry in seconds; `0` never expires. Set separately under `tpa.request` and `tpa.requestHere`, default `120`; reserved elsewhere |
+| `safetyCheck`          | Whether safe-position checks are enabled                                                                   |
+| `minDistance`          | `/randomtp` minimum horizontal distance in blocks                                                          |
+| `maxDistance`          | `/randomtp` maximum horizontal distance in blocks; must be positive for `/randomtp`                        |
 
-> `expireSeconds` is reserved. `maxDistance` is currently used by `/randomtp` only.
+> `expireSeconds` currently applies to `tpa.request` (`/tpa`) and `tpa.requestHere` (`/tpahere`) only, and only those two can be changed with `/teleportgui_admin config`. `maxDistance` is currently used by `/randomtp` only.
 
 ## <a id="permissions"></a>Permissions
 

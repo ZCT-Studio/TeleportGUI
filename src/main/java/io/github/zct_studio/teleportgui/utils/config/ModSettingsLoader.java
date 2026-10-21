@@ -48,7 +48,7 @@ public final class ModSettingsLoader {
     private static void writeDefaultYaml(Path file) throws Exception {
         String defaultYaml = """
                 # TeleportGUI mod settings
-                runtimePersistence: false
+                runtimePersistence: true
                 """;
         Files.writeString(file, defaultYaml);
     }

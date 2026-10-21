@@ -70,7 +70,7 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 | `/tpadeny <player>`, `/tpan <player>`   | Deny a request                        | 0          |
 | `/gtpa`                                 | Open the request GUI                  | 0          |
 
-> TPA requests are kept in memory and are cleared when the server restarts.
+> TPA requests expire after 120 seconds by default and are persisted across restarts while `runtimePersistence` is enabled.
 
 ### Teleport Shortcuts
 
@@ -166,7 +166,8 @@ TeleportGUI always uses `storage.json`. The old `logLevel`, `autoMigrate`, and `
     "go": { "cooldownSeconds": 5 }
   },
   "tpa": {
-    "request": { "cooldownSeconds": 30, "requestExpireSeconds": 0 }
+    "request": { "cooldownSeconds": 30, "expireSeconds": 120 },
+    "requestHere": { "cooldownSeconds": 30, "expireSeconds": 120 }
   },
   "teleport": {
     "deathPoint": { "safetyCheck": true },
@@ -182,10 +183,10 @@ Common fields:
 - `cooldownSeconds` — cooldown in seconds; `0` disables it.
 - `permission.level` — vanilla permission level `0`–`4`; `-1` inherits from `defaults`.
 - `maxCount` — home or warp limit; `-1` means unlimited.
-- `requestExpireSeconds` — TPA request expiry; `0` never expires. Set under `tpa.request`; applies to both request types.
+- `expireSeconds` — expiry in seconds; `0` never expires. Set under `tpa.request` (`/tpa`) and `tpa.requestHere` (`/tpahere`) separately; default `120`. Reserved on other nodes.
 - `safetyCheck` — enable or disable safe-position checks.
 
-`maxDistance` and `expireSeconds` are reserved fields and are not currently used by teleport checks.
+`maxDistance` is used by `/randomtp`; `minDistance` and `maxDistance` are reserved elsewhere.
 
 ## Permissions
 
