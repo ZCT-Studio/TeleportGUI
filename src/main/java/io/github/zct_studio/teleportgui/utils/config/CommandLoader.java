@@ -32,7 +32,10 @@ public final class CommandLoader {
             String json = Files.readString(configFile);
             Command parsed = GSON.fromJson(json, Command.class);
             CONFIG = parsed == null ? new Command() : parsed;
-            CONFIG.fillDefaults();
+            if (CONFIG.fillDefaults()) {
+                save(configFile);
+                Constants.LOGGER.info("Config migrated and saved to {}", configFile);
+            }
             Constants.LOGGER.info("Config loaded from {}", configFile);
         } catch (Exception e) {
             Constants.LOGGER.error("Config file corrupted! Backing up and falling back to defaults.", e);
@@ -91,6 +94,30 @@ public final class CommandLoader {
         return v == null ? -1 : v;
     }
 
+    public static int getMinDistance(String module, String node) {
+        Integer v = resolveInt(module, node, ConfigKeys.FIELD_MIN_DISTANCE);
+        return v == null ? 0 : v;
+    }
+
+    public static int getMaxDistance(String module, String node) {
+        Integer v = resolveInt(module, node, ConfigKeys.FIELD_MAX_DISTANCE);
+        return v == null ? -1 : v;
+    }
+
+    public static boolean isCommandEnabled(String command) {
+        if (CONFIG.commands == null) return true;
+        Boolean enabled = CONFIG.commands.get(command);
+        return enabled == null || enabled;
+    }
+
+    public static boolean setCommandEnabled(String command, boolean enabled) {
+        if (!ConfigKeys.ALL_COMMANDS.contains(command)) return false;
+        if (CONFIG.commands == null) CONFIG.commands = new LinkedHashMap<>();
+        CONFIG.commands.put(command, enabled);
+        save();
+        return true;
+    }
+
 
     private static Boolean resolveBool(String module, String node, String field) {
         Boolean v = extractBool(getNodeIfPresent(module, node), field);
@@ -118,6 +145,7 @@ public final class CommandLoader {
         if (n == null) return null;
         return switch (field) {
             case ConfigKeys.FIELD_COOLDOWN -> n.cooldownSeconds;
+            case ConfigKeys.FIELD_MIN_DISTANCE -> n.minDistance;
             case ConfigKeys.FIELD_MAX_DISTANCE -> n.maxDistance;
             case ConfigKeys.FIELD_EXPIRE -> n.expireSeconds;
             case ConfigKeys.FIELD_EXPIRE_REQUEST -> n.requestExpireSeconds;

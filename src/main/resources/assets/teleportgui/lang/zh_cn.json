@@ -89,6 +89,16 @@
   "commands.teleportgui.teleportgui.notificationGui.off": "已关闭：基岩版收到传送请求时只发文字提示。",
   "commands.teleportgui.teleportgui.config.set": "已设置 %0% = %1%，并写入 config.json。",
   "commands.teleportgui.teleportgui.config.unknown": "未知的配置项「%0%」，或取值不合法。",
+  "commands.teleportgui.teleportgui.command.disabled": "命令「%0%」已禁用，并从命令树中移除。",
+  "commands.teleportgui.teleportgui.command.enabled": "命令「%0%」已启用，并重新加入命令树。",
+  "commands.teleportgui.teleportgui.command.unknown": "未知的命令「%0%」。",
+  "commands.teleportgui.teleportgui.reload.command": "已重载命令可用状态并重建命令树。",
+  "commands.teleportgui.teleportgui.reload.config": "已重新加载 config.json 并重建命令树。",
+  "commands.teleportgui.teleportgui.reload.configFailed": "重新加载 config.json 失败，请查看服务器日志。",
+
+  "commands.teleportgui.rtp.searching": "正在寻找安全的随机位置，请稍等……",
+  "commands.teleportgui.rtp.go": "已随机传送到 X%0% Y%1% Z%2%。",
+  "commands.teleportgui.rtp.failed": "没有找到安全的随机位置，请再试一次。",
 
   "commands.teleportgui.tpdeathpoint.go": "正在前往你的死亡点",
   "commands.teleportgui.tpdeathpoint.cleared": "死亡地点已清除",

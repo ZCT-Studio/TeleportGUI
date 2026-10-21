@@ -1,21 +1,22 @@
 package io.github.zct_studio.teleportgui;
 
 import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.CommandPerformEvent;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
-import io.github.zct_studio.teleportgui.commands.Home;
-import io.github.zct_studio.teleportgui.commands.Tpa;
-import io.github.zct_studio.teleportgui.commands.GUI;
-import io.github.zct_studio.teleportgui.commands.TpPoints;
-import io.github.zct_studio.teleportgui.commands.Warp;
+import io.github.zct_studio.teleportgui.commands.CommandRegistry;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
+import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
 import io.github.zct_studio.teleportgui.utils.config.ModSettingsLoader;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.LevelResource;
@@ -47,14 +48,29 @@ public final class ServerMain {
             String storageType = ModSettingsLoader.SETTINGS.storage.type;
             Constants.LOGGER.info("Initializing storage backend: {}", storageType);
             Manager.init(SAVE_DIR, storageType);
+            // Commands may have been registered before config.json was loaded.
+            // Re-apply the command toggles now that the real config is available.
+            CommandRegistry.rebuild(server.getCommands().getDispatcher());
         });
 
-        CommandRegistrationEvent.EVENT.register((dispatcher, ra, env) -> {
-            Home.register(dispatcher);
-            Warp.register(dispatcher);
-            Tpa.register(dispatcher);
-            TpPoints.register(dispatcher);
-            GUI.register(dispatcher);
+        CommandRegistrationEvent.EVENT.register((dispatcher, ra, env) ->
+                CommandRegistry.register(dispatcher));
+
+        // Vanilla /reload does not rebuild command trees by itself. Re-read
+        // config.json after the reload command was issued so command toggles and
+        // other settings take effect without a restart.
+        CommandPerformEvent.EVENT.register(event -> {
+            if (CommandRegistry.isReloadCommand(event.getResults())) {
+                CommandSourceStack source = event.getResults().getContext().getSource();
+                if (source != null && source.permissions().hasPermission(
+                        new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS))) {
+                    MinecraftServer server = SERVER;
+                    if (server != null) {
+                        server.execute(ConfigReloader::reloadConfig);
+                    }
+                }
+            }
+            return EventResult.pass();
         });
 
         EntityEvent.LIVING_DEATH.register((LivingEntity entity, DamageSource source) -> {

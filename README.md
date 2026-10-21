@@ -164,19 +164,35 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 | `/tpspawnpoint`、`/tpsp` | 前往个人出生点 | 关闭 |
 | `/tpforce` | 确认执行待处理的强制传送 | — |
 
+### 随机传送
+
+| 命令 | 说明 | 默认权限 | 默认冷却 |
+| --- | --- | --- | --- |
+| `/rtp` | 在当前维度随机传送到一个安全位置 | 0 | 60 秒 |
+
+`/rtp` 默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
+
 ### 模组设置
 
 | 命令 | 说明 | 权限 |
 | --- | --- | --- |
 | `/teleportgui be notification_gui <true/false>` | 设置自己收到 TPA 时基岩版是否自动弹出表单 | 所有玩家 |
 | `/teleportgui config <键> <整数值>` | 修改并保存 `config.json` 中的配置项 | 等级 4 |
+| `/teleportgui command disable <命令>` | 禁用命令并把它从命令树中移除 | 等级 4 |
+| `/teleportgui command enable <命令>` | 启用命令并把它重新加入命令树 | 等级 4 |
+| `/teleportgui reload command` | 重新应用命令开关并重建命令树 | 等级 4 |
+| `/teleportgui reload config` | 重新读取 `config.json` 并重建命令树 | 等级 4 |
+
+> 原版 `/reload` 也会重新读取 `config.json` 并更新命令树。
 
 示例：
 
 ```text
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
-/teleportgui config home.go.permission.level 0
+/teleportgui config teleport.random.minDistance 200
+/teleportgui command disable rtp
+/teleportgui reload config
 ```
 
 ## <a id="gui"></a>图形界面
@@ -232,6 +248,17 @@ autoMigrate: true
 
 ```json
 {
+  "commands": {
+    "home": true,
+    "warp": true,
+    "tpa": true,
+    "back": true,
+    "tpdeathpoint": true,
+    "tpworldspawn": true,
+    "tpspawnpoint": true,
+    "tpforce": true,
+    "rtp": true
+  },
   "home": {
     "create": { "maxCount": 10, "cooldownSeconds": 0, "permission": { "level": 0 } },
     "go": { "cooldownSeconds": 5, "permission": { "level": 0 } }
@@ -247,10 +274,18 @@ autoMigrate: true
     "deathPoint": { "safetyCheck": true },
     "worldSpawn": { "safetyCheck": true },
     "back": { "safetyCheck": true },
-    "spawnPoint": { "safetyCheck": false }
+    "spawnPoint": { "safetyCheck": false },
+    "random": {
+      "minDistance": 100,
+      "maxDistance": 1000,
+      "cooldownSeconds": 60,
+      "permission": { "level": 0 }
+    }
   }
 }
 ```
+
+`commands` 中的每个键控制一组命令是否启用。除 `/teleportgui` 外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui command disable <命令>` 与 `/teleportgui command enable <命令>` 在线修改。
 
 常用字段：
 
@@ -261,15 +296,17 @@ autoMigrate: true
 | `maxCount` | 家园/传送点数量上限；`-1` 表示无限制 |
 | `requestExpireSeconds` | TPA 请求过期秒数；`0` 表示永不过期（在 `tpa.request` 下设置，对两种请求生效） |
 | `safetyCheck` | 是否启用安全位置检测 |
+| `minDistance` | `/rtp` 的最小水平距离（格） |
+| `maxDistance` | `/rtp` 的最大水平距离（格）；`/rtp` 必须为正数 |
 
-> `maxDistance` 与 `expireSeconds` 目前是预留字段，尚未参与传送判定。
+> `expireSeconds` 目前是预留字段。`maxDistance` 目前仅用于 `/rtp`。
 
 ## <a id="permissions"></a>权限
 
 - 除下方特别说明的命令外，命令默认权限等级为 **0**，即所有玩家可用。
 - 由配置控制的权限通过 `permission.level` 设置，取值为原版权限等级 `0`–`4`。
 - `/warp del`、`/warp delete`、`/warp rename` 额外硬性要求等级 **4**。
-- `/teleportgui config` 要求等级 **4**。
+- `/teleportgui config`、`/teleportgui command` 与 `/teleportgui reload` 要求等级 **4**。
 - 权限等级不足时，命令不会执行，并会向玩家发送无权限提示。
 
 ## <a id="storage"></a>数据存储

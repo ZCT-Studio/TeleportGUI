@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.HashMap;
@@ -177,5 +178,9 @@ public final class TeleportUtils {
                 && !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(bottomId);
         boolean topIsNotDanger = !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(topId);
         return hasStandableGround && bottomIsPassable && topIsNotDanger;
+    }
+
+    public static boolean isUnsafeNonCollidable(BlockState state) {
+        return UNSAFE_NON_COLLIDABLE_BLOCKS.contains(state.getBlock().getDescriptionId());
     }
 }

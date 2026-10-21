@@ -165,19 +165,35 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 | `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn | Disabled |
 | `/tpforce` | Confirm a pending unsafe teleport | — |
 
+### Random Teleport
+
+| Command | Description | Default permission | Default cooldown |
+| --- | --- | --- | --- |
+| `/rtp` | Teleport to a random safe location in the current dimension | 0 | 60 s |
+
+`/rtp` searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
+
 ### Mod Settings
 
 | Command | Description | Permission |
 | --- | --- | --- |
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone |
 | `/teleportgui config <key> <integer>` | Change and save a value in `config.json` | Level 4 |
+| `/teleportgui command disable <command>` | Disable a command and remove it from the command tree | Level 4 |
+| `/teleportgui command enable <command>` | Enable a command and add it back to the command tree | Level 4 |
+| `/teleportgui reload command` | Re-apply command toggles and rebuild the command tree | Level 4 |
+| `/teleportgui reload config` | Reload `config.json` and rebuild the command tree | Level 4 |
+
+> Vanilla `/reload` also reloads `config.json` and updates the command tree.
 
 Examples:
 
 ```text
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
-/teleportgui config home.go.permission.level 0
+/teleportgui config teleport.random.minDistance 200
+/teleportgui command disable rtp
+/teleportgui reload config
 ```
 
 ## <a id="gui"></a>GUI
@@ -233,6 +249,17 @@ Only `storage.type` currently takes effect:
 
 ```json
 {
+  "commands": {
+    "home": true,
+    "warp": true,
+    "tpa": true,
+    "back": true,
+    "tpdeathpoint": true,
+    "tpworldspawn": true,
+    "tpspawnpoint": true,
+    "tpforce": true,
+    "rtp": true
+  },
   "home": {
     "create": { "maxCount": 10, "cooldownSeconds": 0, "permission": { "level": 0 } },
     "go": { "cooldownSeconds": 5, "permission": { "level": 0 } }
@@ -248,10 +275,18 @@ Only `storage.type` currently takes effect:
     "deathPoint": { "safetyCheck": true },
     "worldSpawn": { "safetyCheck": true },
     "back": { "safetyCheck": true },
-    "spawnPoint": { "safetyCheck": false }
+    "spawnPoint": { "safetyCheck": false },
+    "random": {
+      "minDistance": 100,
+      "maxDistance": 1000,
+      "cooldownSeconds": 60,
+      "permission": { "level": 0 }
+    }
   }
 }
 ```
+
+Each key in `commands` enables or disables a command group. Every command except `/teleportgui` can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also change these at runtime with `/teleportgui command disable <command>` and `/teleportgui command enable <command>`.
 
 Common fields:
 
@@ -262,15 +297,17 @@ Common fields:
 | `maxCount` | Home/warp limit; `-1` means unlimited |
 | `requestExpireSeconds` | TPA request expiry in seconds; `0` never expires (set under `tpa.request`; applies to both request types) |
 | `safetyCheck` | Whether safe-position checks are enabled |
+| `minDistance` | `/rtp` minimum horizontal distance in blocks |
+| `maxDistance` | `/rtp` maximum horizontal distance in blocks; must be positive for `/rtp` |
 
-> `maxDistance` and `expireSeconds` are reserved fields and are not currently used by teleport checks.
+> `expireSeconds` is reserved. `maxDistance` is currently used by `/rtp` only.
 
 ## <a id="permissions"></a>Permissions
 
 - Except for the commands noted below, commands default to permission level **0**, available to all players.
 - Config-driven permissions use `permission.level` with vanilla levels `0`–`4`.
 - `/warp del`, `/warp delete`, and `/warp rename` additionally require level **4**.
-- `/teleportgui config` requires level **4**.
+- `/teleportgui config`, `/teleportgui command`, and `/teleportgui reload` require level **4**.
 - When a player lacks permission, the command is not executed and a message is sent to them.
 
 ## <a id="storage"></a>Storage

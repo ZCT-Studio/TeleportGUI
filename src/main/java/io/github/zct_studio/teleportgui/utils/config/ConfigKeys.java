@@ -1,5 +1,7 @@
 package io.github.zct_studio.teleportgui.utils.config;
 
+import java.util.List;
+
 public final class ConfigKeys {
     private ConfigKeys() {}
 
@@ -11,6 +13,10 @@ public final class ConfigKeys {
 
     public static final String TG_BE = "be";
     public static final String TG_CONFIG = "config";
+    public static final String TG_COMMAND = "command";
+    public static final String TG_RELOAD = "reload";
+    public static final String TG_DISABLE = "disable";
+    public static final String TG_ENABLE = "enable";
 
     public static final String WARP_CREATE = "create";
     public static final String WARP_GO = "go";
@@ -36,12 +42,37 @@ public final class ConfigKeys {
     public static final String TP_SPAWN_POINT = "spawnPoint";
     public static final String TP_WORLD_SPAWN = "worldSpawn";
     public static final String TP_BACK = "back";
+    public static final String TP_RANDOM = "random";
 
     public static final String FIELD_COOLDOWN = "cooldownSeconds";
+    public static final String FIELD_MIN_DISTANCE = "minDistance";
     public static final String FIELD_MAX_DISTANCE = "maxDistance";
     public static final String FIELD_PERMISSION = "permission";
     public static final String FIELD_EXPIRE = "expireSeconds";
     public static final String FIELD_EXPIRE_REQUEST = "requestExpireSeconds";
     public static final String FIELD_SAFETY = "safetyCheck";
     public static final String FIELD_MAX_COUNT = "maxCount";
+
+    // Top-level command groups that can be enabled or disabled from config.json.
+    // Aliases belong to the same group, so disabling a group also removes them.
+    public static final String COMMAND_HOME = "home";
+    public static final String COMMAND_WARP = "warp";
+    public static final String COMMAND_TPA = "tpa";
+    public static final String COMMAND_BACK = "back";
+    public static final String COMMAND_DEATH_POINT = "tpdeathpoint";
+    public static final String COMMAND_WORLD_SPAWN = "tpworldspawn";
+    public static final String COMMAND_SPAWN_POINT = "tpspawnpoint";
+    public static final String COMMAND_FORCE = "tpforce";
+    public static final String COMMAND_RTP = "rtp";
+
+    public static final List<String> ALL_COMMANDS = List.of(
+            COMMAND_HOME,
+            COMMAND_WARP,
+            COMMAND_TPA,
+            COMMAND_BACK,
+            COMMAND_DEATH_POINT,
+            COMMAND_WORLD_SPAWN,
+            COMMAND_SPAWN_POINT,
+            COMMAND_FORCE,
+            COMMAND_RTP);
 }

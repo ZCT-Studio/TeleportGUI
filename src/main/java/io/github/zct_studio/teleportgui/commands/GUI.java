@@ -6,12 +6,14 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.zct_studio.teleportgui.suggestionProviders.CommandGroup;
 import io.github.zct_studio.teleportgui.suggestionProviders.ConfigKey;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.CommandNode;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
+import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
 import io.github.zct_studio.teleportgui.utils.config.PermissionNode;
 import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.commands.CommandSourceStack;
@@ -41,6 +43,7 @@ public final class GUI {
     /** 可写的 node 字段 */
     private static final List<String> NODE_FIELDS = List.of(
             ConfigKeys.FIELD_COOLDOWN,
+            ConfigKeys.FIELD_MIN_DISTANCE,
             ConfigKeys.FIELD_MAX_DISTANCE,
             ConfigKeys.FIELD_EXPIRE,
             ConfigKeys.FIELD_EXPIRE_REQUEST,
@@ -62,7 +65,25 @@ public final class GUI {
                                 .then(Commands.argument("value", IntegerArgumentType.integer())
                                         .executes(context -> cmdConfig(context.getSource(),
                                                 StringArgumentType.getString(context, "key"),
-                                                IntegerArgumentType.getInteger(context, "value")))))));
+                                                IntegerArgumentType.getInteger(context, "value"))))))
+                .then(Commands.literal(ConfigKeys.TG_COMMAND)
+                        .then(Commands.literal(ConfigKeys.TG_DISABLE)
+                                .then(Commands.argument("command", StringArgumentType.word())
+                                        .suggests(new CommandGroup())
+                                        .executes(context -> cmdSetCommand(context.getSource(),
+                                                StringArgumentType.getString(context, "command"),
+                                                false))))
+                        .then(Commands.literal(ConfigKeys.TG_ENABLE)
+                                .then(Commands.argument("command", StringArgumentType.word())
+                                        .suggests(new CommandGroup())
+                                        .executes(context -> cmdSetCommand(context.getSource(),
+                                                StringArgumentType.getString(context, "command"),
+                                                true)))))
+                .then(Commands.literal(ConfigKeys.TG_RELOAD)
+                        .then(Commands.literal(ConfigKeys.TG_COMMAND)
+                                .executes(context -> cmdReloadCommand(context.getSource())))
+                        .then(Commands.literal(ConfigKeys.TG_CONFIG)
+                                .executes(context -> cmdReloadConfig(context.getSource())))));
     }
 
     private static int cmdNotificationGui(CommandSourceStack source, boolean enabled)
@@ -85,14 +106,7 @@ public final class GUI {
     private static int cmdConfig(CommandSourceStack source, String key, int value)
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
-
-        if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
-            player.sendSystemMessage(
-                    Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                            .withStyle(Styles.ERROR_STRONG),
-                    true);
-            return 1;
-        }
+        if (!requireOwner(player)) return 1;
 
         if (!configKeys().contains(key) || !applyConfig(key, value)) {
             player.sendSystemMessage(
@@ -110,6 +124,74 @@ public final class GUI {
                         .withStyle(Styles.SUCCESS),
                 true);
         return 0;
+    }
+
+    private static int cmdSetCommand(CommandSourceStack source, String command, boolean enabled)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!requireOwner(player)) return 1;
+
+        String group = CommandRegistry.groupNameOf(command);
+        if (group == null) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.teleportgui.command.unknown", player,
+                                    Component.literal(command))
+                            .withStyle(Styles.ERROR),
+                    true);
+            return 1;
+        }
+
+        CommandLoader.setCommandEnabled(group, enabled);
+        CommandRegistry.rebuild(source.getServer().getCommands().getDispatcher());
+        player.sendSystemMessage(
+                Tr_i18n.tr(enabled
+                                ? "commands.teleportgui.teleportgui.command.enabled"
+                                : "commands.teleportgui.teleportgui.command.disabled",
+                                player, Component.literal(group))
+                        .withStyle(Styles.SUCCESS),
+                true);
+        return 0;
+    }
+
+    private static int cmdReloadCommand(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!requireOwner(player)) return 1;
+
+        ConfigReloader.reloadCommandTree();
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.reload.command", player)
+                        .withStyle(Styles.SUCCESS),
+                true);
+        return 0;
+    }
+
+    private static int cmdReloadConfig(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!requireOwner(player)) return 1;
+
+        if (!ConfigReloader.reloadConfig()) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.teleportgui.reload.configFailed", player)
+                            .withStyle(Styles.ERROR),
+                    true);
+            return 1;
+        }
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.reload.config", player)
+                        .withStyle(Styles.SUCCESS),
+                true);
+        return 0;
+    }
+
+    private static boolean requireOwner(ServerPlayer player) {
+        if (player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
+            return true;
+        }
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
+                        .withStyle(Styles.ERROR_STRONG),
+                true);
+        return false;
     }
 
     public static List<String> configKeys() {
@@ -138,6 +220,7 @@ public final class GUI {
             if (node == null) return false;
             switch (parts[2]) {
                 case ConfigKeys.FIELD_COOLDOWN -> node.cooldownSeconds = value;
+                case ConfigKeys.FIELD_MIN_DISTANCE -> node.minDistance = value;
                 case ConfigKeys.FIELD_MAX_DISTANCE -> node.maxDistance = value;
                 case ConfigKeys.FIELD_EXPIRE -> node.expireSeconds = value;
                 case ConfigKeys.FIELD_EXPIRE_REQUEST -> node.requestExpireSeconds = value;

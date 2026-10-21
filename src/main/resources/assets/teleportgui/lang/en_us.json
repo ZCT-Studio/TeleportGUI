@@ -89,6 +89,16 @@
   "commands.teleportgui.teleportgui.notificationGui.off": "Disabled: Bedrock players only get a chat notice on incoming teleport requests.",
   "commands.teleportgui.teleportgui.config.set": "Set %0% = %1% and saved to config.json.",
   "commands.teleportgui.teleportgui.config.unknown": "Unknown config key '%0%', or the value is invalid.",
+  "commands.teleportgui.teleportgui.command.disabled": "Command '%0%' disabled and removed from the command tree.",
+  "commands.teleportgui.teleportgui.command.enabled": "Command '%0%' enabled and added back to the command tree.",
+  "commands.teleportgui.teleportgui.command.unknown": "Unknown command '%0%'.",
+  "commands.teleportgui.teleportgui.reload.command": "Command availability reloaded and the command tree rebuilt.",
+  "commands.teleportgui.teleportgui.reload.config": "config.json reloaded and the command tree rebuilt.",
+  "commands.teleportgui.teleportgui.reload.configFailed": "Could not reload config.json. Check the server logs.",
+
+  "commands.teleportgui.rtp.searching": "Searching for a random safe location...",
+  "commands.teleportgui.rtp.go": "Teleported to a random location: X%0% Y%1% Z%2%",
+  "commands.teleportgui.rtp.failed": "Could not find a safe random location. Try again.",
 
   "commands.teleportgui.tpdeathpoint.go": "Teleporting to your death point",
   "commands.teleportgui.tpdeathpoint.cleared": "Death location cleared",

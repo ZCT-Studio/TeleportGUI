@@ -83,6 +83,7 @@ TPA requests are kept in memory and are cleared when the server restarts.
 | `/tpworldspawn`, `/tpws` | Teleport to the world spawn |
 | `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn |
 | `/tpforce` | Confirm a pending unsafe teleport |
+| `/rtp` | Teleport to a random safe location in the current dimension |
 
 Death points and back points are kept in memory and are cleared when the server restarts.
 
@@ -92,11 +93,17 @@ Death points and back points are kept in memory and are cleared when the server 
 | --- | --- | --- |
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone |
 | `/teleportgui config <key> <integer>` | Change and save a value in `config.json` | 4 |
+| `/teleportgui command disable <command>` | Disable a command and remove it from the command tree | 4 |
+| `/teleportgui command enable <command>` | Enable a command and add it back to the command tree | 4 |
+| `/teleportgui reload command` | Re-apply command toggles and rebuild the command tree | 4 |
+| `/teleportgui reload config` | Reload `config.json` and rebuild the command tree | 4 |
 
 Example:
 
 ```text
 /teleportgui config home.go.cooldownSeconds 10
+/teleportgui command disable rtp
+/teleportgui reload config
 ```
 
 ## GUI
