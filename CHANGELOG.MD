@@ -39,6 +39,7 @@
 
 ### 修复
 
+- 重做创建/重命名铁砧界面：第一格按家/传送点显示对应图标与名称，第二格统一为“返回上一级”，修复创建家时默认名字被填成“返回上一级”的问题。
 - 修复传送点删除与重命名始终硬性要求权限等级 4 的问题。现在由 `warp.del.permission.level` 与 `warp.rename.permission.level` 控制，默认等级 2；GUI 管理按钮也按配置权限显示。
 - 修复发布版未打包 SnakeYAML，导致服务器启动时因 `NoClassDefFoundError: org/yaml/snakeyaml/Yaml` 崩溃的问题。`settings.yml` 现在使用内置的轻量解析器，不再依赖第三方 YAML 库。
 

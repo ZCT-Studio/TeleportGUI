@@ -5,6 +5,7 @@ import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.gui.GUI;
+import io.github.zct_studio.teleportgui.storage.Manager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,16 +38,24 @@ public final class Rename extends AnvilMenu {
         this.oldName = oldName;
         this.warp = warp;
         this.returnPage = returnPage;
+        this.newName = oldName;
+
+        ItemStack input;
+        if (warp) {
+            input = new ItemStack(Items.ENDER_PEARL);
+        } else {
+            boolean isDefault = Manager.getPlayer(player.getStringUUID())
+                    .map(data -> oldName.equals(data.getDefaultHome()))
+                    .orElse(false);
+            input = new ItemStack(isDefault ? Items.BED.red() : Items.BED.white());
+        }
+        input.set(DataComponents.CUSTOM_NAME, Component.literal(oldName));
+        this.inputSlots.setItem(0, input);
 
         ItemStack back = new ItemStack(Items.FEATHER);
         back.set(DataComponents.ITEM_NAME,
                 GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(Styles.WARNING));
-        this.inputSlots.setItem(0, back);
-
-        ItemStack old = new ItemStack(Items.BED.red());
-        old.set(DataComponents.ITEM_NAME,
-                GUI.Tr(player, "gui.teleportgui.rename.old", oldName).withStyle(Styles.INFO));
-        this.inputSlots.setItem(1, old);
+        this.inputSlots.setItem(1, back);
 
         refresh();
     }
@@ -97,12 +106,11 @@ public final class Rename extends AnvilMenu {
             return;
         }
         if (clicker instanceof ServerPlayer sp && slotIndex >= 0 && slotIndex <= 2) {
-            if (slotIndex == 0) {
+            if (slotIndex == 1) {
                 openList(sp);
             } else if (slotIndex == 2) {
                 confirm(sp);
             }
-            // slotIndex == 1：只展示原名，点了啥也不干
             return;
         }
         super.clicked(slotIndex, button, input, clicker);

@@ -5,6 +5,7 @@ import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.gui.GUI;
+import io.github.zct_studio.teleportgui.storage.Manager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,15 +37,22 @@ public final class Create extends AnvilMenu {
         this.warp = warp;
         this.returnPage = returnPage;
 
+        ItemStack input;
+        if (warp) {
+            input = new ItemStack(Items.ENDER_PEARL);
+        } else {
+            boolean hasHome = Manager.getPlayer(player.getStringUUID())
+                    .map(data -> !data.getHomes().isEmpty())
+                    .orElse(false);
+            input = new ItemStack(hasHome ? Items.BED.white() : Items.BED.red());
+        }
+        input.set(DataComponents.ITEM_NAME, Component.empty());
+        this.inputSlots.setItem(0, input);
+
         ItemStack back = new ItemStack(Items.FEATHER);
         back.set(DataComponents.ITEM_NAME,
                 GUI.Tr(player, "gui.teleportgui.rename.back").withStyle(Styles.WARNING));
-        this.inputSlots.setItem(0, back);
-
-        ItemStack close = new ItemStack(Items.BARRIER);
-        close.set(DataComponents.ITEM_NAME,
-                GUI.Tr(player, "gui.teleportgui.rename.close").withStyle(Styles.ERROR));
-        this.inputSlots.setItem(1, close);
+        this.inputSlots.setItem(1, back);
 
         refresh();
     }
@@ -95,12 +103,9 @@ public final class Create extends AnvilMenu {
             return;
         }
         if (clicker instanceof ServerPlayer sp && slotIndex >= 0 && slotIndex <= 2) {
-            if (slotIndex == 0) {
+            if (slotIndex == 1) {
                 openList(sp);
-            } else if (slotIndex == 1) {
-                navigating = true;
-                sp.closeContainer();
-            } else {
+            } else if (slotIndex == 2) {
                 confirmCreate(sp);
             }
             return;
