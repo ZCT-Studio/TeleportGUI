@@ -1,3 +1,3 @@
 # TODO
 
-- 添加TeleportGUI Cilent支持（快捷键）
+- 添加TeleportGUI Client支持（快捷键）

@@ -4,11 +4,11 @@
 
 <p align="center">
   <b>Homes, warps, and teleport requests — in a proper GUI</b><br>
-  Server-side mod · Fabric / NeoForge · Minecraft 26.3 · Java &amp; Bedrock players
+  Server-side mod · Fabric / NeoForge · Java &amp; Bedrock players
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Minecraft-26.3-3C8527?style=flat-square" alt="Minecraft 26.3">
+  <img src="https://img.shields.io/badge/Minecraft-26.3+-3C8527?style=flat-square" alt="Minecraft 26.3+">
   <img src="https://img.shields.io/badge/Fabric-supported-DBB69C?style=flat-square" alt="Fabric">
   <img src="https://img.shields.io/badge/NeoForge-supported-EA7B24?style=flat-square" alt="NeoForge">
   <img src="https://img.shields.io/badge/Bedrock-Geyser%20%2B%20Floodgate-4C9EEB?style=flat-square" alt="Bedrock via Geyser and Floodgate">
@@ -17,8 +17,8 @@
 
 <p align="center">
   <a href="README.md">简体中文</a> ·
-  <a href="Modrinth.md">Modrinth description</a> ·
-  <a href="CHANGELOG.MD">Changelog</a>
+  <a href="Modrinth.md">Modrinth Description</a> ·
+  <a href="CHANGELOG.MD">Change Log</a>
 </p>
 
 ## Table of Contents
@@ -95,20 +95,20 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 
 ## <a id="requirements"></a>Requirements
 
-| Item | Requirement |
-| --- | --- |
-| Minecraft | **26.3** only (`>=26.3 <26.4`) |
-| Java | **25** or newer |
-| Fabric | Fabric Loader `0.19.5`+, Fabric API `0.164.0+26.3` |
-| NeoForge | NeoForge `26.3.0.94`+ |
-| Dependency | **Architectury API `22.0.5`+** (required on both loaders) |
+| Item                       | Requirement                                                             |
+|----------------------------|-------------------------------------------------------------------------|
+| Minecraft                  | **26.3+**                                                               |
+| Java                       | **25+**                                                                 |
+| Fabric                     | Fabric Loader + Fabric API                                              |
+| NeoForge                   | NeoForge                                                                |
+| Dependency                 | **Architectury API** (required on both loaders)                         |
 | Bedrock support (optional) | Geyser + Floodgate; without Floodgate, Bedrock players use hopper menus |
 
 > TeleportGUI is a server-side mod. On a dedicated server, Java players do not need to install anything on their client.
 
 ## <a id="installation"></a>Installation
 
-1. Set up a Minecraft 26.3 Fabric or NeoForge server.
+1. Set up a Minecraft 26.3+ Fabric or NeoForge server.
 2. Put **Architectury API** in `mods/`. Fabric servers also need **Fabric API**.
 3. Put the **TeleportGUI** jar for your loader in `mods/`.
 4. (Optional) Install **Geyser** and **Floodgate** to enable Bedrock forms.

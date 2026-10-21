@@ -4,11 +4,11 @@
 
 <p align="center">
   <b>把家园、传送点与玩家传送请求装进直观的图形界面</b><br>
-  服务端模组 · Fabric / NeoForge · Minecraft 26.3 · Java 版与基岩版
+  服务端模组 · Fabric / NeoForge · Java 版与基岩版
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Minecraft-26.3+-3C8527?style=flat-square" alt="Minecraft 26.3">
+  <img src="https://img.shields.io/badge/Minecraft-26.3+-3C8527?style=flat-square" alt="Minecraft 26.3+">
   <img src="https://img.shields.io/badge/Fabric-supported-DBB69C?style=flat-square" alt="Fabric">
   <img src="https://img.shields.io/badge/NeoForge-supported-EA7B24?style=flat-square" alt="NeoForge">
   <img src="https://img.shields.io/badge/Bedrock-Geyser%20%2B%20Floodgate-4C9EEB?style=flat-square" alt="Bedrock via Geyser and Floodgate">
@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="README.en-US.md">English</a> ·
-  <a href="Modrinth.md">Modrinth 描述</a> ·
+  <a href="Modrinth.md">Modrinth描述</a> ·
   <a href="CHANGELOG.MD">更新日志</a>
 </p>
 
@@ -94,20 +94,20 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 ## <a id="requirements"></a>环境要求
 
-| 项目 | 要求 |
-| --- | --- |
-| Minecraft | **26.3**（仅支持 `>=26.3 <26.4`） |
-| Java | **25** 或更高 |
-| Fabric | Fabric Loader `0.19.5`+、Fabric API `0.164.0+26.3` |
-| NeoForge | NeoForge `26.3.0.94`+ |
-| 前置模组 | **Architectury API `22.0.5`+**（Fabric 与 NeoForge 均需安装） |
+| 项目        | 要求                                            |
+|-----------|-----------------------------------------------|
+| Minecraft | **26.3+**                                     |
+| Java      | **25+**                                       |
+| Fabric    | Fabric Loader + Fabric API                    |
+| NeoForge  | NeoForge +                                    |
+| 前置模组      | **Architectury API**（Fabric 与 NeoForge 均需安装）  |
 | 基岩版支持（可选） | Geyser + Floodgate；未安装 Floodgate 时基岩版使用漏斗菜单回退 |
 
 > TeleportGUI 是服务端模组。在专用服务器上，Java 版玩家不需要安装任何客户端模组。
 
 ## <a id="installation"></a>安装
 
-1. 准备一个 Minecraft 26.3 的 Fabric 或 NeoForge 服务端。
+1. 准备一个 Minecraft 26.3+ 的 Fabric 或 NeoForge 服务端。
 2. 将 **Architectury API** 放入 `mods/`；Fabric 服务端还需要 **Fabric API**。
 3. 将对应加载器的 **TeleportGUI** jar 放入 `mods/`。
 4. （可选）安装 **Geyser** 与 **Floodgate**，让基岩版玩家使用表单界面。
@@ -333,17 +333,17 @@ git clone https://github.com/ZCT-Studio/TeleportGUI.git
 cd TeleportGUI
 
 # Fabric
-./gradlew :26.3-fabric:build
+./gradlew :<minecraft_version>-fabric:build
 
 # NeoForge
-./gradlew :26.3-neoforge:build
+./gradlew :<minecraft_version>.3-neoforge:build
 ```
 
 Windows 下使用 `gradlew.bat`。构建产物位于：
 
 ```text
-versions/26.3-fabric/build/libs/TeleportGUI-fabric-<版本>.jar
-versions/26.3-neoforge/build/libs/TeleportGUI-neoforge-<版本>.jar
+versions/<minecraft_version>-fabric/build/libs/TeleportGUI-fabric-<版本>.jar
+versions/26.<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<版本>.jar
 ```
 
 项目使用 Stonecutter 管理多加载器源码，并使用 Stonecraft 生成加载器元数据。

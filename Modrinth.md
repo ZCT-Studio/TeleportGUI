@@ -1,6 +1,6 @@
 # TeleportGUI
 
-TeleportGUI is a server-side teleportation mod for Minecraft 26.3 that gives Java and Bedrock players a proper graphical interface for homes, global warps, and player teleport requests (TPA). It also adds death-point, spawn-point, and return-point teleports, with configurable safety checks and permissions.
+TeleportGUI is a server-side teleportation mod for Minecraft 26.3+ that gives Java and Bedrock players a proper graphical interface for homes, global warps, and player teleport requests (TPA). It also adds death-point, spawn-point, and return-point teleports, with configurable safety checks and permissions.
 
 The mod runs on the server. Java players can join with a vanilla client; no client-side mod is required. Bedrock players get native form menus when Geyser and Floodgate are installed.
 
@@ -25,7 +25,7 @@ The mod runs on the server. Java players can join with a vanilla client; no clie
 
 ## Installation
 
-1. Install a Minecraft 26.3 Fabric or NeoForge server.
+1. Install a Minecraft 26.3+ Fabric or NeoForge server.
 2. Add Architectury API to the server's `mods/` folder. On Fabric, add Fabric API as well.
 3. Add the TeleportGUI jar that matches your loader to `mods/`.
 4. Optionally add Geyser and Floodgate for Bedrock forms.
