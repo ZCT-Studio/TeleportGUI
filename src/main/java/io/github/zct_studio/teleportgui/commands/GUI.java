@@ -54,6 +54,7 @@ public final class GUI {
         dispatcher.register(Commands.literal("teleportgui")
                 .then(Commands.literal(ConfigKeys.TG_BE)
                         .then(Commands.literal(LITERAL_NOTIFICATION_GUI)
+                                .executes(context -> cmdGetNotificationGui(context.getSource()))
                                 .then(Commands.argument("value", BoolArgumentType.bool())
                                         .executes(context -> cmdNotificationGui(context.getSource(),
                                                 BoolArgumentType.getBool(context, "value"))))))
@@ -67,18 +68,14 @@ public final class GUI {
                                                 StringArgumentType.getString(context, "key"),
                                                 IntegerArgumentType.getInteger(context, "value"))))))
                 .then(Commands.literal(ConfigKeys.TG_COMMAND)
-                        .then(Commands.literal(ConfigKeys.TG_DISABLE)
-                                .then(Commands.argument("command", StringArgumentType.word())
-                                        .suggests(new CommandGroup())
+                        .then(Commands.argument("command", StringArgumentType.word())
+                                .suggests(new CommandGroup())
+                                .executes(context -> cmdGetCommand(context.getSource(),
+                                        StringArgumentType.getString(context, "command")))
+                                .then(Commands.argument("value", BoolArgumentType.bool())
                                         .executes(context -> cmdSetCommand(context.getSource(),
                                                 StringArgumentType.getString(context, "command"),
-                                                false))))
-                        .then(Commands.literal(ConfigKeys.TG_ENABLE)
-                                .then(Commands.argument("command", StringArgumentType.word())
-                                        .suggests(new CommandGroup())
-                                        .executes(context -> cmdSetCommand(context.getSource(),
-                                                StringArgumentType.getString(context, "command"),
-                                                true)))))
+                                                BoolArgumentType.getBool(context, "value"))))))
                 .then(Commands.literal(ConfigKeys.TG_RELOAD)
                         .then(Commands.literal(ConfigKeys.TG_COMMAND)
                                 .executes(context -> cmdReloadCommand(context.getSource())))
@@ -99,6 +96,21 @@ public final class GUI {
                                         : "commands.teleportgui.teleportgui.notificationGui.off",
                                 player)
                         .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
+                false);
+        return 0;
+    }
+
+    private static int cmdGetNotificationGui(CommandSourceStack source)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        boolean enabled = Manager.getPlayer(player.getStringUUID())
+                .map(PlayerData::isNotificationGuiEnabled)
+                .orElse(true);
+
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.notificationGui.get", player,
+                                Component.literal(enabled ? "true" : "false"))
+                        .withStyle(Styles.SUCCESS),
                 false);
         return 0;
     }
@@ -153,6 +165,31 @@ public final class GUI {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.config.set", player,
                                 Component.literal(key), Component.literal(String.valueOf(value)))
+                        .withStyle(Styles.SUCCESS),
+                false);
+        return 0;
+    }
+
+    private static int cmdGetCommand(CommandSourceStack source, String command)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!requireOwner(player)) return 1;
+
+        String group = Registry.groupNameOf(command);
+        if (group == null) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.teleportgui.command.unknownKey", player,
+                                    Component.literal(command))
+                            .withStyle(Styles.ERROR),
+                    false);
+            return 1;
+        }
+
+        boolean enabled = CommandLoader.isCommandEnabled(group);
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.command.get", player,
+                                Component.literal(group),
+                                Component.literal(enabled ? "true" : "false"))
                         .withStyle(Styles.SUCCESS),
                 false);
         return 0;

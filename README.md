@@ -174,11 +174,12 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 | 命令                                              | 说明                        | 权限   |
 |-------------------------------------------------|---------------------------|------|
+| `/teleportgui be notification_gui`              | 查看自己收到 TPA 时基岩版是否自动弹窗     | 所有玩家 |
 | `/teleportgui be notification_gui <true/false>` | 设置自己收到 TPA 时基岩版是否自动弹出表单   | 所有玩家 |
 | `/teleportgui config <键>`                        | 查看 `config.json` 中某个配置项的当前值 | 等级 4 |
 | `/teleportgui config <键> <整数值>`                 | 修改并保存 `config.json` 中的配置项 | 等级 4 |
-| `/teleportgui command disable <命令>`             | 禁用命令并把它从命令树中移除            | 等级 4 |
-| `/teleportgui command enable <命令>`              | 启用命令并把它重新加入命令树            | 等级 4 |
+| `/teleportgui command <命令>`                     | 查看某组命令当前是否启用              | 等级 4 |
+| `/teleportgui command <命令> <true/false>`        | 启用或禁用命令                | 等级 4 |
 | `/teleportgui reload command`                   | 重新应用命令开关并重建命令树            | 等级 4 |
 | `/teleportgui reload config`                    | 重新读取 `config.json` 并重建命令树 | 等级 4 |
 
@@ -187,11 +188,13 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 示例：
 
 ```text
+/teleportgui be notification_gui
 /teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200
-/teleportgui command disable randomtp
+/teleportgui command randomtp
+/teleportgui command randomtp false
 /teleportgui reload config
 ```
 
@@ -275,7 +278,7 @@ runtimePersistence: true
 }
 ```
 
-`commands` 中的每个键控制一组命令是否启用。除 `/teleportgui` 外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui command disable <命令>` 与 `/teleportgui command enable <命令>` 在线修改。
+`commands` 中的每个键控制一组命令是否启用。除 `/teleportgui` 外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui command <命令>` 查看状态、`/teleportgui command <命令> <true/false>` 在线修改。
 
 常用字段：
 

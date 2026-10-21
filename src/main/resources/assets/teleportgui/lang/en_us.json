@@ -87,6 +87,7 @@
 
   "commands.teleportgui.teleportgui.notificationGui.on": "Enabled: Bedrock players auto-open a form on incoming teleport requests.",
   "commands.teleportgui.teleportgui.notificationGui.off": "Disabled: Bedrock players only get a chat notice on incoming teleport requests.",
+  "commands.teleportgui.teleportgui.notificationGui.get": "Bedrock request forms are currently %0%.",
   "commands.teleportgui.teleportgui.config.set": "Set %0% = %1% and saved to config.json.",
   "commands.teleportgui.teleportgui.config.get": "%0% is currently %1%.",
   "commands.teleportgui.teleportgui.config.unknown": "Unknown config key '%0%', or the value is invalid.",
@@ -94,6 +95,8 @@
   "commands.teleportgui.teleportgui.command.disabled": "Command '%0%' disabled and removed from the command tree.",
   "commands.teleportgui.teleportgui.command.enabled": "Command '%0%' enabled and added back to the command tree.",
   "commands.teleportgui.teleportgui.command.unknown": "Unknown command '%0%'.",
+  "commands.teleportgui.teleportgui.command.unknownKey": "Unknown command '%0%'.",
+  "commands.teleportgui.teleportgui.command.get": "Command '%0%' is currently %1%.",
   "commands.teleportgui.teleportgui.reload.command": "Command availability reloaded and the command tree rebuilt.",
   "commands.teleportgui.teleportgui.reload.config": "config.json reloaded and the command tree rebuilt.",
   "commands.teleportgui.teleportgui.reload.configFailed": "Could not reload config.json. Check the server logs.",

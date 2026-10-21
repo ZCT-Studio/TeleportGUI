@@ -89,20 +89,23 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui be notification_gui`              | Show whether automatic Bedrock forms are enabled for you      | Everyone   |
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
 | `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | 4          |
 | `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | 4          |
-| `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | 4          |
-| `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | 4          |
+| `/teleportgui command <command>`                | Show whether a command group is enabled                       | 4          |
+| `/teleportgui command <command> <true/false>`   | Enable or disable a command group                             | 4          |
 | `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | 4          |
 | `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | 4          |
 
 Example:
 
 ```text
+/teleportgui be notification_gui
 /teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
-/teleportgui command disable randomtp
+/teleportgui command back
+/teleportgui command back false
 /teleportgui reload config
 ```
 

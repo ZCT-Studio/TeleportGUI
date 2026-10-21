@@ -175,11 +175,12 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui be notification_gui`              | Show whether automatic Bedrock forms are enabled for you      | Everyone   |
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
 | `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | Level 4    |
 | `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | Level 4    |
-| `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | Level 4    |
-| `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | Level 4    |
+| `/teleportgui command <command>`                | Show whether a command group is enabled                       | Level 4    |
+| `/teleportgui command <command> <true/false>`   | Enable or disable a command group                             | Level 4    |
 | `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | Level 4    |
 | `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | Level 4    |
 
@@ -188,11 +189,13 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 Examples:
 
 ```text
+/teleportgui be notification_gui
 /teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200
-/teleportgui command disable randomtp
+/teleportgui command randomtp
+/teleportgui command randomtp false
 /teleportgui reload config
 ```
 
@@ -276,7 +279,7 @@ runtimePersistence: true
 }
 ```
 
-Each key in `commands` enables or disables a command group. Every command except `/teleportgui` can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also change these at runtime with `/teleportgui command disable <command>` and `/teleportgui command enable <command>`.
+Each key in `commands` enables or disables a command group. Every command except `/teleportgui` can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also check a group with `/teleportgui command <command>` and change it at runtime with `/teleportgui command <command> <true/false>`.
 
 Common fields:
 
