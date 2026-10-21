@@ -25,7 +25,8 @@ public final class ModSettingsLoader {
             String yamlText = Files.readString(settingsFile);
             Map<String, Object> raw = SimpleYaml.parse(yamlText);
             SETTINGS = buildSettings(raw);
-            Constants.LOGGER.info("Settings loaded from {}", settingsFile);
+            Constants.LOGGER.info("Settings loaded from {} (runtimePersistence={})",
+                    settingsFile, SETTINGS.runtimePersistence);
         } catch (Exception e) {
             Constants.LOGGER.error("Failed to load settings.yml — using defaults", e);
             SETTINGS = new ModSettings();
@@ -44,6 +45,9 @@ public final class ModSettingsLoader {
         Object autoMigrate = root.get("autoMigrate");
         if (autoMigrate instanceof Boolean b) s.autoMigrate = b;
 
+        Object runtimePersistence = root.get("runtimePersistence");
+        if (runtimePersistence instanceof Boolean b) s.runtimePersistence = b;
+
         Object storageRaw = root.get("storage");
         if (storageRaw instanceof Map<?, ?> storage) {
             Object type = storage.get("type");
@@ -61,6 +65,7 @@ public final class ModSettingsLoader {
                 # TeleportGUI mod settings
                 logLevel: INFO
                 autoMigrate: true
+                runtimePersistence: true
                 """;
         Files.writeString(file, defaultYaml);
     }

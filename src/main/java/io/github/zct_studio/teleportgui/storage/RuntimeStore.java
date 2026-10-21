@@ -35,14 +35,27 @@ public final class RuntimeStore {
     private static Path file;
     private static Data data = new Data();
     private static boolean dirty;
+    private static boolean enabled = true;
 
     private RuntimeStore() {
+    }
+
+    public static void setEnabled(boolean value) {
+        enabled = value;
+        if (!enabled) {
+            data = new Data();
+            dirty = false;
+        }
+    }
+
+    public static boolean isEnabled() {
+        return enabled;
     }
 
     public static void load(Path path) {
         file = path;
         data = new Data();
-        if (path == null || !Files.exists(path)) return;
+        if (!enabled || path == null || !Files.exists(path)) return;
 
         try {
             String json = Files.readString(path);
@@ -63,14 +76,16 @@ public final class RuntimeStore {
     }
 
     public static void markDirty() {
-        dirty = true;
+        if (enabled) dirty = true;
     }
 
     public static boolean isDirty() {
-        return dirty;
+        return enabled && dirty;
     }
 
     public static void save(List<CooldownEntry> cooldowns, List<TpaEntry> tpa) {
+        if (!enabled) return;
+
         Data snapshot = new Data();
         snapshot.cooldowns = cooldowns;
         snapshot.tpa = tpa;

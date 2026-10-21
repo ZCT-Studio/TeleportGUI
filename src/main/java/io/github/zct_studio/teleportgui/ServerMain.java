@@ -26,6 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.LevelResource;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public final class ServerMain {
@@ -52,10 +53,17 @@ public final class ServerMain {
             ModSettingsLoader.load(dataDir.resolve("settings.yml"));
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
-            RuntimeStore.load(dataDir.resolve("runtime.json"));
+            boolean runtimePersistence = ModSettingsLoader.SETTINGS.runtimePersistence;
+            RuntimeStore.setEnabled(runtimePersistence);
             long now = server.getTickCount();
-            CommandGuard.loadPersisted(RuntimeStore.data().cooldowns, now);
-            Tpa.loadPersisted(RuntimeStore.data().tpa, now);
+            if (runtimePersistence) {
+                RuntimeStore.load(dataDir.resolve("runtime.json"));
+                CommandGuard.loadPersisted(RuntimeStore.data().cooldowns, now);
+                Tpa.loadPersisted(RuntimeStore.data().tpa, now);
+            } else {
+                CommandGuard.loadPersisted(List.of(), now);
+                Tpa.loadPersisted(List.of(), now);
+            }
             Registry.rebuild(server.getCommands().getDispatcher());
         });
 

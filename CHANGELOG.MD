@@ -7,6 +7,8 @@
 
 ## [未发布]
 
+## [1.0.1-rc2] - 2026-10-21
+
 ### 新增
 
 - 新增 `/randomtp` 随机传送命令（`/rtp` 为别名）：在当前维度内以玩家当前位置为中心，在配置的最小距离与最大距离之间随机寻找安全落点；支持冷却、权限等级、距离范围配置。
@@ -16,6 +18,7 @@
 - `/reload` 现在会同时重新加载 `config.json` 并更新命令树。
 - `config.json` 新增 `teleport.random` 节点，可配置 `minDistance`、`maxDistance`、`cooldownSeconds` 与 `permission.level`。
 - 新增 `zh_hk`（繁体中文·香港）与 `zh_tw`（繁体中文·台湾）语言文件。
+- `settings.yml` 新增 `runtimePersistence` 选项，默认 `true`；设为 `false` 后冷却与 TPA 请求仅保存在内存中，完全不读取、不写入 `runtime.json`。
 
 ### 变更
 
@@ -23,7 +26,7 @@
 - 命令开关按功能分组，别名跟随主命令一起启用或禁用（例如禁用 `tpa` 会同时移除 `/tpahere`、`/tpaaccept`、`/gtpa` 等）。
 - 优化随机传送：只同步检查已加载区块，未加载区块改为异步加载且最多尝试 4 个区块，下界扫描深度限制为 48 格，避免服务器线程连续生成区块造成卡顿。
 - 命令冷却与 TPA 请求改为基于服务器刻的惰性计时，使用玩家 UUID + 数值命令 ID 作为键，不再拼接字符串；每 1200 刻执行一次粗粒度过期清理。
-- 冷却与待处理 TPA 请求写入 `teleportgui/runtime.json`，服务器重启后保留。
+- 当 `runtimePersistence=true` 时，冷却与待处理 TPA 请求写入 `teleportgui/runtime.json`，服务器重启后保留。
 - 语言文件按语言缓存完整翻译表，翻译调用不再重复读取和解析 JSON。
 - `/teleportgui` 永远不会被命令开关禁用，确保管理员始终可以恢复其他命令。
 - 版本号变更为 `1.0.0-rc.2`。

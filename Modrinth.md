@@ -60,8 +60,6 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 | `/warp rename <old> <new>`                | Rename a warp                  | 4          |
 | `/warp gui`, `/gwarp`                     | Open the warp GUI              | 0          |
 
-Deleting and renaming warps always require permission level 4.
-
 ### Teleport Requests
 
 | Command                                 | Description                           | Permission |
@@ -72,7 +70,7 @@ Deleting and renaming warps always require permission level 4.
 | `/tpadeny <player>`, `/tpaN <player>`   | Deny a request                        | 0          |
 | `/gtpa`                                 | Open the request GUI                  | 0          |
 
-TPA requests are kept in memory and are cleared when the server restarts.
+> TPA requests are kept in memory and are cleared when the server restarts.
 
 ### Teleport Shortcuts
 
@@ -83,9 +81,9 @@ TPA requests are kept in memory and are cleared when the server restarts.
 | `/tpworldspawn`, `/tpws` | Teleport to the world spawn                                 |
 | `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                             |
 | `/tpforce`               | Confirm a pending unsafe teleport                           |
-| `/randomtp` (`/rtp`)     | Teleport to a random safe location in the current dimension |
+| `/randomtp`, `/rtp`      | Teleport to a random safe location in the current dimension |
 
-Death points and back points are kept in memory and are cleared when the server restarts.
+> Death points and back points are kept in memory and are cleared when the server restarts.
 
 ### Mod Settings
 
@@ -128,7 +126,10 @@ Files are created under `<world directory>/teleportgui/`.
 ```yaml
 logLevel: INFO
 autoMigrate: true
+runtimePersistence: true
 ```
+
+`runtimePersistence` defaults to `true`; set it to `false` to keep cooldowns and pending TPA requests in memory only and never read or write `runtime.json`.
 
 TeleportGUI always uses `storage.json`. The old `storage` / `storage.sqlite` settings are ignored; SQLite support has been removed and an existing `storage.db` is not migrated automatically.
 
@@ -178,7 +179,7 @@ Common fields:
 - `teleportgui/settings.yml` — mod settings.
 - `teleportgui/config.json` — command cooldowns, permissions, limits, and safety checks.
 - `teleportgui/storage.json` — homes, warps, and player preferences.
-- `teleportgui/runtime.json` — cooldowns and pending TPA requests.
+- `teleportgui/runtime.json` — cooldowns and pending TPA requests (when `runtimePersistence` is enabled).
 
 Homes, warps, Bedrock notification preferences, cooldowns, and pending TPA requests persist across restarts. Death points and back points do not.
 

@@ -229,9 +229,11 @@ All files are stored under `<world directory>/teleportgui/`.
 ```yaml
 logLevel: INFO
 autoMigrate: true
+runtimePersistence: true
 ```
 
 > `logLevel` and `autoMigrate` are currently reserved fields and do not take effect immediately.  
+> `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to `teleportgui/runtime.json`. When set to `false`, the file is never read or written, and cooldowns/TPA requests exist only in memory and are cleared on restart.  
 > The old `storage` / `storage.sqlite` settings are ignored: TeleportGUI now always uses `teleportgui/storage.json`. SQLite support has been removed, and an existing `storage.db` is not migrated automatically.
 
 ### `config.json`
@@ -308,7 +310,7 @@ Common fields:
 | `teleportgui/settings.yml` | Mod settings                                              |
 | `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks |
 | `teleportgui/storage.json` | Homes, warps, player preferences, and other data          |
-| `teleportgui/runtime.json` | Cooldowns and pending TPA requests                        |
+| `teleportgui/runtime.json` | Cooldowns and pending TPA requests (when `runtimePersistence` is enabled) |
 
 Runtime data:
 
