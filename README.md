@@ -164,11 +164,13 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 ### 随机传送
 
-| 命令                  | 说明                    | 默认权限 | 默认冷却 |
-|---------------------|-----------------------|------|------|
-| `/randomtp`、`/rtp`） | 在当前维度随机传送到一个安全位置      | 0    | 60 秒 |
+| 命令                    | 说明               | 默认权限 | 默认冷却 |
+|-----------------------|------------------|------|------|
+| `/randomtp`、`/rtp`    | 在当前维度随机传送到一个安全位置 | 0    | 60 秒 |
 
 > `/randomtp`（别名 `/rtp`）默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
+>
+> 命令开关统一使用 `randomtp`，`/rtp` 跟随它一起启用或禁用。
 
 ### 模组设置
 
@@ -250,7 +252,7 @@ runtimePersistence: true
     "tpworldspawn": true,
     "tpspawnpoint": true,
     "tpforce": true,
-    "rtp": true
+    "randomtp": true
   },
   "home": {
     "create": { "maxCount": 10, "cooldownSeconds": 0, "permission": { "level": 0 } },

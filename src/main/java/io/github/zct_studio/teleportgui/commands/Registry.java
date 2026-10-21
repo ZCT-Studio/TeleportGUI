@@ -32,7 +32,7 @@ public final class Registry {
         group(ConfigKeys.COMMAND_WORLD_SPAWN, "tpworldspawn", "tpws");
         group(ConfigKeys.COMMAND_SPAWN_POINT, "tpspawnpoint", "tpsp");
         group(ConfigKeys.COMMAND_FORCE, "tpforce");
-        group(ConfigKeys.COMMAND_RTP, "randomtp", "rtp");
+        group(ConfigKeys.COMMAND_RANDOM_TP, "randomtp", "rtp");
     }
 
     private Registry() {

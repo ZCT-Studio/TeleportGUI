@@ -167,9 +167,11 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 | Command              | Description                                                 | Default permission | Default cooldown |
 |----------------------|-------------------------------------------------------------|--------------------|------------------|
-| `/randomtp`, `/rtp`) | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
+| `/randomtp`, `/rtp`  | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
 
 > `/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
+>
+> The command toggle is named `randomtp`; `/rtp` is enabled and disabled together with it.
 
 ### Mod Settings
 
@@ -251,7 +253,7 @@ runtimePersistence: true
     "tpworldspawn": true,
     "tpspawnpoint": true,
     "tpforce": true,
-    "rtp": true
+    "randomtp": true
   },
   "home": {
     "create": { "maxCount": 10, "cooldownSeconds": 0, "permission": { "level": 0 } },

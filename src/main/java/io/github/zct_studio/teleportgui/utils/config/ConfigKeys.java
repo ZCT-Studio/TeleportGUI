@@ -55,7 +55,7 @@ public final class ConfigKeys {
     public static final String COMMAND_WORLD_SPAWN = "tpworldspawn";
     public static final String COMMAND_SPAWN_POINT = "tpspawnpoint";
     public static final String COMMAND_FORCE = "tpforce";
-    public static final String COMMAND_RTP = "rtp";
+    public static final String COMMAND_RANDOM_TP = "randomtp";
     public static final List<String> ALL_COMMANDS = List.of(
             COMMAND_HOME,
             COMMAND_WARP,
@@ -65,7 +65,7 @@ public final class ConfigKeys {
             COMMAND_WORLD_SPAWN,
             COMMAND_SPAWN_POINT,
             COMMAND_FORCE,
-            COMMAND_RTP);
+            COMMAND_RANDOM_TP);
 
     private ConfigKeys() {
     }
