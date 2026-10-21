@@ -440,8 +440,9 @@ public final class Form {
                 int target = selected - 1;
                 if (target >= 0 && target < names.size()) {
                     Tpa.requestByName(player, names.get(target), type == 1);
+                } else {
+                    reopen(player, () -> openTpaForm(player));
                 }
-                reopen(player, () -> openTpaForm(player));
             });
             send(player, build(b));
         } catch (Throwable t) {
