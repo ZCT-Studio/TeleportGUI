@@ -129,10 +129,17 @@ public final class GUI {
         ItemStack s = glint
                 ? stackGlint(Items.PLAYER_HEAD, name, lore)
                 : stack(Items.PLAYER_HEAD, name, lore);
+        ResolvableProfile profile = null;
         if (owner != null) {
-            s.set(DataComponents.PROFILE, ResolvableProfile.createResolved(owner.getGameProfile()));
+            profile = ResolvableProfile.createResolved(owner.getGameProfile());
         } else if (fallbackId != null) {
-            s.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved(fallbackId));
+            profile = ResolvableProfile.createUnresolved(fallbackId);
+        }
+        if (profile != null) {
+            s.set(DataComponents.PROFILE, profile);
+        }
+        if (glint) {
+            s.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
         return s;
     }
@@ -861,29 +868,33 @@ public final class GUI {
             }
         }
 
+        private ItemStack glintedPlayerHead(MutableComponent name, Tpa.TpaRequest req) {
+            ServerPlayer from = Tpa.resolveOnline(req.fromUuid);
+            UUID fallbackId;
+            try {
+                fallbackId = UUID.fromString(req.fromUuid);
+            } catch (IllegalArgumentException e) {
+                fallbackId = null;
+            }
+            List<Component> lore = List.of(
+                    Tr(player, req.here
+                            ? "gui.teleportgui.tpa.tpagui.here"
+                            : "gui.teleportgui.tpa.tpagui.tocome")
+                            .withStyle(Styles.INFO),
+                    Tr(player, "gui.teleportgui.tpa.tpagui.hintRequests")
+                            .withStyle(Styles.MUTED),
+                    Tr(player, "gui.teleportgui.tpa.tpagui.age", ageText(req))
+                            .withStyle(Styles.SUBTLE));
+            return playerHead(from, fallbackId, name, lore, !req.here);
+        }
+
         private void fillRequests(SimpleContainer c) {
             int start = page * contentSize;
             for (int i = 0; i < contentSize && start + i < requests.size(); i++) {
                 Tpa.TpaRequest req = requests.get(start + i);
                 slotNames[i] = req.fromUuid;
                 MutableComponent name = Component.literal(senderName(req)).withStyle(Styles.WARNING);
-                List<Component> lore = List.of(
-                        Tr(player, req.here
-                                ? "gui.teleportgui.tpa.tpagui.here"
-                                : "gui.teleportgui.tpa.tpagui.tocome")
-                                .withStyle(Styles.INFO),
-                        Tr(player, "gui.teleportgui.tpa.tpagui.hintRequests")
-                                .withStyle(Styles.MUTED),
-                        Tr(player, "gui.teleportgui.tpa.tpagui.age", ageText(req))
-                                .withStyle(Styles.SUBTLE));
-                ServerPlayer from = Tpa.resolveOnline(req.fromUuid);
-                UUID fallbackId;
-                try {
-                    fallbackId = UUID.fromString(req.fromUuid);
-                } catch (IllegalArgumentException e) {
-                    fallbackId = null;
-                }
-                ItemStack head = playerHead(from, fallbackId, name, lore, !req.here);
+                ItemStack head = glintedPlayerHead(name, req);
                 c.setItem(i, head);
             }
             if (requests.isEmpty()) {

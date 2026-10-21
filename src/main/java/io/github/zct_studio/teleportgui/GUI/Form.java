@@ -262,6 +262,9 @@ public final class Form {
     }
 
     public static void openTpaForm(ServerPlayer player) {
+        boolean allowed = Manager.getPlayer(player.getStringUUID())
+                .map(PlayerData::isRequestAllowed)
+                .orElse(true);
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpagui.title"));
@@ -272,6 +275,15 @@ public final class Form {
             actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, 0)));
             call(b, "button", text(player, "gui.teleportgui.tpa.tpagui.new"));
             actions.add(() -> reopen(player, () -> openTpaRequestForm(player)));
+            call(b, "button", text(player, allowed
+                    ? "gui.teleportgui.tpa.tpagui.allowOn"
+                    : "gui.teleportgui.tpa.tpagui.allowOff"));
+            actions.add(() -> {
+                PlayerData data = Manager.getPlayer(player.getStringUUID())
+                        .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+                data.setRequestAllowed(!allowed);
+                reopen(player, () -> openTpaForm(player));
+            });
 
             onValid(b, response -> {
                 int id = intValue(response, "clickedButtonId");
