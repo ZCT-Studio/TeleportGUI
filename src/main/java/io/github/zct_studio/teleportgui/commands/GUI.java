@@ -97,7 +97,7 @@ public final class GUI {
                                         : "commands.teleportgui.teleportgui.notificationGui.off",
                                 player)
                         .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
-                true);
+                false);
         return 0;
     }
 
@@ -111,7 +111,7 @@ public final class GUI {
                     Tr_i18n.tr("commands.teleportgui.teleportgui.config.unknown", player,
                                     Component.literal(key))
                             .withStyle(Styles.ERROR),
-                    true);
+                    false);
             return 1;
         }
 
@@ -120,7 +120,7 @@ public final class GUI {
                 Tr_i18n.tr("commands.teleportgui.teleportgui.config.set", player,
                                 Component.literal(key), Component.literal(String.valueOf(value)))
                         .withStyle(Styles.SUCCESS),
-                true);
+                false);
         return 0;
     }
 
@@ -135,7 +135,7 @@ public final class GUI {
                     Tr_i18n.tr("commands.teleportgui.teleportgui.command.unknown", player,
                                     Component.literal(command))
                             .withStyle(Styles.ERROR),
-                    true);
+                    false);
             return 1;
         }
 
@@ -147,7 +147,7 @@ public final class GUI {
                                         : "commands.teleportgui.teleportgui.command.disabled",
                                 player, Component.literal(group))
                         .withStyle(Styles.SUCCESS),
-                true);
+                false);
         return 0;
     }
 
@@ -159,7 +159,7 @@ public final class GUI {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.reload.command", player)
                         .withStyle(Styles.SUCCESS),
-                true);
+                false);
         return 0;
     }
 
@@ -171,13 +171,13 @@ public final class GUI {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.teleportgui.reload.configFailed", player)
                             .withStyle(Styles.ERROR),
-                    true);
+                    false);
             return 1;
         }
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.reload.config", player)
                         .withStyle(Styles.SUCCESS),
-                true);
+                false);
         return 0;
     }
 
@@ -189,7 +189,7 @@ public final class GUI {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
                         .withStyle(Styles.ERROR_STRONG),
-                true);
+                false);
         return false;
     }
 
