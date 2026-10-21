@@ -1,5 +1,4 @@
 {
-  "commands.teleportgui.common.error": "An unexpected error occurred. Check server logs.",
   "commands.teleportgui.common.invalidName": "Names cannot be empty or contain quote characters.",
   "commands.teleportgui.common.noLocation": "You don't have a death location.",
   "commands.teleportgui.common.worldNotFound": "World not found: %0%. Available: %1%",
@@ -13,25 +12,15 @@
   "commands.teleportgui.common.default": "[Default]",
   "commands.teleportgui.common.defaultPrompt": "[Set Default]",
   "commands.teleportgui.common.delete": "[Delete]",
-  "commands.teleportgui.common.rename": "[Rename]",
   "commands.teleportgui.common.tp": "[Teleport]",
   "commands.teleportgui.common.nameExists": "A location with that name already exists.",
   "commands.teleportgui.common.be.prompt": "Bedrock players: use the GUI command (e.g. /ghome)",
   "commands.teleportgui.common.noPermission": "You do not have permission to use this command.",
   "commands.teleportgui.common.cooldown": "You must wait %0% more seconds before using this command.",
-  "commands.teleportgui.common.tooFar": "Target is too far away (needs within %0%, got %1%).",
-  "commands.teleportgui.common.spawnpointNotFound": "No personal spawn point found. Teleporting to world spawn instead.",
   "commands.teleportgui.common.maxCountReached": "You have reached the creation limit (%0%).",
-
   "commands.teleportgui.back.noLocation": "No previous teleport location recorded.",
   "commands.teleportgui.back.go": "Teleporting back to your previous location...",
-  "commands.teleportgui.back.same": "You are already at your previous location.",
-  "commands.teleportgui.back.cleared": "Your death location has been cleared.",
-  "commands.teleportgui.back.manualSet": "Current location saved as death point.",
-
   "commands.teleportgui.worldspawn.go": "Teleporting to world spawn...",
-  "commands.teleportgui.worldspawn.same": "You are already at world spawn.",
-
   "commands.teleportgui.home.go": "Teleporting to home...",
   "commands.teleportgui.home.goError": "Failed to teleport to home.",
   "commands.teleportgui.home.goSame": "You are already at that home.",
@@ -48,8 +37,6 @@
   "commands.teleportgui.home.deleteError": "Failed to delete home.",
   "commands.teleportgui.home.rename": "Home renamed.",
   "commands.teleportgui.home.renameError": "Failed to rename home.",
-  "commands.teleportgui.home.create": "Home '%0%' set.",
-
   "commands.teleportgui.warp.go": "Teleporting to warp...",
   "commands.teleportgui.warp.goError": "Failed to teleport to warp.",
   "commands.teleportgui.warp.goSame": "You are already at that warp.",
@@ -62,14 +49,10 @@
   "commands.teleportgui.warp.deleteError": "Failed to delete warp.",
   "commands.teleportgui.warp.rename": "Warp renamed.",
   "commands.teleportgui.warp.renameError": "Failed to rename warp.",
-  "commands.teleportgui.warp.create": "Warp '%0%' created.",
-
   "commands.teleportgui.homes.error": "Failed to list homes.",
   "commands.teleportgui.homes.homes": "--- Your Homes ---",
-
   "commands.teleportgui.warps.error": "Failed to list warps.",
   "commands.teleportgui.warps.warps": "--- Warps ---",
-
   "commands.teleportgui.tpa.self": "You cannot teleport to yourself.",
   "commands.teleportgui.tpa.sent": "Teleport request sent to %0%.",
   "commands.teleportgui.tpa.sentHere": "Sent %0% a request to teleport to you.",
@@ -84,7 +67,6 @@
   "commands.teleportgui.tpa.alreadySent": "You already sent a request to %0%.",
   "commands.teleportgui.tpa.expired": "That teleport request has expired.",
   "commands.teleportgui.tpa.playerNotFound": "Player '%0%' was not found.",
-
   "commands.teleportgui.teleportgui.notificationGui.on": "Enabled: Bedrock players auto-open a form on incoming teleport requests.",
   "commands.teleportgui.teleportgui.notificationGui.off": "Disabled: Bedrock players only get a chat notice on incoming teleport requests.",
   "commands.teleportgui.teleportgui.notificationGui.get": "Bedrock request forms are currently %0%.",
@@ -100,20 +82,11 @@
   "commands.teleportgui.teleportgui.reload.command": "Command availability reloaded and the command tree rebuilt.",
   "commands.teleportgui.teleportgui.reload.config": "config.json reloaded and the command tree rebuilt.",
   "commands.teleportgui.teleportgui.reload.configFailed": "Could not reload config.json. Check the server logs.",
-
   "commands.teleportgui.randomtp.searching": "Searching for a random safe location...",
   "commands.teleportgui.randomtp.go": "Teleported to a random location: X%0% Y%1% Z%2%",
   "commands.teleportgui.randomtp.failed": "Could not find a safe random location. Try again.",
-
   "commands.teleportgui.tpdeathpoint.go": "Teleporting to your death point",
-  "commands.teleportgui.tpdeathpoint.cleared": "Death location cleared",
-  "commands.teleportgui.tpdeathpoint.manualSet": "Current location saved as death point",
-
-  "commands.teleportgui.tpspawnpoint.go": "Teleporting to your spawn point",
-  "commands.teleportgui.tpspawnpoint.same": "You are already at your personal spawn point.",
   "commands.teleportgui.tpspawnpoint.goPersonal": "Teleported to your personal spawn point.",
-  "commands.teleportgui.tpworldspawn.go": "Teleporting to world spawn",
-
   "gui.teleportgui.universal.guide": "[Guide]",
   "gui.teleportgui.universal.gui.close": "[Close]",
   "gui.teleportgui.universal.gui.back": "[Back]",
@@ -124,20 +97,14 @@
   "gui.teleportgui.universal.gui.tp": "[Teleport]",
   "gui.teleportgui.universal.gui.del": "[Delete]",
   "gui.teleportgui.universal.gui.rename": "[Rename]",
-  "gui.teleportgui.universal.gui.save": "[Save]",
   "gui.teleportgui.universal.gui.cancel": "[Cancel]",
-  "gui.teleportgui.universal.gui.yes": "[Yes]",
-  "gui.teleportgui.universal.gui.no": "[No]",
   "gui.teleportgui.universal.gui.add": "[+]",
-
   "gui.teleportgui.home.homegui.title": "Your Homes",
   "gui.teleportgui.home.homegui.defaulthome": " (default)",
   "gui.teleportgui.home.homeactiongui.defaulthome": "[Set as Default]",
   "gui.teleportgui.home.homegui.empty": "You have no homes yet. Use /home add <name>.",
-
   "gui.teleportgui.warp.warpgui.title": "Warps",
   "gui.teleportgui.warp.warpgui.empty": "There are no warps yet.",
-
   "gui.teleportgui.tpa.tpagui.title": "Teleport Requests",
   "gui.teleportgui.tpa.tpagui.empty": "No pending teleport requests.",
   "gui.teleportgui.tpa.tpagui.here": "wants you to go to them",
@@ -157,7 +124,6 @@
   "gui.teleportgui.tpa.tpareqdialog.title": "Teleport Request",
   "gui.teleportgui.tpa.tpareqdialog.accept": "[Accept]",
   "gui.teleportgui.tpa.tpareqdialog.deny": "[Deny]",
-
   "gui.teleportgui.rename.title": "Rename: %0%",
   "gui.teleportgui.rename.back": "Back",
   "gui.teleportgui.rename.old": "Current name: %0%",
@@ -169,18 +135,13 @@
   "gui.teleportgui.rename.createInput": "Enter a name",
   "gui.teleportgui.rename.create": "Create '%0%'",
   "gui.teleportgui.rename.createHint": "Click to confirm",
-  "gui.teleportgui.rename.close": "Close",
-
   "gui.teleportgui.be.summary": "%0% entries",
   "gui.teleportgui.be.defaultHome": "Default: %0%",
   "gui.teleportgui.be.selectEntry": "Select entry",
   "gui.teleportgui.be.selectAction": "Select action",
   "gui.teleportgui.be.tpaSummary": "Choose what to do",
   "gui.teleportgui.be.viewRequests": "View your requests",
-
   "gui.teleportgui.guide.home": "Left click = teleport to home\nRight click = set as default home\nShift+left click = delete home\nPress F on an entry = rename\n[6]Back [7]Prev [8]Next",
   "gui.teleportgui.guide.warp": "Left click = teleport to warp\nShift+left click = delete warp (permission)\nPress F on an entry = rename (permission)\n[6]Back [7]Prev [8]Next",
-  "gui.teleportgui.guide.tpa": "Player list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\n[1]Switch between player list and request list [6]Back [7]Prev [8]Next",
-
-  "mod.teleportgui.dependencies.floodgate.noload": "Note: Bedrock GUI requires Floodgate"
+  "gui.teleportgui.guide.tpa": "Player list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\n[1]Switch between player list and request list [6]Back [7]Prev [8]Next"
 }

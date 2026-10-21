@@ -1,5 +1,4 @@
 {
-  "commands.teleportgui.common.error": "嗚哇，發生未知錯誤啦！請查看伺服器日誌喔。",
   "commands.teleportgui.common.invalidName": "名字不能為空，也不能包含引號喔。",
   "commands.teleportgui.common.noLocation": "嗚嗚，還沒有記錄你的死亡地點呢。",
   "commands.teleportgui.common.worldNotFound": "找不到世界「%0%」啦！可用世界：%1%",
@@ -13,25 +12,15 @@
   "commands.teleportgui.common.default": "【預設】",
   "commands.teleportgui.common.defaultPrompt": "【設為預設】",
   "commands.teleportgui.common.delete": "【刪除】",
-  "commands.teleportgui.common.rename": "【重新命名】",
   "commands.teleportgui.common.tp": "【傳送】",
   "commands.teleportgui.common.nameExists": "這個名字已經被佔用啦，換一個吧！",
   "commands.teleportgui.common.be.prompt": "基岩版玩家請使用 GUI 指令喔，例如 /ghome",
   "commands.teleportgui.common.noPermission": "你沒有權限使用這個指令喔。",
   "commands.teleportgui.common.cooldown": "請再等 %0% 秒後才能使用這個指令。",
-  "commands.teleportgui.common.tooFar": "目標太遠啦（需要在 %0% 以內，目前距離 %1%）。",
-  "commands.teleportgui.common.spawnpointNotFound": "沒有找到個人重生點呢，正在送你到世界重生點。",
   "commands.teleportgui.common.maxCountReached": "已經達到可建立的數量上限（%0%）啦！",
-
   "commands.teleportgui.back.noLocation": "嗚嗚，沒有找到上一次傳送前的位置記錄。",
   "commands.teleportgui.back.go": "正在送你回上一次傳送之前的位置，請稍等喔～",
-  "commands.teleportgui.back.same": "你已經在上一次傳送前的位置啦，不用再跑一趟囉！",
-  "commands.teleportgui.back.cleared": "你的死亡地點已清除啦。",
-  "commands.teleportgui.back.manualSet": "目前位置已儲存為死亡點。",
-
   "commands.teleportgui.worldspawn.go": "正在前往世界重生點，出發～",
-  "commands.teleportgui.worldspawn.same": "你已經在世界重生點啦！",
-
   "commands.teleportgui.home.go": "正在回家啦，馬上就到～",
   "commands.teleportgui.home.goError": "傳送回家失敗了，再試一次吧。",
   "commands.teleportgui.home.goSame": "你已經到家啦！還傳什麼傳嘛～",
@@ -48,8 +37,6 @@
   "commands.teleportgui.home.deleteError": "刪除家失敗了，請再試一次喔。",
   "commands.teleportgui.home.rename": "家已經改好名字啦！",
   "commands.teleportgui.home.renameError": "改名失敗啦，再檢查一下新名字吧。",
-  "commands.teleportgui.home.create": "家「%0%」設定成功啦！",
-
   "commands.teleportgui.warp.go": "正在前往傳送點，咻的一下就到～",
   "commands.teleportgui.warp.goError": "傳送去傳送點失敗了，再試一次吧。",
   "commands.teleportgui.warp.goSame": "你已經在這裡啦！",
@@ -62,14 +49,10 @@
   "commands.teleportgui.warp.deleteError": "刪除傳送點失敗了，再試一次吧。",
   "commands.teleportgui.warp.rename": "傳送點改名成功！",
   "commands.teleportgui.warp.renameError": "傳送點改名失敗了，請再試試喔。",
-  "commands.teleportgui.warp.create": "傳送點「%0%」建立成功！",
-
   "commands.teleportgui.homes.error": "嗚嗚，取得家列表失敗了。",
   "commands.teleportgui.homes.homes": "—— 你的溫馨小窩 ——",
-
   "commands.teleportgui.warps.error": "取得傳送點列表失敗了，再試一次吧。",
   "commands.teleportgui.warps.warps": "—— 傳送點一覽 ——",
-
   "commands.teleportgui.tpa.self": "不可以傳送到自己身上啦！",
   "commands.teleportgui.tpa.sent": "已經把請求發送給 %0% 啦！",
   "commands.teleportgui.tpa.sentHere": "已向 %0% 發送「請傳送到我這裡」的請求啦！",
@@ -84,7 +67,6 @@
   "commands.teleportgui.tpa.alreadySent": "你已經向 %0% 發送過請求啦，耐心等一等吧～",
   "commands.teleportgui.tpa.expired": "這個傳送請求已經過期啦。",
   "commands.teleportgui.tpa.playerNotFound": "找不到玩家「%0%」呀。",
-
   "commands.teleportgui.teleportgui.notificationGui.on": "已開啟：基岩版收到傳送請求時自動彈出表單。",
   "commands.teleportgui.teleportgui.notificationGui.off": "已關閉：基岩版收到傳送請求時只發文字提示。",
   "commands.teleportgui.teleportgui.notificationGui.get": "基岩版傳送請求彈窗目前為 %0%。",
@@ -100,20 +82,11 @@
   "commands.teleportgui.teleportgui.reload.command": "已重新載入指令可用狀態並重建指令樹。",
   "commands.teleportgui.teleportgui.reload.config": "已重新載入 config.json 並重建指令樹。",
   "commands.teleportgui.teleportgui.reload.configFailed": "重新載入 config.json 失敗，請查看伺服器日誌。",
-
   "commands.teleportgui.randomtp.searching": "正在尋找安全的隨機位置，請稍等……",
   "commands.teleportgui.randomtp.go": "已隨機傳送到 X%0% Y%1% Z%2%。",
   "commands.teleportgui.randomtp.failed": "沒有找到安全的隨機位置，請再試一次。",
-
   "commands.teleportgui.tpdeathpoint.go": "正在前往你的死亡點",
-  "commands.teleportgui.tpdeathpoint.cleared": "死亡地點已清除",
-  "commands.teleportgui.tpdeathpoint.manualSet": "目前位置已儲存為死亡點",
-
-  "commands.teleportgui.tpspawnpoint.go": "正在前往你的重生點",
-  "commands.teleportgui.tpspawnpoint.same": "你已經在重生點啦。",
   "commands.teleportgui.tpspawnpoint.goPersonal": "已傳送到你的個人重生點。",
-  "commands.teleportgui.tpworldspawn.go": "正在前往世界重生點",
-
   "gui.teleportgui.universal.guide": "【操作指南】",
   "gui.teleportgui.universal.gui.close": "【關閉】",
   "gui.teleportgui.universal.gui.back": "【返回】",
@@ -124,20 +97,14 @@
   "gui.teleportgui.universal.gui.tp": "【傳送】",
   "gui.teleportgui.universal.gui.del": "【刪除】",
   "gui.teleportgui.universal.gui.rename": "【重新命名】",
-  "gui.teleportgui.universal.gui.save": "【儲存】",
   "gui.teleportgui.universal.gui.cancel": "【取消】",
-  "gui.teleportgui.universal.gui.yes": "【是】",
-  "gui.teleportgui.universal.gui.no": "【否】",
   "gui.teleportgui.universal.gui.add": "[+]",
-
   "gui.teleportgui.home.homegui.title": "我的小窩",
   "gui.teleportgui.home.homegui.defaulthome": "（預設小窩）",
   "gui.teleportgui.home.homeactiongui.defaulthome": "【設為預設小窩】",
   "gui.teleportgui.home.homegui.empty": "還沒有自己的家呢，先用 /home add <名字> 建一個吧！",
-
   "gui.teleportgui.warp.warpgui.title": "傳送點一覽",
   "gui.teleportgui.warp.warpgui.empty": "現在還沒有傳送點呢。",
-
   "gui.teleportgui.tpa.tpagui.title": "傳送請求",
   "gui.teleportgui.tpa.tpagui.empty": "現在沒有待處理的傳送請求喔。",
   "gui.teleportgui.tpa.tpagui.here": "請求你過去",
@@ -157,7 +124,6 @@
   "gui.teleportgui.tpa.tpareqdialog.title": "傳送請求",
   "gui.teleportgui.tpa.tpareqdialog.accept": "【接受】",
   "gui.teleportgui.tpa.tpareqdialog.deny": "【拒絕】",
-
   "gui.teleportgui.rename.title": "重新命名：%0%",
   "gui.teleportgui.rename.back": "返回上一層",
   "gui.teleportgui.rename.old": "原名：%0%",
@@ -169,18 +135,13 @@
   "gui.teleportgui.rename.createInput": "請輸入名字",
   "gui.teleportgui.rename.create": "建立「%0%」",
   "gui.teleportgui.rename.createHint": "點擊確認建立",
-  "gui.teleportgui.rename.close": "關閉介面",
-
   "gui.teleportgui.be.summary": "共 %0% 項",
   "gui.teleportgui.be.defaultHome": "預設：%0%",
   "gui.teleportgui.be.selectEntry": "選擇項目",
   "gui.teleportgui.be.selectAction": "選擇操作",
   "gui.teleportgui.be.tpaSummary": "選擇要進行的操作",
   "gui.teleportgui.be.viewRequests": "查看自己的請求",
-
   "gui.teleportgui.guide.home": "左鍵 = 傳送到該家\n右鍵 = 設為預設家\nShift+左鍵 = 刪除該家\n對準項目按 F = 重新命名\n[6]返回 [7]上一頁 [8]下一頁",
   "gui.teleportgui.guide.warp": "左鍵 = 傳送到該傳送點\nShift+左鍵 = 刪除該傳送點（需權限）\n對準項目按 F = 重新命名（需權限）\n[6]返回 [7]上一頁 [8]下一頁",
-  "gui.teleportgui.guide.tpa": "玩家列表：左鍵 = 發起傳送請求，右鍵 = 請求對方過來\n請求列表：左鍵 = 接受，右鍵 = 拒絕\n[1] = 在玩家列表與請求列表之間切換 [6]返回 [7]上一頁 [8]下一頁",
-
-  "mod.teleportgui.dependencies.floodgate.noload": "小提示：基岩版 GUI 需要安裝 Floodgate 才能使用喔！"
+  "gui.teleportgui.guide.tpa": "玩家列表：左鍵 = 發起傳送請求，右鍵 = 請求對方過來\n請求列表：左鍵 = 接受，右鍵 = 拒絕\n[1] = 在玩家列表與請求列表之間切換 [6]返回 [7]上一頁 [8]下一頁"
 }
