@@ -39,32 +39,15 @@ public final class ModSettingsLoader {
         if (!(raw instanceof Map)) return s;
         Map<String, Object> root = (Map<String, Object>) raw;
 
-        Object logLevel = root.get("logLevel");
-        if (logLevel instanceof String str) s.logLevel = str;
-
-        Object autoMigrate = root.get("autoMigrate");
-        if (autoMigrate instanceof Boolean b) s.autoMigrate = b;
-
         Object runtimePersistence = root.get("runtimePersistence");
         if (runtimePersistence instanceof Boolean b) s.runtimePersistence = b;
 
-        Object storageRaw = root.get("storage");
-        if (storageRaw instanceof Map<?, ?> storage) {
-            Object type = storage.get("type");
-            if (type instanceof String str && !"json".equalsIgnoreCase(str)) {
-                Constants.LOGGER.warn(
-                        "Storage type '{}' is no longer supported; TeleportGUI now always uses JSON storage.",
-                        str);
-            }
-        }
         return s;
     }
 
     private static void writeDefaultYaml(Path file) throws Exception {
         String defaultYaml = """
                 # TeleportGUI mod settings
-                logLevel: INFO
-                autoMigrate: true
                 runtimePersistence: true
                 """;
         Files.writeString(file, defaultYaml);

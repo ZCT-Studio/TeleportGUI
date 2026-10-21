@@ -124,14 +124,12 @@ Files are created under `<world directory>/teleportgui/`.
 `settings.yml` contains general mod settings:
 
 ```yaml
-logLevel: INFO
-autoMigrate: true
 runtimePersistence: true
 ```
 
 `runtimePersistence` defaults to `true`; set it to `false` to keep cooldowns and pending TPA requests in memory only and never read or write `runtime.json`.
 
-TeleportGUI always uses `storage.json`. The old `storage` / `storage.sqlite` settings are ignored; SQLite support has been removed and an existing `storage.db` is not migrated automatically.
+TeleportGUI always uses `storage.json`. The old `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored; an existing `storage.db` is not migrated automatically.
 
 `config.json` controls per-command behavior. Missing values are filled with defaults on load. A minimal example:
 

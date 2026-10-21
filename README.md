@@ -224,14 +224,11 @@ Java 版使用服务端箱子菜单，不需要安装客户端模组。
 ### `settings.yml`
 
 ```yaml
-logLevel: INFO
-autoMigrate: true
 runtimePersistence: true
 ```
 
-> `logLevel` 与 `autoMigrate` 目前为预留字段，修改后不会立即生效。  
 > `runtimePersistence` 默认为 `true`，冷却与待处理 TPA 请求会写入 `teleportgui/runtime.json`；设为 `false` 后完全不读取、不写入该文件，冷却与 TPA 请求只保存在内存中，服务器重启后清空。  
-> 旧版本中的 `storage` / `storage.sqlite` 配置会被忽略；TeleportGUI 现在始终使用 `teleportgui/storage.json`。SQLite 支持已移除，原 `storage.db` 不会自动迁移。
+> 旧版本中的 `logLevel`、`autoMigrate`、`storage` / `storage.sqlite` 配置已移除并被忽略；TeleportGUI 始终使用 `teleportgui/storage.json`，原 `storage.db` 不会自动迁移。
 
 ### `config.json`
 

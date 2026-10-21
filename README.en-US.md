@@ -225,14 +225,11 @@ All files are stored under `<world directory>/teleportgui/`.
 ### `settings.yml`
 
 ```yaml
-logLevel: INFO
-autoMigrate: true
 runtimePersistence: true
 ```
 
-> `logLevel` and `autoMigrate` are currently reserved fields and do not take effect immediately.  
 > `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to `teleportgui/runtime.json`. When set to `false`, the file is never read or written, and cooldowns/TPA requests exist only in memory and are cleared on restart.  
-> The old `storage` / `storage.sqlite` settings are ignored: TeleportGUI now always uses `teleportgui/storage.json`. SQLite support has been removed, and an existing `storage.db` is not migrated automatically.
+> The old `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored. TeleportGUI always uses `teleportgui/storage.json`, and an existing `storage.db` is not migrated automatically.
 
 ### `config.json`
 

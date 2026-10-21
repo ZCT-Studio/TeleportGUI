@@ -34,6 +34,7 @@
 ### 移除
 
 - 移除 SQLite 存储后端，TeleportGUI 现在始终使用 JSON 存储（`teleportgui/storage.json`）。
+- 移除 `settings.yml` 中的 `logLevel`、`autoMigrate` 与 `storage` / `storage.type` 预留配置；这些旧键会被忽略，`settings.yml` 现在只保留 `runtimePersistence`。
 - 旧 `settings.yml` 中的 `storage` / `storage.sqlite` 配置会被忽略；已有 `storage.db` 不会自动迁移。
 
 ### 修复

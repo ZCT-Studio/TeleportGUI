@@ -29,6 +29,5 @@
 
 ## 注意
 
-- 预留代码基于当前 `ModSettings`（只包含 `logLevel` 和 `autoMigrate`）。
-- 旧 `settings.yml` 中的 `storage` / `storage.sqlite` 配置会被忽略。
+- 预留代码基于当前 `ModSettings`（只包含 `runtimePersistence`）。
 - 切换到 SnakeYAML 后，`settings.yml` 可以使用完整 YAML 语法；当前内置解析器只支持简单的嵌套 map 和标量。
