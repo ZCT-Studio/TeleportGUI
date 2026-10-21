@@ -22,6 +22,11 @@
 - 命令开关按功能分组，别名跟随主命令一起启用或禁用（例如禁用 `tpa` 会同时移除 `/tpahere`、`/tpaaccept`、`/gtpa` 等）。
 - `/teleportgui` 永远不会被命令开关禁用，确保管理员始终可以恢复其他命令。
 
+### 修复
+
+- 修复发布版未打包 SnakeYAML，导致服务器启动时因 `NoClassDefFoundError: org/yaml/snakeyaml/Yaml` 崩溃的问题。`settings.yml` 现在使用内置的轻量解析器，不再依赖第三方 YAML 库。
+- SQLite JDBC 驱动不可用时，存储后端会记录错误并回退到 JSON，而不是让服务器启动失败。
+
 ## [1.0.1-rc1] - 2026-10-20
 
 ### 变更

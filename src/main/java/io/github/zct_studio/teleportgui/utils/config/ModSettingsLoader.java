@@ -1,7 +1,6 @@
 package io.github.zct_studio.teleportgui.utils.config;
 
 import io.github.zct_studio.teleportgui.Constants;
-import org.yaml.snakeyaml.Yaml;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,8 +22,7 @@ public final class ModSettingsLoader {
                 return;
             }
             String yamlText = Files.readString(settingsFile);
-            Yaml yamlParser = new Yaml();
-            Object raw = yamlParser.load(yamlText);
+            Map<String, Object> raw = SimpleYaml.parse(yamlText);
             SETTINGS = buildSettings(raw);
             Constants.LOGGER.info("Settings loaded from {}, storage.type={}",
                     settingsFile, SETTINGS.storage.type);

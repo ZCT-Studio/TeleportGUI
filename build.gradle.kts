@@ -44,7 +44,7 @@ dependencies {
     }
 
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
-    implementation("org.yaml:snakeyaml:2.2")
+    include("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
 if (mod.isNeoforge) {

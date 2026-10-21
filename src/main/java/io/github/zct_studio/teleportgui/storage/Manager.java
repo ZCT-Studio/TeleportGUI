@@ -32,16 +32,9 @@ public final class Manager {
         STORAGE_FOLDER = saveDir.resolve(Constants.MOD_ID + "/");
 
         INITIALIZING = true;
+        String actualType;
         try {
-            if ("sqlite".equalsIgnoreCase(type)) {
-                provider = new Sqlite();
-                STORAGE_FILE = STORAGE_FOLDER.resolve("storage.db");
-            } else {
-                provider = new Json();
-                STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
-            }
-
-            provider.init(STORAGE_FOLDER);
+            actualType = initProvider(type);
 
             DATA = new StorageData();
 
@@ -60,14 +53,41 @@ public final class Manager {
             }
 
             Constants.LOGGER.info("Storage initialized ({}): {} warps, {} players",
-                    type, DATA.getWarps().size(), DATA.rawPlayersSize());
+                    actualType, DATA.getWarps().size(), DATA.rawPlayersSize());
         } catch (Exception e) {
             Constants.LOGGER.error("Failed to initialize storage!", e);
             throw new RuntimeException("Storage initialization failed", e);
         } finally {
             INITIALIZING = false;
         }
-        LAST_INIT_TYPE = type;
+        LAST_INIT_TYPE = actualType;
+    }
+
+    private static String initProvider(String type) throws Exception {
+        if ("sqlite".equalsIgnoreCase(type)) {
+            Sqlite sqlite = new Sqlite();
+            try {
+                sqlite.init(STORAGE_FOLDER);
+                provider = sqlite;
+                STORAGE_FILE = STORAGE_FOLDER.resolve("storage.db");
+                return "sqlite";
+            } catch (Exception | LinkageError e) {
+                Constants.LOGGER.error(
+                        "SQLite storage is unavailable (the JDBC driver could not be loaded); "
+                                + "falling back to JSON storage. Set storage.type to json to silence this warning.",
+                        e);
+                try {
+                    sqlite.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        Json json = new Json();
+        json.init(STORAGE_FOLDER);
+        provider = json;
+        STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
+        return "json";
     }
 
     public static void save() {
