@@ -280,7 +280,7 @@ public final class GUI {
                 () -> openTpa(sp, page, mode));
     }
 
-    static void openTpaRequestActions(ServerPlayer sp, String fromUuid) {
+    public static void openTpaRequestActions(ServerPlayer sp, String fromUuid) {
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
                 stack(Items.BARRIER, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.deny"), null),

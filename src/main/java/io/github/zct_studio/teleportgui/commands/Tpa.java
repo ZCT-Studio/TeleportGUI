@@ -218,9 +218,9 @@ public final class Tpa {
 
             if (autoPop) {
                 if (TeleportUtils.hasFloodgate()) {
-                    Form.openTpaRequestsForm(to, 0);
+                    Form.openTpaRequestDialog(to, from.getStringUUID(), 0);
                 } else {
-                    GUI.openTpaRequests(to);
+                    GUI.openTpaRequestActions(to, from.getStringUUID());
                 }
             }
         } else {

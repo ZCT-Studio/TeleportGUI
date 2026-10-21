@@ -262,9 +262,10 @@ public final class Form {
     }
 
     public static void openTpaForm(ServerPlayer player) {
-        boolean allowed = Manager.getPlayer(player.getStringUUID())
-                .map(PlayerData::isRequestAllowed)
-                .orElse(true);
+        PlayerData data = Manager.getPlayer(player.getStringUUID())
+                .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+        boolean allowed = data.isRequestAllowed();
+        boolean notifEnabled = data.isNotificationGuiEnabled();
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpagui.title"));
@@ -279,9 +280,14 @@ public final class Form {
                     ? "gui.teleportgui.tpa.tpagui.allowOn"
                     : "gui.teleportgui.tpa.tpagui.allowOff"));
             actions.add(() -> {
-                PlayerData data = Manager.getPlayer(player.getStringUUID())
-                        .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
                 data.setRequestAllowed(!allowed);
+                reopen(player, () -> openTpaForm(player));
+            });
+            call(b, "button", text(player, notifEnabled
+                    ? "gui.teleportgui.be.notifGuiOn"
+                    : "gui.teleportgui.be.notifGuiOff"));
+            actions.add(() -> {
+                data.setNotificationGuiEnabled(!notifEnabled);
                 reopen(player, () -> openTpaForm(player));
             });
 
@@ -347,7 +353,7 @@ public final class Form {
         }
     }
 
-    private static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page) {
+    public static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
