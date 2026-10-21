@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.zct_studio.teleportgui.commands.GUI;
 import net.minecraft.commands.CommandSourceStack;
 
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ConfigKey implements SuggestionProvider<CommandSourceStack> {
@@ -15,9 +14,9 @@ public class ConfigKey implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context,
                                                          SuggestionsBuilder builder) {
-        String prefix = builder.getRemaining().toLowerCase(Locale.ROOT);
+        String filter = SuggestionUtils.filter(builder.getRemaining());
         for (String key : GUI.configKeys()) {
-            if (key.toLowerCase(Locale.ROOT).startsWith(prefix)) {
+            if (SuggestionUtils.matches(key, filter)) {
                 builder.suggest(key);
             }
         }

@@ -23,21 +23,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/**
- * /teleportgui —— 模组自身的开关与配置。
- * <p>
- * /teleportgui be notification_gui &lt;true|false&gt;  —— 按玩家存：基岩版收到 TPA 是否自动弹表单（默认 true）。
- * /teleportgui config &lt;key&gt; &lt;value&gt;             —— 需要 OWNERS(4)；key 形如 module.node.field，写回 config.json。
- */
 public final class GUI {
 
-    /**
-     * 命令字面量：be notification_gui（配置常量里的是 camelCase，这里按命令风格用下划线）
-     */
     private static final String LITERAL_NOTIFICATION_GUI = "notification_gui";
-    /**
-     * 可写的 node 字段
-     */
     private static final List<String> NODE_FIELDS = List.of(
             ConfigKeys.FIELD_COOLDOWN,
             ConfigKeys.FIELD_MIN_DISTANCE,

@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,12 +20,12 @@ public class Tpa implements SuggestionProvider<CommandSourceStack> {
             //noinspection ConstantValue
             if (server == null) return Suggestions.empty();
 
-            String prefix = builder.getRemaining().toLowerCase(Locale.ROOT);
+            String filter = SuggestionUtils.filter(builder.getRemaining());
             for (io.github.zct_studio.teleportgui.commands.Tpa.TpaRequest req : io.github.zct_studio.teleportgui.commands.Tpa.getRequestsFor(player.getStringUUID())) {
                 var fromPlayer = server.getPlayerList().getPlayer(UUID.fromString(req.fromUuid));
                 if (fromPlayer != null) {
                     String name = fromPlayer.getName().getString();
-                    if (name.toLowerCase(Locale.ROOT).startsWith(prefix)) {
+                    if (SuggestionUtils.matches(name, filter)) {
                         builder.suggest(name);
                     }
                 }
