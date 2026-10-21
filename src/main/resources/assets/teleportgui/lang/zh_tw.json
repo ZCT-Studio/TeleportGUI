@@ -148,6 +148,8 @@
   "gui.teleportgui.be.selectAction": "選擇操作",
   "gui.teleportgui.be.tpaSummary": "選擇要進行的操作",
   "gui.teleportgui.be.viewRequests": "查看自己的請求",
+  "gui.teleportgui.be.notifGuiOn": "基岩版TPA請求彈窗：開",
+  "gui.teleportgui.be.notifGuiOff": "基岩版TPA請求彈窗：關",
   "gui.teleportgui.guide.home": "左鍵 = 傳送到該家\n右鍵 = 設為預設家\nShift+左鍵 = 刪除該家\n對準項目按 F = 重新命名\n[6]返回 [7]上一頁 [8]下一頁",
   "gui.teleportgui.guide.warp": "左鍵 = 傳送到該傳送點\nShift+左鍵 = 刪除該傳送點（需權限）\n對準項目按 F = 重新命名（需權限）\n[6]返回 [7]上一頁 [8]下一頁",
   "gui.teleportgui.guide.tpa": "玩家列表：左鍵 = 發起傳送請求，右鍵 = 請求對方過來\n請求列表：左鍵 = 接受，右鍵 = 拒絕\n綠寶石塊 = 接受請求，紅石塊 = 拒絕請求\n[2] = 在玩家列表與請求列表之間切換 [6]關閉 [7]上一頁 [8]下一頁"

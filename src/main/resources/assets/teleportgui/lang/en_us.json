@@ -148,6 +148,8 @@
   "gui.teleportgui.be.selectAction": "Select action",
   "gui.teleportgui.be.tpaSummary": "Choose what to do",
   "gui.teleportgui.be.viewRequests": "View your requests",
+  "gui.teleportgui.be.notifGuiOn": "Bedrock TPA Request Forms: ON",
+  "gui.teleportgui.be.notifGuiOff": "Bedrock TPA Request Forms: OFF",
   "gui.teleportgui.guide.home": "Left click = teleport to home\nRight click = set as default home\nShift+left click = delete home\nPress F on an entry = rename\n[6]Back [7]Prev [8]Next",
   "gui.teleportgui.guide.warp": "Left click = teleport to warp\nShift+left click = delete warp (permission)\nPress F on an entry = rename (permission)\n[6]Back [7]Prev [8]Next",
   "gui.teleportgui.guide.tpa": "Player list: left click = send request, right click = ask them to come\nRequest list: left click = accept, right click = deny\nEmerald block = accept requests, Redstone block = deny requests\n[2]Switch between player list and request list [6]Close [7]Prev [8]Next"
