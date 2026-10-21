@@ -1,10 +1,6 @@
 # minecraft
 run/*
 
-# minecraft eula
-
-!run/eula.txt
-
 # gradle
 secrets.gradle
 .kotlin/
