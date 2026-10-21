@@ -85,28 +85,44 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 
 > Death points and back points are kept in memory and are cleared when the server restarts.
 
-### Mod Settings
+### Player Settings
 
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
-| `/teleportgui be notification_gui`              | Show whether automatic Bedrock forms are enabled for you      | Everyone   |
-| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
-| `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | 4          |
-| `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | 4          |
-| `/teleportgui command <command>`                | Show whether a command group is enabled                       | 4          |
-| `/teleportgui command <command> <true/false>`   | Enable or disable a command group                             | 4          |
-| `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | 4          |
-| `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | 4          |
+| `/teleportgui allow_request`                    | Show whether you accept incoming teleport requests             | Everyone   |
+| `/teleportgui allow_request <true/false>`       | Allow or block other players from sending you teleport requests | Everyone   |
+| `/teleportgui_be notif_gui`                     | Show whether automatic Bedrock forms are enabled for you       | Everyone   |
+| `/teleportgui_be notif_gui <true/false>`        | Toggle automatic Bedrock forms for your incoming TPA requests  | Everyone   |
+
+### Admin Settings
+
+`/teleportgui_admin` is only visible and executable to permission level **4**.
+
+| Command                                         | Description                                                   | Permission |
+|-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui_admin config <key>`               | Show the current value of a key in `config.json`               | 4          |
+| `/teleportgui_admin config <key> <value>`       | Change and save a value in `config.json`                      | 4          |
+| `/teleportgui_admin command <command>`          | Show whether a command group is enabled                       | 4          |
+| `/teleportgui_admin command <command> <true/false>` | Enable or disable a command group                         | 4          |
+| `/teleportgui_admin reload command`             | Re-apply command toggles and rebuild the command tree         | 4          |
+| `/teleportgui_admin reload config`              | Reload `config.json` and rebuild the command tree             | 4          |
+
+> `teleportgui`, `teleportgui_admin`, and `teleportgui_be` cannot be disabled by command toggles.
+>
+> `notifGuiDefault` is the global default; a player's own `/teleportgui_be notif_gui` setting takes priority.
 
 Example:
 
 ```text
-/teleportgui be notification_gui
-/teleportgui config home.create.maxCount
-/teleportgui config home.go.cooldownSeconds 10
-/teleportgui command back
-/teleportgui command back false
-/teleportgui reload config
+/teleportgui allow_request
+/teleportgui allow_request false
+/teleportgui_be notif_gui
+/teleportgui_admin config home.create.maxCount
+/teleportgui_admin config notifGuiDefault true
+/teleportgui_admin config home.go.cooldownSeconds 10
+/teleportgui_admin command back
+/teleportgui_admin command back false
+/teleportgui_admin reload config
 ```
 
 ## GUI
@@ -140,6 +156,7 @@ TeleportGUI always uses `storage.json`. The old `logLevel`, `autoMigrate`, and `
 
 ```json
 {
+  "notifGuiDefault": true,
   "home": {
     "create": { "maxCount": 10 },
     "go": { "cooldownSeconds": 5 }
@@ -174,7 +191,7 @@ Common fields:
 
 - Most commands default to permission level 0.
 - Config-driven permissions are set with `permission.level`.
-- Warp deletion and renaming default to level 2 and are controlled by `warp.del.permission.level` and `warp.rename.permission.level`; `/teleportgui config` always requires level 4.
+- Warp deletion and renaming default to level 2 and are controlled by `warp.del.permission.level` and `warp.rename.permission.level`; `/teleportgui_admin` is only visible and executable to level 4.
 - Players without permission receive a message and the command is not executed.
 
 ## Storage

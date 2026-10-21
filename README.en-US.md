@@ -68,7 +68,8 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 - `/tpahere <player>`: ask another player to teleport to you.
 - Requests can be handled through chat buttons, `/tpaaccept`, `/tpadeny`, or the `/gtpa` request list.
 - Request expiry is configurable; requests never expire by default.
-- Bedrock players can receive an automatic form when a request arrives, or disable it with `/teleportgui be notification_gui false`.
+- Bedrock players can receive an automatic form when a request arrives, or disable it with `/teleportgui_be notif_gui false`.
+- Players can block incoming requests with `/teleportgui allow_request false`; requests are allowed by default.
 
 ### Teleport Shortcuts
 
@@ -173,32 +174,46 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 >
 > The command toggle is named `randomtp`; `/rtp` is enabled and disabled together with it.
 
-### Mod Settings
+### Player Settings
 
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
-| `/teleportgui be notification_gui`              | Show whether automatic Bedrock forms are enabled for you      | Everyone   |
-| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
-| `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | Level 4    |
-| `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | Level 4    |
-| `/teleportgui command <command>`                | Show whether a command group is enabled                       | Level 4    |
-| `/teleportgui command <command> <true/false>`   | Enable or disable a command group                             | Level 4    |
-| `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | Level 4    |
-| `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | Level 4    |
+| `/teleportgui allow_request`                    | Show whether you accept incoming teleport requests             | Everyone   |
+| `/teleportgui allow_request <true/false>`       | Allow or block other players from sending you teleport requests | Everyone   |
+| `/teleportgui_be notif_gui`                     | Show whether automatic Bedrock forms are enabled for you       | Everyone   |
+| `/teleportgui_be notif_gui <true/false>`        | Toggle automatic Bedrock forms for your incoming TPA requests  | Everyone   |
 
+### Admin Settings
+
+`/teleportgui_admin` is only visible and executable to permission level **4**.
+
+| Command                                         | Description                                                   | Permission |
+|-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui_admin config <key>`               | Show the current value of a key in `config.json`               | Level 4    |
+| `/teleportgui_admin config <key> <value>`       | Change and save a value in `config.json`                      | Level 4    |
+| `/teleportgui_admin command <command>`          | Show whether a command group is enabled                       | Level 4    |
+| `/teleportgui_admin command <command> <true/false>` | Enable or disable a command group                         | Level 4    |
+| `/teleportgui_admin reload command`             | Re-apply command toggles and rebuild the command tree         | Level 4    |
+| `/teleportgui_admin reload config`              | Reload `config.json` and rebuild the command tree             | Level 4    |
+
+> `teleportgui`, `teleportgui_admin`, and `teleportgui_be` cannot be disabled by command toggles.
+>
+> `notifGuiDefault` is the global default, e.g. `/teleportgui_admin config notifGuiDefault true`; a player's own `/teleportgui_be notif_gui` setting takes priority.
+>
 > Vanilla `/reload` also reloads `config.json` and updates the command tree.
 
 Examples:
 
 ```text
-/teleportgui be notification_gui
-/teleportgui config home.create.maxCount
-/teleportgui config home.go.cooldownSeconds 10
-/teleportgui config tpa.request.requestExpireSeconds 120
-/teleportgui config teleport.random.minDistance 200
-/teleportgui command randomtp
-/teleportgui command randomtp false
-/teleportgui reload config
+/teleportgui allow_request
+/teleportgui allow_request false
+/teleportgui_be notif_gui
+/teleportgui_admin config home.create.maxCount
+/teleportgui_admin config home.go.cooldownSeconds 10
+/teleportgui_admin config notifGuiDefault true
+/teleportgui_admin command randomtp
+/teleportgui_admin command randomtp false
+/teleportgui_admin reload config
 ```
 
 ## <a id="gui"></a>GUI
@@ -212,7 +227,8 @@ Java Edition uses server-side chest menus, so no client mod is needed.
 | Home list      | Left click to teleport, right click to set default, `Shift + left click` to delete, press `F` on an entry to rename, nether star to add a home            |
 | Warp list      | Left click to teleport, `Shift + left click` to delete (operators), press `F` on an entry to rename (operators), nether star to create a warp (operators) |
 | Request screen | In the player list: left click to send a request, right click to ask them to come. In the request list: left click to accept, right click to deny         |
-| Navigation     | `[6]` back, `[7]` previous page, `[8]` next page; `[1]` switches between the player list and request list                                                 |
+| Request toggle | Emerald block next to the guide = accept requests, redstone block = deny; click to toggle                                                                |
+| Navigation     | `[6]` close, `[7]` previous page, `[8]` next page; `[2]` switches between the player list and request list                                                 |
 
 Creating or renaming a location opens an anvil input screen.
 
@@ -244,6 +260,7 @@ runtimePersistence: true
 
 ```json
 {
+  "notifGuiDefault": true,
   "commands": {
     "home": true,
     "warp": true,
@@ -281,7 +298,7 @@ runtimePersistence: true
 }
 ```
 
-Each key in `commands` enables or disables a command group. Every command except `/teleportgui` can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also check a group with `/teleportgui command <command>` and change it at runtime with `/teleportgui command <command> <true/false>`.
+Each key in `commands` enables or disables a command group. Every command except the `teleportgui`, `teleportgui_admin`, and `teleportgui_be` roots can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also check a group with `/teleportgui_admin command <command>` and change it at runtime with `/teleportgui_admin command <command> <true/false>`.
 
 Common fields:
 
@@ -302,7 +319,8 @@ Common fields:
 - Except for the commands noted below, commands default to permission level **0**, available to all players.
 - Config-driven permissions use `permission.level` with vanilla levels `0`–`4`.
 - `/warp del`, `/warp delete`, and `/warp rename` default to level **2**, controlled by `warp.del.permission.level` and `warp.rename.permission.level`.
-- `/teleportgui config`, `/teleportgui command`, and `/teleportgui reload` require level **4**.
+- `/teleportgui_admin config`, `/teleportgui_admin command`, and `/teleportgui_admin reload` require level **4**; `/teleportgui_admin` is hidden from players without permission.
+- `/teleportgui allow_request` and `/teleportgui_be notif_gui` are available to everyone.
 - When a player lacks permission, the command is not executed and a message is sent to them.
 
 ## <a id="storage"></a>Storage

@@ -32,17 +32,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.ResolvableProfile;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public final class GUI {
     private static final int MAX_CONTENT_ROWS = 5;
     private static final int NAV_GUIDE = 0;
     private static final int NAV_EXTRA = 1;
+    private static final int NAV_REQUESTS = 2;
     private static final int NAV_BACK = 6;
     private static final int NAV_PREV = 7;
     private static final int NAV_NEXT = 8;
@@ -117,6 +120,20 @@ public final class GUI {
     public static ItemStack stackGlint(Item item, Component name, List<? extends Component> lore) {
         ItemStack s = stack(item, name, lore);
         s.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        return s;
+    }
+
+    private static ItemStack playerHead(ServerPlayer owner, UUID fallbackId,
+                                        Component name, List<? extends Component> lore,
+                                        boolean glint) {
+        ItemStack s = glint
+                ? stackGlint(Items.PLAYER_HEAD, name, lore)
+                : stack(Items.PLAYER_HEAD, name, lore);
+        if (owner != null) {
+            s.set(DataComponents.PROFILE, ResolvableProfile.createResolved(owner.getGameProfile()));
+        } else if (fallbackId != null) {
+            s.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved(fallbackId));
+        }
         return s;
     }
 
@@ -345,6 +362,10 @@ public final class GUI {
             return false;
         }
 
+        protected boolean onRequestsNav(ServerPlayer sp) {
+            return false;
+        }
+
         protected boolean hasAdd() {
             return false;
         }
@@ -381,7 +402,7 @@ public final class GUI {
                     Tr(player, "gui.teleportgui.universal.guide"), guideLore(player, guideKey())));
             fillExtraNav(c, base);
             c.setItem(base + NAV_BACK, stack(Items.BARRIER,
-                    Tr(player, "gui.teleportgui.universal.gui.back"), null));
+                    Tr(player, "gui.teleportgui.universal.gui.close"), null));
             c.setItem(base + NAV_PREV, stack(Items.ARROW,
                     Tr(player, "gui.teleportgui.universal.gui.pgup"), null));
             c.setItem(base + NAV_NEXT, stack(Items.SPECTRAL_ARROW,
@@ -426,7 +447,9 @@ public final class GUI {
                     reopen(sp, (page - 1 + totalPages) % totalPages);
                 } else if (off == NAV_NEXT) {
                     reopen(sp, (page + 1) % totalPages);
-                } else {
+                } else if (off == NAV_REQUESTS) {
+                    onRequestsNav(sp);
+                } else if (off == NAV_EXTRA) {
                     onExtraNav(sp);
                 }
                 return;
@@ -829,8 +852,9 @@ public final class GUI {
                 List<Component> lore = List.of(
                         Tr(player, "gui.teleportgui.tpa.tpagui.hintPlayers")
                                 .withStyle(Styles.MUTED));
-                c.setItem(i, stack(Items.PLAYER_HEAD,
-                        Component.literal(other.getName().getString()).withStyle(Styles.WARNING), lore));
+                c.setItem(i, playerHead(other, null,
+                        Component.literal(other.getName().getString()).withStyle(Styles.WARNING),
+                        lore, false));
             }
             if (others.isEmpty()) {
                 c.setItem(0, stack(Items.PAPER, Tr(player, "gui.teleportgui.tpa.tpagui.noPlayers"), null));
@@ -852,9 +876,14 @@ public final class GUI {
                                 .withStyle(Styles.MUTED),
                         Tr(player, "gui.teleportgui.tpa.tpagui.age", ageText(req))
                                 .withStyle(Styles.SUBTLE));
-                ItemStack head = req.here
-                        ? stack(Items.PLAYER_HEAD, name, lore)
-                        : stackGlint(Items.PLAYER_HEAD, name, lore);
+                ServerPlayer from = Tpa.resolveOnline(req.fromUuid);
+                UUID fallbackId;
+                try {
+                    fallbackId = UUID.fromString(req.fromUuid);
+                } catch (IllegalArgumentException e) {
+                    fallbackId = null;
+                }
+                ItemStack head = playerHead(from, fallbackId, name, lore, !req.here);
                 c.setItem(i, head);
             }
             if (requests.isEmpty()) {
@@ -864,17 +893,40 @@ public final class GUI {
 
         @Override
         protected void fillExtraNav(SimpleContainer c, int base) {
+            boolean allowed = Manager.getPlayer(player.getStringUUID())
+                    .map(PlayerData::isRequestAllowed)
+                    .orElse(true);
+            c.setItem(base + NAV_EXTRA, stack(
+                    allowed ? Items.EMERALD_BLOCK : Items.REDSTONE_BLOCK,
+                    Tr(player, allowed
+                            ? "gui.teleportgui.tpa.tpagui.allowOn"
+                            : "gui.teleportgui.tpa.tpagui.allowOff"),
+                    List.of(Tr(player, "gui.teleportgui.tpa.tpagui.allowHint")
+                            .withStyle(Styles.MUTED))));
+
             if (mode == TPA_REQUESTS) {
-                c.setItem(base + NAV_EXTRA, stack(Items.COMPASS,
+                c.setItem(base + NAV_REQUESTS, stack(Items.COMPASS,
                         Tr(player, "gui.teleportgui.tpa.tpagui.backToPlayers"), null));
             } else if (!requests.isEmpty()) {
-                c.setItem(base + NAV_EXTRA, stack(Items.REDSTONE,
+                c.setItem(base + NAV_REQUESTS, stack(Items.REDSTONE,
                         Tr(player, "gui.teleportgui.tpa.tpagui.viewRequests"), null));
             }
         }
 
         @Override
         protected boolean onExtraNav(ServerPlayer sp) {
+            boolean allowed = Manager.getPlayer(sp.getStringUUID())
+                    .map(PlayerData::isRequestAllowed)
+                    .orElse(true);
+            PlayerData data = Manager.getPlayer(sp.getStringUUID())
+                    .orElseGet(() -> Manager.addPlayer(sp.getStringUUID()));
+            data.setRequestAllowed(!allowed);
+            openTpa(sp, page, mode);
+            return true;
+        }
+
+        @Override
+        protected boolean onRequestsNav(ServerPlayer sp) {
             if (mode == TPA_REQUESTS) {
                 openTpa(sp, 0, TPA_PLAYERS);
                 return true;

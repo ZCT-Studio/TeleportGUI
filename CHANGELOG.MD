@@ -12,11 +12,13 @@
 ### 新增
 
 - 新增 `/randomtp` 随机传送命令（`/rtp` 为别名）：在当前维度内以玩家当前位置为中心，在配置的最小距离与最大距离之间随机寻找安全落点；支持冷却、权限等级、距离范围配置。
-- `config.json` 新增 `commands` 命令开关，除 `/teleportgui` 外所有命令（含别名）均可禁用；禁用后命令会从命令树中移除，启用后重新加入。
-- 新增 `/teleportgui command <命令>` 查看命令组状态、`/teleportgui command <命令> <true/false>` 启用或禁用，修改后会自动保存配置、重建命令树并同步在线玩家的命令列表。
-- 新增 `/teleportgui config <键>`，可在游戏内查看任意配置项的当前值（含从 `defaults` 继承的结果）。
-- 新增 `/teleportgui be notification_gui` 查询当前的基岩版弹窗开关，设置方式不变。
-- 新增 `/teleportgui reload command` 与 `/teleportgui reload config`：前者重建当前命令树，后者重新读取 `config.json` 后再重建。
+- `config.json` 新增 `commands` 命令开关，除 `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令外所有命令（含别名）均可禁用；禁用后命令会从命令树中移除，启用后重新加入。
+- 新增 `/teleportgui_admin command <命令>` 查看命令组状态、`/teleportgui_admin command <命令> <true/false>` 启用或禁用，修改后会自动保存配置、重建命令树并同步在线玩家的命令列表。
+- 新增 `/teleportgui_admin config <键>`，可在游戏内查看任意配置项的当前值（含从 `defaults` 继承的结果）。
+- 新增 `/teleportgui_be notif_gui` 查询和设置基岩版传送请求弹窗开关。
+- 新增 `/teleportgui allow_request` 查询和设置是否允许其他玩家向自己发送传送请求。
+- 新增 `/teleportgui_admin config notifGuiDefault true/false`，可调整 `notifGuiDefault` 全局默认值。
+- 新增 `/teleportgui_admin reload command` 与 `/teleportgui_admin reload config`：前者重建当前命令树，后者重新读取 `config.json` 后再重建。
 - `/reload` 现在会同时重新加载 `config.json` 并更新命令树。
 - `config.json` 新增 `teleport.random` 节点，可配置 `minDistance`、`maxDistance`、`cooldownSeconds` 与 `permission.level`。
 - 新增 `zh_hk`（繁体中文·香港）与 `zh_tw`（繁体中文·台湾）语言文件。
@@ -26,12 +28,15 @@
 
 - `config.json` 配置版本升级到 3；旧配置在加载时会自动补齐 `commands`、`teleport.random` 等新字段并保存。
 - 随机传送的命令开关统一命名为 `randomtp`（此前为 `rtp`），`/rtp` 别名跟随该开关一起启用或禁用。
+- 命令根拆分为玩家命令 `/teleportgui`、管理员命令 `/teleportgui_admin` 与基岩版设置 `/teleportgui_be`；`/teleportgui_admin` 对无权限玩家不可见。
+- `/gtpa` 界面新增接收请求开关（绿宝石块开启、红石块关闭），原请求列表切换按钮移到其右侧；首页导航栏改为“关闭”。
+- TPA 请求列表改用真正的玩家头颅：附魔光效表示 `/tpa` 请求，无光效表示 `/tpahere` 请求。
 - 命令开关按功能分组，别名跟随主命令一起启用或禁用（例如禁用 `tpa` 会同时移除 `/tpahere`、`/tpaaccept`、`/gtpa` 等）。
 - 优化随机传送：只同步检查已加载区块，未加载区块改为异步加载且最多尝试 4 个区块，下界扫描深度限制为 48 格，避免服务器线程连续生成区块造成卡顿。
 - 命令冷却与 TPA 请求改为基于服务器刻的惰性计时，使用玩家 UUID + 数值命令 ID 作为键，不再拼接字符串；每 1200 刻执行一次粗粒度过期清理。
 - 当 `runtimePersistence=true` 时，冷却与待处理 TPA 请求写入 `teleportgui/runtime.json`，服务器重启后保留。
 - 语言文件按语言缓存完整翻译表，翻译调用不再重复读取和解析 JSON。
-- `/teleportgui` 永远不会被命令开关禁用，确保管理员始终可以恢复其他命令。
+- `teleportgui`、`teleportgui_admin`、`teleportgui_be` 永远不会被命令开关禁用，确保管理员始终可以恢复其他命令。
 - 版本号变更为 `1.0.0-rc.2`。
 
 ### 移除

@@ -68,7 +68,8 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 - `/tpahere <玩家>`：请求对方传送到你身边。
 - 请求可以通过聊天栏按钮、`/tpaaccept`、`/tpadeny` 或 `/gtpa` 请求列表处理。
 - 支持请求过期时间；默认永不过期。
-- 基岩版玩家收到请求时可自动弹出表单，也可用 `/teleportgui be notification_gui false` 关闭自动弹出。
+- 基岩版玩家收到请求时可自动弹出表单，也可用 `/teleportgui_be notif_gui false` 关闭自动弹出。
+- 玩家可用 `/teleportgui allow_request false` 禁止其他玩家向自己发送请求；默认允许。
 
 ### 传送点快捷指令
 
@@ -172,32 +173,46 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 >
 > 命令开关统一使用 `randomtp`，`/rtp` 跟随它一起启用或禁用。
 
-### 模组设置
+### 玩家设置
 
 | 命令                                              | 说明                        | 权限   |
 |-------------------------------------------------|---------------------------|------|
-| `/teleportgui be notification_gui`              | 查看自己收到 TPA 时基岩版是否自动弹窗     | 所有玩家 |
-| `/teleportgui be notification_gui <true/false>` | 设置自己收到 TPA 时基岩版是否自动弹出表单   | 所有玩家 |
-| `/teleportgui config <键>`                        | 查看 `config.json` 中某个配置项的当前值 | 等级 4 |
-| `/teleportgui config <键> <整数值>`                 | 修改并保存 `config.json` 中的配置项 | 等级 4 |
-| `/teleportgui command <命令>`                     | 查看某组命令当前是否启用              | 等级 4 |
-| `/teleportgui command <命令> <true/false>`        | 启用或禁用命令                | 等级 4 |
-| `/teleportgui reload command`                   | 重新应用命令开关并重建命令树            | 等级 4 |
-| `/teleportgui reload config`                    | 重新读取 `config.json` 并重建命令树 | 等级 4 |
+| `/teleportgui allow_request`                    | 查看自己是否允许接收 TPA 请求          | 所有玩家 |
+| `/teleportgui allow_request <true/false>`       | 允许或禁止其他玩家向自己发送 TPA 请求     | 所有玩家 |
+| `/teleportgui_be notif_gui`                     | 查看自己收到 TPA 时基岩版是否自动弹窗     | 所有玩家 |
+| `/teleportgui_be notif_gui <true/false>`        | 设置自己收到 TPA 时基岩版是否自动弹出表单   | 所有玩家 |
 
+### 管理员设置
+
+`/teleportgui_admin` 只有权限等级 **4** 的玩家才能看到和执行。
+
+| 命令                                              | 说明                        | 权限   |
+|-------------------------------------------------|---------------------------|------|
+| `/teleportgui_admin config <键>`                  | 查看 `config.json` 中某个配置项的当前值 | 等级 4 |
+| `/teleportgui_admin config <键> <值>`              | 修改并保存 `config.json` 中的配置项 | 等级 4 |
+| `/teleportgui_admin command <命令>`               | 查看某组命令当前是否启用              | 等级 4 |
+| `/teleportgui_admin command <命令> <true/false>`  | 启用或禁用命令                | 等级 4 |
+| `/teleportgui_admin reload command`             | 重新应用命令开关并重建命令树            | 等级 4 |
+| `/teleportgui_admin reload config`              | 重新读取 `config.json` 并重建命令树 | 等级 4 |
+
+> `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令都不能被命令开关禁用。
+>
+> `notifGuiDefault` 是全局默认值，可执行 `/teleportgui_admin config notifGuiDefault true` 或 `false`；玩家自己的 `/teleportgui_be notif_gui` 设置优先。
+>
 > 原版 `/reload` 也会重新读取 `config.json` 并更新命令树。
 
 示例：
 
 ```text
-/teleportgui be notification_gui
-/teleportgui config home.create.maxCount
-/teleportgui config home.go.cooldownSeconds 10
-/teleportgui config tpa.request.requestExpireSeconds 120
-/teleportgui config teleport.random.minDistance 200
-/teleportgui command randomtp
-/teleportgui command randomtp false
-/teleportgui reload config
+/teleportgui allow_request
+/teleportgui allow_request false
+/teleportgui_be notif_gui
+/teleportgui_admin config home.create.maxCount
+/teleportgui_admin config home.go.cooldownSeconds 10
+/teleportgui_admin config notifGuiDefault true
+/teleportgui_admin command randomtp
+/teleportgui_admin command randomtp false
+/teleportgui_admin reload config
 ```
 
 ## <a id="gui"></a>图形界面
@@ -211,7 +226,8 @@ Java 版使用服务端箱子菜单，不需要安装客户端模组。
 | 家园列表  | 左键传送、右键设为默认、`Shift + 左键` 删除、对准条目按 `F` 重命名、下界之星新增家园          |
 | 传送点列表 | 左键传送、`Shift + 左键` 删除（管理员）、对准条目按 `F` 重命名（管理员）、下界之星新建传送点（管理员） |
 | 请求列表  | 玩家列表左键发起请求、右键请求对方过来；请求列表左键接受、右键拒绝                           |
-| 通用导航  | `[6]` 返回、`[7]` 上一页、`[8]` 下一页；`[1]` 在玩家列表与请求列表之间切换           |
+| 接收开关  | 指南右侧绿宝石块表示允许接收请求，红石块表示拒绝；点击切换                                |
+| 通用导航  | `[6]` 关闭、`[7]` 上一页、`[8]` 下一页；`[2]` 在玩家列表与请求列表之间切换             |
 
 创建或重命名地点时，会打开铁砧输入界面。
 
@@ -243,6 +259,7 @@ runtimePersistence: true
 
 ```json
 {
+  "notifGuiDefault": true,
   "commands": {
     "home": true,
     "warp": true,
@@ -280,7 +297,7 @@ runtimePersistence: true
 }
 ```
 
-`commands` 中的每个键控制一组命令是否启用。除 `/teleportgui` 外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui command <命令>` 查看状态、`/teleportgui command <命令> <true/false>` 在线修改。
+`commands` 中的每个键控制一组命令是否启用。除 `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui_admin command <命令>` 查看状态、`/teleportgui_admin command <命令> <true/false>` 在线修改。
 
 常用字段：
 
@@ -301,7 +318,8 @@ runtimePersistence: true
 - 除下方特别说明的命令外，命令默认权限等级为 **0**，即所有玩家可用。
 - 由配置控制的权限通过 `permission.level` 设置，取值为原版权限等级 `0`–`4`。
 - `/warp del`、`/warp delete`、`/warp rename` 默认要求等级 **2**，由 `warp.del.permission.level` 与 `warp.rename.permission.level` 控制。
-- `/teleportgui config`、`/teleportgui command` 与 `/teleportgui reload` 要求等级 **4**。
+- `/teleportgui_admin config`、`/teleportgui_admin command` 与 `/teleportgui_admin reload` 要求等级 **4**；`/teleportgui_admin` 对无权限玩家不可见。
+- `/teleportgui` 的 `allow_request` 与 `/teleportgui_be` 的 `notif_gui` 所有玩家可用。
 - 权限等级不足时，命令不会执行，并会向玩家发送无权限提示。
 
 ## <a id="storage"></a>数据存储
