@@ -176,6 +176,7 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
+| `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | Level 4    |
 | `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | Level 4    |
 | `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | Level 4    |
 | `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | Level 4    |
@@ -187,6 +188,7 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 Examples:
 
 ```text
+/teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200

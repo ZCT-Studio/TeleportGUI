@@ -90,6 +90,7 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 | Command                                         | Description                                                   | Permission |
 |-------------------------------------------------|---------------------------------------------------------------|------------|
 | `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
+| `/teleportgui config <key>`                     | Show the current value of a key in `config.json`              | 4          |
 | `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | 4          |
 | `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | 4          |
 | `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | 4          |
@@ -99,6 +100,7 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 Example:
 
 ```text
+/teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui command disable randomtp
 /teleportgui reload config

@@ -14,6 +14,7 @@
 - 新增 `/randomtp` 随机传送命令（`/rtp` 为别名）：在当前维度内以玩家当前位置为中心，在配置的最小距离与最大距离之间随机寻找安全落点；支持冷却、权限等级、距离范围配置。
 - `config.json` 新增 `commands` 命令开关，除 `/teleportgui` 外所有命令（含别名）均可禁用；禁用后命令会从命令树中移除，启用后重新加入。
 - 新增 `/teleportgui command disable <命令>` 与 `/teleportgui command enable <命令>`，修改后会自动保存配置、重建命令树并同步在线玩家的命令列表。
+- 新增 `/teleportgui config <键>`，可在游戏内查看任意配置项的当前值（含从 `defaults` 继承的结果）。
 - 新增 `/teleportgui reload command` 与 `/teleportgui reload config`：前者重建当前命令树，后者重新读取 `config.json` 后再重建。
 - `/reload` 现在会同时重新加载 `config.json` 并更新命令树。
 - `config.json` 新增 `teleport.random` 节点，可配置 `minDistance`、`maxDistance`、`cooldownSeconds` 与 `permission.level`。

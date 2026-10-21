@@ -175,6 +175,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 | 命令                                              | 说明                        | 权限   |
 |-------------------------------------------------|---------------------------|------|
 | `/teleportgui be notification_gui <true/false>` | 设置自己收到 TPA 时基岩版是否自动弹出表单   | 所有玩家 |
+| `/teleportgui config <键>`                        | 查看 `config.json` 中某个配置项的当前值 | 等级 4 |
 | `/teleportgui config <键> <整数值>`                 | 修改并保存 `config.json` 中的配置项 | 等级 4 |
 | `/teleportgui command disable <命令>`             | 禁用命令并把它从命令树中移除            | 等级 4 |
 | `/teleportgui command enable <命令>`              | 启用命令并把它重新加入命令树            | 等级 4 |
@@ -186,6 +187,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 示例：
 
 ```text
+/teleportgui config home.create.maxCount
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200

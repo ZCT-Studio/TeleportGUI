@@ -87,6 +87,11 @@ public final class CommandLoader {
         return v == null ? 0 : v;
     }
 
+    public static int getExpireSeconds(String module, String node) {
+        Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE);
+        return v == null ? 0 : v;
+    }
+
     public static boolean isSafetyCheckEnabled(String module, String node) {
         Boolean v = resolveBool(module, node, ConfigKeys.FIELD_SAFETY);
         return v != null && v;

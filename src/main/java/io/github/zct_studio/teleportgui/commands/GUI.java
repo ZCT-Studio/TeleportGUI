@@ -60,6 +60,8 @@ public final class GUI {
                 .then(Commands.literal(ConfigKeys.TG_CONFIG)
                         .then(Commands.argument("key", StringArgumentType.string())
                                 .suggests(new ConfigKey())
+                                .executes(context -> cmdGetConfig(context.getSource(),
+                                        StringArgumentType.getString(context, "key")))
                                 .then(Commands.argument("value", IntegerArgumentType.integer())
                                         .executes(context -> cmdConfig(context.getSource(),
                                                 StringArgumentType.getString(context, "key"),
@@ -97,6 +99,38 @@ public final class GUI {
                                         : "commands.teleportgui.teleportgui.notificationGui.off",
                                 player)
                         .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
+                false);
+        return 0;
+    }
+
+    private static int cmdGetConfig(CommandSourceStack source, String key)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!requireOwner(player)) return 1;
+
+        if (!configKeys().contains(key)) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.teleportgui.config.unknownKey", player,
+                                    Component.literal(key))
+                            .withStyle(Styles.ERROR),
+                    false);
+            return 1;
+        }
+
+        String current = currentConfigValue(key);
+        if (current == null) {
+            player.sendSystemMessage(
+                    Tr_i18n.tr("commands.teleportgui.teleportgui.config.unknownKey", player,
+                                    Component.literal(key))
+                            .withStyle(Styles.ERROR),
+                    false);
+            return 1;
+        }
+
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.config.get", player,
+                                Component.literal(key), Component.literal(current))
+                        .withStyle(Styles.SUCCESS),
                 false);
         return 0;
     }
@@ -241,6 +275,36 @@ public final class GUI {
             return true;
         }
         return false;
+    }
+
+    static String currentConfigValue(String key) {
+        String[] parts = key.split("\\.");
+        if (parts.length == 3) {
+            if (nodeOf(parts[0], parts[1]) == null) return null;
+            Integer value = switch (parts[2]) {
+                case ConfigKeys.FIELD_COOLDOWN ->
+                        CommandLoader.getCooldown(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MIN_DISTANCE ->
+                        CommandLoader.getMinDistance(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MAX_DISTANCE ->
+                        CommandLoader.getMaxDistance(parts[0], parts[1]);
+                case ConfigKeys.FIELD_EXPIRE ->
+                        CommandLoader.getExpireSeconds(parts[0], parts[1]);
+                case ConfigKeys.FIELD_EXPIRE_REQUEST ->
+                        CommandLoader.getRequestExpireSeconds(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MAX_COUNT ->
+                        CommandLoader.getMaxCount(parts[0], parts[1]);
+                default -> null;
+            };
+            return value == null ? null : String.valueOf(value);
+        }
+        if (parts.length == 4
+                && ConfigKeys.FIELD_PERMISSION.equals(parts[2])
+                && FIELD_LEVEL.equals(parts[3])) {
+            if (nodeOf(parts[0], parts[1]) == null) return null;
+            return String.valueOf(CommandLoader.getPermissionLevel(parts[0], parts[1]));
+        }
+        return null;
     }
 
     private static CommandNode nodeOf(String module, String node) {
