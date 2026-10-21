@@ -10,6 +10,7 @@ import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
+import io.github.zct_studio.teleportgui.utils.CommandUtils;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
@@ -201,7 +202,7 @@ public final class Home {
 
     public static void setHome(ServerPlayer player, String homeName) {
         homeName = homeName.trim().toLowerCase();
-        if (!isValidName(player, homeName)) return;
+        if (!CommandUtils.isValidName(player, homeName)) return;
 
         PlayerData playerStorage = Manager.addPlayer(player.getStringUUID());
 
@@ -351,7 +352,7 @@ public final class Home {
     public static void renameHome(ServerPlayer player, String homeName, String newName) {
         homeName = homeName.trim().toLowerCase();
         newName = newName.trim().toLowerCase();
-        if (!isValidName(player, newName)) return;
+        if (!CommandUtils.isValidName(player, newName)) return;
 
         Optional<PlayerData> optStorage = Manager.getPlayer(player.getStringUUID());
         if (optStorage.isEmpty()) {
@@ -515,7 +516,7 @@ public final class Home {
                                 .withStyle(Styles.SUCCESS)
                                 .withStyle(style -> style.withClickEvent(
                                         new ClickEvent.RunCommand(
-                                                String.format("/home go %s", quote(currentHome.getName())))))
+                                                String.format("/home go %s", CommandUtils.quote(currentHome.getName())))))
                         )
                         .append(" ");
 
@@ -524,7 +525,7 @@ public final class Home {
                                     .withStyle(Styles.ACTION_SOFT)
                                     .withStyle(style -> style.withClickEvent(
                                             new ClickEvent.RunCommand(
-                                                    String.format("/home default %s", quote(currentHome.getName())))))
+                                                    String.format("/home default %s", CommandUtils.quote(currentHome.getName())))))
                             )
                             .append(" ");
                 }
@@ -533,7 +534,7 @@ public final class Home {
                         .withStyle(Styles.ERROR)
                         .withStyle(style -> style.withClickEvent(
                                 new ClickEvent.SuggestCommand(
-                                        String.format("/home del %s", quote(currentHome.getName())))))
+                                        String.format("/home del %s", CommandUtils.quote(currentHome.getName())))))
                 );
             }
 
@@ -541,21 +542,5 @@ public final class Home {
         }
 
         player.sendSystemMessage(message, false);
-    }
-
-    private static boolean isValidName(ServerPlayer player, String name) {
-        if (name.isEmpty() || name.indexOf('"') >= 0 || name.indexOf('\'') >= 0) {
-            player.sendSystemMessage(
-                    Tr_i18n.tr("commands.teleportgui.common.invalidName", player)
-                            .withStyle(Styles.ERROR),
-                    true);
-            return false;
-        }
-        return true;
-    }
-
-    /** 用双引号包裹名字，保证名字里有空格时点击聊天消息也能正确解析。 */
-    private static String quote(String name) {
-        return "\"" + name.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 }
