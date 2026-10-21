@@ -26,12 +26,41 @@ val authors = providers.gradleProperty("mod.authors")
     .split(",")
     .map { it.trim().removeSurrounding("\"") }
     .filter { it.isNotEmpty() }
-    .map { author ->
-        "\"" + author.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
-    }
 
-val authors_json = authors.joinToString(", ")
-val authors_toml = authors.joinToString(", ", "[", "]")
+fun escapeAuthorsJson(value: String): String =
+    value
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\b", "\\b")
+        .replace("\u000C", "\\f")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+        .replace(Regex("[\u0000-\u001F]")) { match ->
+            "\\u%04x".format(match.value[0].code)
+        }
+
+fun escapeAuthorsToml(value: String): String =
+    value
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\b", "\\b")
+        .replace("\u000C", "\\f")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+        .replace(Regex("[\u0000-\u001F]")) { match ->
+            "\\u%04X".format(match.value[0].code)
+        }
+
+val authors_json = authors.joinToString(
+    separator = ", "
+) { "\"${escapeAuthorsJson(it)}\"" }
+
+val authors_toml = authors.joinToString(
+    separator = ", "
+) { escapeAuthorsToml(it) }
+
 
 dependencies {
     val archVersion = findProperty("architectury_version") as String? ?: "22.0.5"
