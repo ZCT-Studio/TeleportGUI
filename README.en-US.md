@@ -122,67 +122,67 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 ### Homes
 
-| Command | Description | Default permission | Default cooldown |
-| --- | --- | --- | --- |
-| `/home`, `/home list` | List your homes | 0 | None |
-| `/home add <name>`, `/home create <name>` | Set a home at your current position | 0 | None |
-| `/home go <name>` | Teleport to a home | 0 | 5 s |
-| `/home del <name>`, `/home delete <name>` | Delete a home | 0 | None |
-| `/home rename <old> <new>` | Rename a home | 0 | None |
-| `/home default <name>` | Set your default home | 0 | None |
-| `/home gui`, `/ghome` | Open the home GUI | 0 | None |
+| Command                                   | Description                         | Default permission | Default cooldown |
+|-------------------------------------------|-------------------------------------|--------------------|------------------|
+| `/home`, `/home list`                     | List your homes                     | 0                  | None             |
+| `/home add <name>`, `/home create <name>` | Set a home at your current position | 0                  | None             |
+| `/home go <name>`                         | Teleport to a home                  | 0                  | 5 s              |
+| `/home del <name>`, `/home delete <name>` | Delete a home                       | 0                  | None             |
+| `/home rename <old> <new>`                | Rename a home                       | 0                  | None             |
+| `/home default <name>`                    | Set your default home               | 0                  | None             |
+| `/home gui`, `/ghome`                     | Open the home GUI                   | 0                  | None             |
 
 ### Warps
 
-| Command | Description | Default permission | Default cooldown |
-| --- | --- | --- | --- |
-| `/warp`, `/warp list` | List all warps | 0 | None |
-| `/warp add <name>`, `/warp create <name>` | Create a warp at your current position | 0 | None |
-| `/warp go <name>` | Teleport to a warp | 0 | 5 s |
-| `/warp del <name>`, `/warp delete <name>` | Delete a warp | 4 | None |
-| `/warp rename <old> <new>` | Rename a warp | 4 | None |
-| `/warp gui`, `/gwarp` | Open the warp GUI | 0 | None |
+| Command                                   | Description                            | Default permission | Default cooldown |
+|-------------------------------------------|----------------------------------------|--------------------|------------------|
+| `/warp`, `/warp list`                     | List all warps                         | 0                  | None             |
+| `/warp add <name>`, `/warp create <name>` | Create a warp at your current position | 0                  | None             |
+| `/warp go <name>`                         | Teleport to a warp                     | 0                  | 5 s              |
+| `/warp del <name>`, `/warp delete <name>` | Delete a warp                          | 4                  | None             |
+| `/warp rename <old> <new>`                | Rename a warp                          | 4                  | None             |
+| `/warp gui`, `/gwarp`                     | Open the warp GUI                      | 0                  | None             |
 
 > Deleting and renaming warps always require permission level 4, regardless of the configured permission value.
 
 ### Teleport Requests
 
-| Command | Description | Default permission | Default cooldown |
-| --- | --- | --- | --- |
-| `/tpa <player>` | Ask to teleport to another player | 0 | 30 s |
-| `/tpahere <player>` | Ask another player to teleport to you | 0 | 30 s |
-| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request from that player | 0 | None |
-| `/tpadeny <player>`, `/tpaN <player>` | Deny a request from that player | 0 | None |
-| `/gtpa` | Open the teleport request GUI | 0 | None |
+| Command                                 | Description                           | Default permission | Default cooldown |
+|-----------------------------------------|---------------------------------------|--------------------|------------------|
+| `/tpa <player>`                         | Ask to teleport to another player     | 0                  | 30 s             |
+| `/tpahere <player>`                     | Ask another player to teleport to you | 0                  | 30 s             |
+| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request from that player     | 0                  | None             |
+| `/tpadeny <player>`, `/tpaN <player>`   | Deny a request from that player       | 0                  | None             |
+| `/gtpa`                                 | Open the teleport request GUI         | 0                  | None             |
 
 ### Teleport Shortcuts
 
-| Command | Description | Safety check |
-| --- | --- | --- |
-| `/back` | Return to the position before your last teleport | Enabled |
-| `/tpdeathpoint`, `/tpdp` | Teleport to your death point | Enabled |
-| `/tpworldspawn`, `/tpws` | Teleport to the world spawn | Enabled |
-| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn | Disabled |
-| `/tpforce` | Confirm a pending unsafe teleport | — |
+| Command                  | Description                                      | Safety check |
+|--------------------------|--------------------------------------------------|--------------|
+| `/back`                  | Return to the position before your last teleport | Enabled      |
+| `/tpdeathpoint`, `/tpdp` | Teleport to your death point                     | Enabled      |
+| `/tpworldspawn`, `/tpws` | Teleport to the world spawn                      | Enabled      |
+| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                  | Disabled     |
+| `/tpforce`               | Confirm a pending unsafe teleport                | —            |
 
 ### Random Teleport
 
-| Command | Description | Default permission | Default cooldown |
-| --- | --- | --- | --- |
-| `/rtp` | Teleport to a random safe location in the current dimension | 0 | 60 s |
+| Command | Description                                                 | Default permission | Default cooldown |
+|---------|-------------------------------------------------------------|--------------------|------------------|
+| `/rtp`  | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
 
 `/rtp` searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
 
 ### Mod Settings
 
-| Command | Description | Permission |
-| --- | --- | --- |
-| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone |
-| `/teleportgui config <key> <integer>` | Change and save a value in `config.json` | Level 4 |
-| `/teleportgui command disable <command>` | Disable a command and remove it from the command tree | Level 4 |
-| `/teleportgui command enable <command>` | Enable a command and add it back to the command tree | Level 4 |
-| `/teleportgui reload command` | Re-apply command toggles and rebuild the command tree | Level 4 |
-| `/teleportgui reload config` | Reload `config.json` and rebuild the command tree | Level 4 |
+| Command                                         | Description                                                   | Permission |
+|-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
+| `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | Level 4    |
+| `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | Level 4    |
+| `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | Level 4    |
+| `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | Level 4    |
+| `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | Level 4    |
 
 > Vanilla `/reload` also reloads `config.json` and updates the command tree.
 
@@ -202,12 +202,12 @@ Examples:
 
 Java Edition uses server-side chest menus, so no client mod is needed.
 
-| Screen | Controls |
-| --- | --- |
-| Home list | Left click to teleport, right click to set default, `Shift + left click` to delete, press `F` on an entry to rename, nether star to add a home |
-| Warp list | Left click to teleport, `Shift + left click` to delete (operators), press `F` on an entry to rename (operators), nether star to create a warp (operators) |
-| Request screen | In the player list: left click to send a request, right click to ask them to come. In the request list: left click to accept, right click to deny |
-| Navigation | `[6]` back, `[7]` previous page, `[8]` next page; `[1]` switches between the player list and request list |
+| Screen         | Controls                                                                                                                                                  |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Home list      | Left click to teleport, right click to set default, `Shift + left click` to delete, press `F` on an entry to rename, nether star to add a home            |
+| Warp list      | Left click to teleport, `Shift + left click` to delete (operators), press `F` on an entry to rename (operators), nether star to create a warp (operators) |
+| Request screen | In the player list: left click to send a request, right click to ask them to come. In the request list: left click to accept, right click to deny         |
+| Navigation     | `[6]` back, `[7]` previous page, `[8]` next page; `[1]` switches between the player list and request list                                                 |
 
 Creating or renaming a location opens an anvil input screen.
 
@@ -281,15 +281,15 @@ Each key in `commands` enables or disables a command group. Every command except
 
 Common fields:
 
-| Field | Description |
-| --- | --- |
-| `cooldownSeconds` | Cooldown in seconds; `0` disables the cooldown |
-| `permission.level` | Vanilla permission level `0`–`4`; `-1` inherits from `defaults` |
-| `maxCount` | Home/warp limit; `-1` means unlimited |
+| Field                  | Description                                                                                               |
+|------------------------|-----------------------------------------------------------------------------------------------------------|
+| `cooldownSeconds`      | Cooldown in seconds; `0` disables the cooldown                                                            |
+| `permission.level`     | Vanilla permission level `0`–`4`; `-1` inherits from `defaults`                                           |
+| `maxCount`             | Home/warp limit; `-1` means unlimited                                                                     |
 | `requestExpireSeconds` | TPA request expiry in seconds; `0` never expires (set under `tpa.request`; applies to both request types) |
-| `safetyCheck` | Whether safe-position checks are enabled |
-| `minDistance` | `/rtp` minimum horizontal distance in blocks |
-| `maxDistance` | `/rtp` maximum horizontal distance in blocks; must be positive for `/rtp` |
+| `safetyCheck`          | Whether safe-position checks are enabled                                                                  |
+| `minDistance`          | `/rtp` minimum horizontal distance in blocks                                                              |
+| `maxDistance`          | `/rtp` maximum horizontal distance in blocks; must be positive for `/rtp`                                 |
 
 > `expireSeconds` is reserved. `maxDistance` is currently used by `/rtp` only.
 
@@ -303,11 +303,11 @@ Common fields:
 
 ## <a id="storage"></a>Storage
 
-| Path | Contents |
-| --- | --- |
-| `teleportgui/settings.yml` | Mod settings |
-| `teleportgui/config.json` | Command cooldowns, permissions, limits, and safety checks |
-| `teleportgui/storage.json` | Homes, warps, player preferences, and other data |
+| Path                       | Contents                                                  |
+|----------------------------|-----------------------------------------------------------|
+| `teleportgui/settings.yml` | Mod settings                                              |
+| `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks |
+| `teleportgui/storage.json` | Homes, warps, player preferences, and other data          |
 
 Runtime-only data:
 

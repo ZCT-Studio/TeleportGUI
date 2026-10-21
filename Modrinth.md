@@ -39,64 +39,64 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 
 ### Homes
 
-| Command | Description | Permission |
-| --- | --- | --- |
-| `/home`, `/home list` | List your homes | 0 |
-| `/home add <name>`, `/home create <name>` | Set a home at your position | 0 |
-| `/home go <name>` | Teleport to a home | 0 |
-| `/home del <name>`, `/home delete <name>` | Delete a home | 0 |
-| `/home rename <old> <new>` | Rename a home | 0 |
-| `/home default <name>` | Set your default home | 0 |
-| `/home gui`, `/ghome` | Open the home GUI | 0 |
+| Command                                   | Description                 | Permission |
+|-------------------------------------------|-----------------------------|------------|
+| `/home`, `/home list`                     | List your homes             | 0          |
+| `/home add <name>`, `/home create <name>` | Set a home at your position | 0          |
+| `/home go <name>`                         | Teleport to a home          | 0          |
+| `/home del <name>`, `/home delete <name>` | Delete a home               | 0          |
+| `/home rename <old> <new>`                | Rename a home               | 0          |
+| `/home default <name>`                    | Set your default home       | 0          |
+| `/home gui`, `/ghome`                     | Open the home GUI           | 0          |
 
 ### Warps
 
-| Command | Description | Permission |
-| --- | --- | --- |
-| `/warp`, `/warp list` | List all warps | 0 |
-| `/warp add <name>`, `/warp create <name>` | Create a warp at your position | 0 |
-| `/warp go <name>` | Teleport to a warp | 0 |
-| `/warp del <name>`, `/warp delete <name>` | Delete a warp | 4 |
-| `/warp rename <old> <new>` | Rename a warp | 4 |
-| `/warp gui`, `/gwarp` | Open the warp GUI | 0 |
+| Command                                   | Description                    | Permission |
+|-------------------------------------------|--------------------------------|------------|
+| `/warp`, `/warp list`                     | List all warps                 | 0          |
+| `/warp add <name>`, `/warp create <name>` | Create a warp at your position | 0          |
+| `/warp go <name>`                         | Teleport to a warp             | 0          |
+| `/warp del <name>`, `/warp delete <name>` | Delete a warp                  | 4          |
+| `/warp rename <old> <new>`                | Rename a warp                  | 4          |
+| `/warp gui`, `/gwarp`                     | Open the warp GUI              | 0          |
 
 Deleting and renaming warps always require permission level 4.
 
 ### Teleport Requests
 
-| Command | Description | Permission |
-| --- | --- | --- |
-| `/tpa <player>` | Ask to teleport to another player | 0 |
-| `/tpahere <player>` | Ask another player to teleport to you | 0 |
-| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request | 0 |
-| `/tpadeny <player>`, `/tpaN <player>` | Deny a request | 0 |
-| `/gtpa` | Open the request GUI | 0 |
+| Command                                 | Description                           | Permission |
+|-----------------------------------------|---------------------------------------|------------|
+| `/tpa <player>`                         | Ask to teleport to another player     | 0          |
+| `/tpahere <player>`                     | Ask another player to teleport to you | 0          |
+| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request                      | 0          |
+| `/tpadeny <player>`, `/tpaN <player>`   | Deny a request                        | 0          |
+| `/gtpa`                                 | Open the request GUI                  | 0          |
 
 TPA requests are kept in memory and are cleared when the server restarts.
 
 ### Teleport Shortcuts
 
-| Command | Description |
-| --- | --- |
-| `/back` | Return to the position before your last teleport |
-| `/tpdeathpoint`, `/tpdp` | Teleport to your death point |
-| `/tpworldspawn`, `/tpws` | Teleport to the world spawn |
-| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn |
-| `/tpforce` | Confirm a pending unsafe teleport |
-| `/rtp` | Teleport to a random safe location in the current dimension |
+| Command                  | Description                                                 |
+|--------------------------|-------------------------------------------------------------|
+| `/back`                  | Return to the position before your last teleport            |
+| `/tpdeathpoint`, `/tpdp` | Teleport to your death point                                |
+| `/tpworldspawn`, `/tpws` | Teleport to the world spawn                                 |
+| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                             |
+| `/tpforce`               | Confirm a pending unsafe teleport                           |
+| `/rtp`                   | Teleport to a random safe location in the current dimension |
 
 Death points and back points are kept in memory and are cleared when the server restarts.
 
 ### Mod Settings
 
-| Command | Description | Permission |
-| --- | --- | --- |
-| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone |
-| `/teleportgui config <key> <integer>` | Change and save a value in `config.json` | 4 |
-| `/teleportgui command disable <command>` | Disable a command and remove it from the command tree | 4 |
-| `/teleportgui command enable <command>` | Enable a command and add it back to the command tree | 4 |
-| `/teleportgui reload command` | Re-apply command toggles and rebuild the command tree | 4 |
-| `/teleportgui reload config` | Reload `config.json` and rebuild the command tree | 4 |
+| Command                                         | Description                                                   | Permission |
+|-------------------------------------------------|---------------------------------------------------------------|------------|
+| `/teleportgui be notification_gui <true/false>` | Toggle automatic Bedrock forms for your incoming TPA requests | Everyone   |
+| `/teleportgui config <key> <integer>`           | Change and save a value in `config.json`                      | 4          |
+| `/teleportgui command disable <command>`        | Disable a command and remove it from the command tree         | 4          |
+| `/teleportgui command enable <command>`         | Enable a command and add it back to the command tree          | 4          |
+| `/teleportgui reload command`                   | Re-apply command toggles and rebuild the command tree         | 4          |
+| `/teleportgui reload config`                    | Reload `config.json` and rebuild the command tree             | 4          |
 
 Example:
 
