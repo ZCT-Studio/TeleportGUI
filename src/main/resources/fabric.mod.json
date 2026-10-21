@@ -7,8 +7,8 @@
   "authors": [${authors_json}],
   "contact": {
     "homepage": "https://modrinth.com/mod/TeleportGUI",
-    "sources": "https://github.com/ZCT-Stuido/TeleportGUI",
-    "issues": "https://github.com/ZCT-Stuido/TeleportGUI/issues"
+    "sources": "https://github.com/ZCT-Studio/TeleportGUI",
+    "issues": "https://github.com/ZCT-Studio/TeleportGUI/issues"
   },
   "license": "${license}",
   "icon": "icon.png",

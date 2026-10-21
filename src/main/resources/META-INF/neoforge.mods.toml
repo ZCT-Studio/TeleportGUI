@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "*"
-issueTrackerURL = "https://github.com/ZCT-Stuido/TeleportGUI/issues"
+issueTrackerURL = "https://github.com/ZCT-Studio/TeleportGUI/issues"
 license = "${license}"
 
 [[mods]]
@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "${name}"
 iconFile = "icon.png"
 bannerFile = "banner.png"
-displayURL = "https://github.com/ZCT-Stuido/TeleportGUI"
+displayURL = "https://github.com/ZCT-Studio/TeleportGUI"
 authors = ${authors_toml}
 description = '''
 ${description}
