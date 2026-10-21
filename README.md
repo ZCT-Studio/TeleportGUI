@@ -307,11 +307,12 @@ autoMigrate: true
 | `teleportgui/settings.yml` | 模组设置              |
 | `teleportgui/config.json`  | 命令冷却、权限、数量上限、安全检测 |
 | `teleportgui/storage.json` | 家园、传送点、玩家偏好等数据    |
+| `teleportgui/runtime.json` | 冷却与待处理的 TPA 请求    |
 
 需要注意的运行期数据：
 
-- **死亡点**、**返回点**和**待处理的 TPA 请求**保存在内存中，服务器重启后会清空。
-- 家园、公共传送点和基岩版通知偏好会写入存储文件，重启后保留。
+- **冷却**与**待处理的 TPA 请求**会写入 `runtime.json`，服务器重启后保留。
+- **死亡点**与**返回点**保存在内存中，服务器重启后会清空。
 - 升级或备份前，请先备份整个 `teleportgui/` 目录。
 
 ## <a id="build"></a>从源码构建

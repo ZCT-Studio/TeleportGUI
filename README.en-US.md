@@ -308,11 +308,12 @@ Common fields:
 | `teleportgui/settings.yml` | Mod settings                                              |
 | `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks |
 | `teleportgui/storage.json` | Homes, warps, player preferences, and other data          |
+| `teleportgui/runtime.json` | Cooldowns and pending TPA requests                        |
 
-Runtime-only data:
+Runtime data:
 
-- **Death points**, **back points**, and **pending TPA requests** are kept in memory and are cleared when the server restarts.
-- Homes, global warps, and Bedrock notification preferences are persisted and survive restarts.
+- **Cooldowns** and **pending TPA requests** are saved to `runtime.json` and survive restarts.
+- **Death points** and **back points** are kept in memory and are cleared when the server restarts.
 - Back up the whole `teleportgui/` directory before upgrading.
 
 ## <a id="build"></a>Building from Source

@@ -811,7 +811,7 @@ public final class GUI {
         }
 
         private static String ageText(Tpa.TpaRequest req) {
-            long ageSec = (System.currentTimeMillis() - req.createdAtMs) / 1000;
+            long ageSec = req.ageSeconds();
             return ageSec < 60 ? ageSec + "s" : ageSec / 60 + "m";
         }
 

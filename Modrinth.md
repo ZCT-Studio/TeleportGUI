@@ -178,8 +178,9 @@ Common fields:
 - `teleportgui/settings.yml` — mod settings.
 - `teleportgui/config.json` — command cooldowns, permissions, limits, and safety checks.
 - `teleportgui/storage.json` — homes, warps, and player preferences.
+- `teleportgui/runtime.json` — cooldowns and pending TPA requests.
 
-Homes, warps, and Bedrock notification preferences persist across restarts. Death points, back points, and pending TPA requests do not.
+Homes, warps, Bedrock notification preferences, cooldowns, and pending TPA requests persist across restarts. Death points and back points do not.
 
 ## TODO
 

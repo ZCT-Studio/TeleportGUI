@@ -99,7 +99,7 @@ public final class Registry {
         Warp.register(dispatcher);
         Tpa.register(dispatcher);
         TpPoints.register(dispatcher);
-        Rtp.register(dispatcher);
+        RandomTp.register(dispatcher);
     }
 
     private static void ensureGuiCommand(CommandDispatcher<CommandSourceStack> dispatcher) {

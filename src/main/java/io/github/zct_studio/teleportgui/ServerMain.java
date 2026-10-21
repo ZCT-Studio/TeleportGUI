@@ -5,9 +5,13 @@ import dev.architectury.event.events.common.CommandPerformEvent;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.TickEvent;
 import io.github.zct_studio.teleportgui.commands.Registry;
+import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.storage.RuntimeStore;
+import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
@@ -48,6 +52,10 @@ public final class ServerMain {
             ModSettingsLoader.load(dataDir.resolve("settings.yml"));
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
+            RuntimeStore.load(dataDir.resolve("runtime.json"));
+            long now = server.getTickCount();
+            CommandGuard.loadPersisted(RuntimeStore.data().cooldowns, now);
+            Tpa.loadPersisted(RuntimeStore.data().tpa, now);
             Registry.rebuild(server.getCommands().getDispatcher());
         });
 
@@ -68,6 +76,16 @@ public final class ServerMain {
             return EventResult.pass();
         });
 
+        TickEvent.SERVER_POST.register(server -> {
+            if (server.getTickCount() % 1200 != 0) return;
+            long now = server.getTickCount();
+            CommandGuard.cleanup(now);
+            Tpa.cleanup(now);
+            if (RuntimeStore.isDirty()) {
+                RuntimeStore.save(CommandGuard.snapshot(now), Tpa.snapshot(now));
+            }
+        });
+
         EntityEvent.LIVING_DEATH.register((LivingEntity entity, DamageSource source) -> {
             if (entity instanceof ServerPlayer sp) {
                 DeathPoint.set(
@@ -80,6 +98,8 @@ public final class ServerMain {
         });
 
         LifecycleEvent.SERVER_STOPPING.register(server -> {
+            long now = server.getTickCount();
+            RuntimeStore.save(CommandGuard.snapshot(now), Tpa.snapshot(now));
             try {
                 Manager.close();
             } catch (Exception e) {

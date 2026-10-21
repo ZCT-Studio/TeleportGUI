@@ -7,6 +7,7 @@ import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.storage.RuntimeStore;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
@@ -19,9 +20,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -98,8 +101,10 @@ public final class Tpa {
     }
 
     public static List<TpaRequest> getRequestsFor(String recipientUuid) {
+        long now = currentTick();
         return REQUESTS.stream()
                 .filter(r -> Objects.equals(recipientUuid, r.toUuid))
+                .filter(r -> !r.isExpired(now))
                 .toList();
     }
 
@@ -135,9 +140,22 @@ public final class Tpa {
             return false;
         }
 
+        long now = currentTick();
+        boolean purged = false;
+        for (TpaRequest request : REQUESTS) {
+            if (Objects.equals(from.getStringUUID(), request.fromUuid)
+                    && Objects.equals(to.getStringUUID(), request.toUuid)
+                    && request.isExpired(now)
+                    && REQUESTS.remove(request)) {
+                purged = true;
+            }
+        }
+        if (purged) RuntimeStore.markDirty();
+
         long existing = REQUESTS.stream()
                 .filter(r -> Objects.equals(from.getStringUUID(), r.fromUuid))
                 .filter(r -> Objects.equals(to.getStringUUID(), r.toUuid))
+                .filter(r -> !r.isExpired(now))
                 .count();
 
         if (existing >= 1) {
@@ -151,6 +169,7 @@ public final class Tpa {
         }
 
         new TpaRequest(from.getStringUUID(), to.getStringUUID(), here);
+        persist();
 
         from.sendSystemMessage(
                 Tr_i18n.tr(here
@@ -212,6 +231,7 @@ public final class Tpa {
     }
 
     public static void accept(ServerPlayer from, ServerPlayer to) {
+        long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()
                 .filter(r -> Objects.equals(from.getStringUUID(), r.fromUuid))
                 .filter(r -> Objects.equals(to.getStringUUID(), r.toUuid))
@@ -226,14 +246,13 @@ public final class Tpa {
         }
 
         TpaRequest req = reqOpt.get();
-
-        int expireSec = CommandLoader.getRequestExpireSeconds(
-                ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
-        if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
+        if (req.isExpired(now)) {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
+            RuntimeStore.markDirty();
+            persist();
             return;
         }
 
@@ -256,9 +275,12 @@ public final class Tpa {
         }
 
         REQUESTS.remove(req);
+        RuntimeStore.markDirty();
+        persist();
     }
 
     public static void deny(ServerPlayer from, ServerPlayer to) {
+        long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()
                 .filter(r -> Objects.equals(from.getStringUUID(), r.fromUuid))
                 .filter(r -> Objects.equals(to.getStringUUID(), r.toUuid))
@@ -273,18 +295,19 @@ public final class Tpa {
         }
 
         TpaRequest req = reqOpt.get();
-
-        int expireSec = CommandLoader.getRequestExpireSeconds(
-                ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
-        if (expireSec > 0 && (System.currentTimeMillis() - req.createdAtMs) > expireSec * 1000L) {
+        if (req.isExpired(now)) {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
             REQUESTS.remove(req);
+            RuntimeStore.markDirty();
+            persist();
             return;
         }
 
         REQUESTS.remove(req);
+        RuntimeStore.markDirty();
+        persist();
 
         from.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", from)
@@ -317,6 +340,55 @@ public final class Tpa {
         }
     }
 
+    private static void persist() {
+        long now = currentTick();
+        RuntimeStore.save(CommandGuard.snapshot(now), snapshot(now));
+    }
+
+    public static void cleanup(long now) {
+        boolean changed = false;
+        for (TpaRequest request : REQUESTS) {
+            if (request.isExpired(now) && REQUESTS.remove(request)) {
+                changed = true;
+            }
+        }
+        if (changed) RuntimeStore.markDirty();
+    }
+
+    public static List<RuntimeStore.TpaEntry> snapshot(long now) {
+        List<RuntimeStore.TpaEntry> result = new ArrayList<>();
+        for (TpaRequest request : REQUESTS) {
+            long remaining = request.remainingTicks(now);
+            if (remaining <= 0) continue;
+
+            RuntimeStore.TpaEntry entry = new RuntimeStore.TpaEntry();
+            entry.from = request.fromUuid;
+            entry.to = request.toUuid;
+            entry.here = request.here;
+            entry.ageTicks = request.ageTicks(now);
+            entry.remainingTicks = remaining;
+            result.add(entry);
+        }
+        return result;
+    }
+
+    public static void loadPersisted(List<RuntimeStore.TpaEntry> entries, long now) {
+        REQUESTS.clear();
+        if (entries == null) return;
+
+        for (RuntimeStore.TpaEntry entry : entries) {
+            if (entry == null || entry.from == null || entry.to == null) continue;
+            if (entry.remainingTicks <= 0) continue;
+
+            long createdAtTick = now - Math.max(0L, entry.ageTicks);
+            long expiresAtTick = entry.remainingTicks == Long.MAX_VALUE
+                    ? Long.MAX_VALUE
+                    : now + entry.remainingTicks;
+            REQUESTS.add(new TpaRequest(entry.from, entry.to, entry.here,
+                    createdAtTick, expiresAtTick));
+        }
+    }
+
     public static ServerPlayer resolveOnline(String uuid) {
         if (ServerMain.SERVER == null || uuid == null) return null;
         try {
@@ -327,18 +399,55 @@ public final class Tpa {
         }
     }
 
+    private static long currentTick() {
+        MinecraftServer server = ServerMain.SERVER;
+        return server == null ? 0L : server.getTickCount();
+    }
+
     public static class TpaRequest {
         public final String fromUuid;
         public final String toUuid;
         public final boolean here;
-        public final long createdAtMs;
+        public final long createdAtTick;
+        public final long expiresAtTick;
 
         public TpaRequest(String fromUuid, String toUuid, boolean here) {
+            long now = currentTick();
             this.fromUuid = fromUuid;
             this.toUuid = toUuid;
             this.here = here;
-            this.createdAtMs = System.currentTimeMillis();
+            this.createdAtTick = now;
+            int expireSec = CommandLoader.getRequestExpireSeconds(
+                    ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
+            this.expiresAtTick = expireSec > 0 ? now + expireSec * 20L : Long.MAX_VALUE;
             REQUESTS.add(this);
+        }
+
+        private TpaRequest(String fromUuid, String toUuid, boolean here,
+                           long createdAtTick, long expiresAtTick) {
+            this.fromUuid = fromUuid;
+            this.toUuid = toUuid;
+            this.here = here;
+            this.createdAtTick = createdAtTick;
+            this.expiresAtTick = expiresAtTick;
+        }
+
+        public long ageSeconds() {
+            return Math.max(0L, (currentTick() - createdAtTick) / 20L);
+        }
+
+        public long ageTicks(long now) {
+            return Math.max(0L, now - createdAtTick);
+        }
+
+        public boolean isExpired(long now) {
+            return expiresAtTick != Long.MAX_VALUE && now >= expiresAtTick;
+        }
+
+        public long remainingTicks(long now) {
+            return expiresAtTick == Long.MAX_VALUE
+                    ? Long.MAX_VALUE
+                    : Math.max(0L, expiresAtTick - now);
         }
     }
 }
