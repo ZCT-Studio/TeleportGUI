@@ -2,7 +2,6 @@ package io.github.zct_studio.teleportgui.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.Styles;
@@ -48,10 +47,12 @@ public final class RandomTp {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralCommandNode<CommandSourceStack> primary = dispatcher.register(
+        dispatcher.register(
                 Commands.literal("randomtp")
                         .executes(context -> execute(context.getSource())));
-        dispatcher.register(Commands.literal("rtp").redirect(primary));
+        dispatcher.register(
+                Commands.literal("rtp")
+                        .executes(context -> execute(context.getSource())));
     }
 
     private static int execute(CommandSourceStack source) throws CommandSyntaxException {
