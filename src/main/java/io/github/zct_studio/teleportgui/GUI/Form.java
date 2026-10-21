@@ -31,6 +31,17 @@ public final class Form {
     private static final String CUMULUS_MODAL = "org.geysermc.cumulus.form.ModalForm";
     private static final String CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
     private static final String FLOODGATE_API = "org.geysermc.floodgate.api.FloodgateApi";
+    private static final String FORM_IMAGE = "org.geysermc.cumulus.util.FormImage";
+    private static final String FORM_IMAGE_TYPE = "org.geysermc.cumulus.util.FormImage$Type";
+
+    private static final String ICON_BED_RED = "textures/items/bed_red";
+    private static final String ICON_BED_WHITE = "textures/items/bed_white";
+    private static final String ICON_ENDER_PEARL = "textures/items/ender_pearl";
+    private static final String ICON_EMERALD = "textures/items/emerald";
+    private static final String ICON_REDSTONE = "textures/items/redstone_dust";
+    private static final String ICON_ARROW = "textures/items/arrow";
+    private static final String ICON_BARRIER = "textures/items/barrier";
+    private static final String ICON_PAPER = "textures/items/paper";
     private static final Map<UUID, Integer> FORM_SEQ = new ConcurrentHashMap<>();
 
     private Form() {
@@ -49,9 +60,11 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", title);
-            call(b, "label", text(player, "gui.teleportgui.be.summary", String.valueOf(homes.size())));
+            formIcon(b, ICON_BED_WHITE);
+            label(b, text(player, "gui.teleportgui.be.summary", String.valueOf(homes.size())),
+                    ICON_BED_RED);
             if (!def.isEmpty()) {
-                call(b, "label", text(player, "gui.teleportgui.be.defaultHome", def));
+                label(b, text(player, "gui.teleportgui.be.defaultHome", def), ICON_BED_RED);
             }
             call(b, "dropdown", text(player, "gui.teleportgui.be.selectEntry"),
                     homes.stream().map(NamedLoc::getName).toList());
@@ -129,7 +142,9 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", title);
-            call(b, "label", text(player, "gui.teleportgui.be.summary", String.valueOf(warps.size())));
+            formIcon(b, ICON_ENDER_PEARL);
+            label(b, text(player, "gui.teleportgui.be.summary", String.valueOf(warps.size())),
+                    ICON_ENDER_PEARL);
             call(b, "dropdown", text(player, "gui.teleportgui.be.selectEntry"),
                     warps.stream().map(NamedLoc::getName).toList());
             call(b, "dropdown", text(player, "gui.teleportgui.be.selectAction"), actions);
@@ -167,9 +182,10 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", title);
+            formIcon(b, warp ? ICON_ENDER_PEARL : ICON_BED_RED);
             call(b, "content", empty);
-            call(b, "button", text(player, "gui.teleportgui.universal.gui.add"));
-            onValid(b, response -> reopen(player, () -> openCreateForm(player, warp)));
+            button(b, text(player, "gui.teleportgui.universal.gui.add"),
+                    ICON_EMERALD, () -> reopen(player, () -> openCreateForm(player, warp)));
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -208,6 +224,7 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", text(player, "gui.teleportgui.rename.createTitle"));
+            formIcon(b, warp ? ICON_ENDER_PEARL : ICON_BED_RED);
             call(b, "input", text(player, "gui.teleportgui.rename.createInput"), "");
             onValid(b, response -> {
                 String newName = stringValue(response, "getInput", 0).trim();
@@ -235,7 +252,9 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", text(player, "gui.teleportgui.rename.title", oldName));
-            call(b, "label", text(player, "gui.teleportgui.rename.old", oldName));
+            formIcon(b, warp ? ICON_ENDER_PEARL : ICON_BED_WHITE);
+            label(b, text(player, "gui.teleportgui.rename.old", oldName),
+                    warp ? ICON_ENDER_PEARL : ICON_BED_WHITE);
             call(b, "input", text(player, "gui.teleportgui.rename.input"), "");
 
             onValid(b, response -> {
@@ -270,25 +289,21 @@ public final class Form {
             call(b, "title", text(player, "gui.teleportgui.tpa.tpagui.title"));
             call(b, "content", text(player, "gui.teleportgui.be.tpaSummary"));
 
-            List<Runnable> actions = new ArrayList<>();
-            call(b, "button", text(player, "gui.teleportgui.be.viewRequests"));
-            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, 0)));
-            call(b, "button", text(player, "gui.teleportgui.tpa.tpagui.new"));
-            actions.add(() -> reopen(player, () -> openTpaRequestForm(player)));
-            call(b, "button", text(player, allowed
-                    ? "gui.teleportgui.tpa.tpagui.allowOn"
-                    : "gui.teleportgui.tpa.tpagui.allowOff"));
-            actions.add(() -> {
-                PlayerData data = Manager.getPlayer(player.getStringUUID())
-                        .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
-                data.setRequestAllowed(!allowed);
-                reopen(player, () -> openTpaForm(player));
-            });
+            button(b, text(player, "gui.teleportgui.be.viewRequests"), ICON_PAPER,
+                    () -> reopen(player, () -> openTpaRequestsForm(player, 0)));
+            button(b, text(player, "gui.teleportgui.tpa.tpagui.new"), ICON_ENDER_PEARL,
+                    () -> reopen(player, () -> openTpaRequestForm(player)));
+            button(b, text(player, allowed
+                            ? "gui.teleportgui.tpa.tpagui.allowOn"
+                            : "gui.teleportgui.tpa.tpagui.allowOff"),
+                    allowed ? ICON_EMERALD : ICON_REDSTONE,
+                    () -> {
+                        PlayerData data = Manager.getPlayer(player.getStringUUID())
+                                .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+                        data.setRequestAllowed(!allowed);
+                        reopen(player, () -> openTpaForm(player));
+                    });
 
-            onValid(b, response -> {
-                int id = intValue(response, "clickedButtonId");
-                if (id >= 0 && id < actions.size()) actions.get(id).run();
-            });
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -309,8 +324,8 @@ public final class Form {
 
             List<Runnable> actions = new ArrayList<>();
             if (p > 0) {
-                call(b, "button", text(player, "gui.teleportgui.universal.gui.pgup"));
-                actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, p - 1)));
+                button(b, text(player, "gui.teleportgui.universal.gui.pgup"), ICON_ARROW,
+                        () -> reopen(player, () -> openTpaRequestsForm(player, p - 1)));
             }
 
             if (requests.isEmpty()) {
@@ -321,26 +336,23 @@ public final class Form {
                 for (int i = start; i < end; i++) {
                     Tpa.TpaRequest req = requests.get(i);
                     final String fromUuid = req.fromUuid;
-                    call(b, "button", text(player, "gui.teleportgui.tpa.tpagui.line",
-                            String.valueOf(i + 1),
-                            senderName(req),
-                            text(player, req.here
-                                    ? "gui.teleportgui.tpa.tpagui.here"
-                                    : "gui.teleportgui.tpa.tpagui.tocome"),
-                            ageText(req)));
-                    actions.add(() -> reopen(player, () -> openTpaRequestDialog(player, fromUuid, p)));
+                    button(b, text(player, "gui.teleportgui.tpa.tpagui.line",
+                                    String.valueOf(i + 1),
+                                    senderName(req),
+                                    text(player, req.here
+                                            ? "gui.teleportgui.tpa.tpagui.here"
+                                            : "gui.teleportgui.tpa.tpagui.tocome"),
+                                    ageText(req)),
+                            ICON_PAPER,
+                            () -> reopen(player, () -> openTpaRequestDialog(player, fromUuid, p)));
                 }
             }
 
             if (p < totalPages - 1) {
-                call(b, "button", text(player, "gui.teleportgui.universal.gui.pgdn"));
-                actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, p + 1)));
+                button(b, text(player, "gui.teleportgui.universal.gui.pgdn"), ICON_ARROW,
+                        () -> reopen(player, () -> openTpaRequestsForm(player, p + 1)));
             }
 
-            onValid(b, response -> {
-                int id = intValue(response, "clickedButtonId");
-                if (id >= 0 && id < actions.size()) actions.get(id).run();
-            });
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -352,26 +364,20 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpareqdialog.title"));
+            formIcon(b, ICON_PAPER);
             call(b, "content", from == null
                     ? text(player, "commands.teleportgui.tpa.notFound")
                     : from.getName().getString());
 
-            List<Runnable> actions = new ArrayList<>();
-            call(b, "button", text(player, "gui.teleportgui.tpa.tpareqdialog.accept"));
-            actions.add(() -> {
+            button(b, text(player, "gui.teleportgui.tpa.tpareqdialog.accept"), ICON_EMERALD, () -> {
                 if (from != null) Tpa.accept(from, player);
             });
-            call(b, "button", text(player, "gui.teleportgui.tpa.tpareqdialog.deny"));
-            actions.add(() -> {
+            button(b, text(player, "gui.teleportgui.tpa.tpareqdialog.deny"), ICON_REDSTONE, () -> {
                 if (from != null) Tpa.deny(from, player);
             });
-            call(b, "button", text(player, "gui.teleportgui.universal.gui.back"));
-            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, page)));
+            button(b, text(player, "gui.teleportgui.universal.gui.back"), ICON_ARROW,
+                    () -> reopen(player, () -> openTpaRequestsForm(player, page)));
 
-            onValid(b, response -> {
-                int id = intValue(response, "clickedButtonId");
-                if (id >= 0 && id < actions.size()) actions.get(id).run();
-            });
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -395,6 +401,7 @@ public final class Form {
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", title);
+            formIcon(b, ICON_ENDER_PEARL);
             call(b, "dropdown", text(player, "gui.teleportgui.tpa.tpagui.target"), names);
             call(b, "dropdown", text(player, "gui.teleportgui.tpa.tpagui.type"),
                     List.of(text(player, "gui.teleportgui.tpa.tpagui.typeTpa"),
@@ -419,8 +426,10 @@ public final class Form {
             Object b = newBuilder(CUMULUS_MODAL);
             call(b, "title", text(player, "commands.teleportgui.common.noSafeLocation"));
             call(b, "content", text(player, "commands.teleportgui.common.safetyIsForLosers"));
-            call(b, "button1", text(player, "commands.teleportgui.common.forceTeleport"));
-            call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
+            modalButton(b, "button1", text(player, "commands.teleportgui.common.forceTeleport"),
+                    ICON_EMERALD);
+            modalButton(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"),
+                    ICON_REDSTONE);
 
             onValid(b, response -> {
                 if (intValue(response, "getClickedButtonId") == 0) onForce.run();
@@ -436,8 +445,7 @@ public final class Form {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", title);
             call(b, "content", content);
-            call(b, "button", text(player, "gui.teleportgui.universal.gui.close"));
-            onValid(b, response -> {
+            button(b, text(player, "gui.teleportgui.universal.gui.close"), ICON_BARRIER, () -> {
             });
             send(player, build(b));
         } catch (Throwable t) {
@@ -487,6 +495,84 @@ public final class Form {
 
     private static Object newBuilder(String className) throws Exception {
         return Class.forName(className).getMethod("builder").invoke(null);
+    }
+
+    private static Object formImage(String path) {
+        return formImage(path, false);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Object formImage(String path, boolean url) {
+        try {
+            Class<?> typeClass = Class.forName(FORM_IMAGE_TYPE);
+            Object imageType = Enum.valueOf(
+                    (Class<Enum>) typeClass.asSubclass(Enum.class), url ? "URL" : "PATH");
+            Class<?> imageClass = Class.forName(FORM_IMAGE);
+            Method of = imageClass.getMethod("of", typeClass, String.class);
+            of.setAccessible(true);
+            return of.invoke(null, imageType, path);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private static void button(Object builder, String text, String iconPath, Runnable action) {
+        Object icon = iconPath == null ? null : formImage(iconPath);
+        if (icon != null) {
+            try {
+                call(builder, "button", text, icon, responseAction(action));
+                return;
+            } catch (Throwable ignored) {
+            }
+        }
+        try {
+            call(builder, "button", text, responseAction(action));
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void modalButton(Object builder, String method, String text, String iconPath) {
+        Object icon = iconPath == null ? null : formImage(iconPath);
+        if (icon != null) {
+            try {
+                call(builder, method, text, icon);
+                return;
+            } catch (Throwable ignored) {
+            }
+        }
+        try {
+            call(builder, method, text);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void label(Object builder, String text, String iconPath) {
+        Object icon = iconPath == null ? null : formImage(iconPath);
+        if (icon != null) {
+            try {
+                call(builder, "label", text, icon);
+                return;
+            } catch (Throwable ignored) {
+            }
+        }
+        try {
+            call(builder, "label", text);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void formIcon(Object builder, String iconPath) {
+        if (iconPath == null) return;
+        Object icon = formImage(iconPath);
+        if (icon == null) return;
+        try {
+            call(builder, "icon", icon);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static Consumer<Object> responseAction(Runnable action) {
+        return response -> action.run();
     }
 
     private static Object call(Object target, String method, Object... args) throws Exception {
