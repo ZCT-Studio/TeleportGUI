@@ -166,11 +166,11 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 ### 随机传送
 
-| 命令     | 说明               | 默认权限 | 默认冷却 |
-|--------|------------------|------|------|
-| `/rtp` | 在当前维度随机传送到一个安全位置 | 0    | 60 秒 |
+| 命令                  | 说明                    | 默认权限 | 默认冷却 |
+|---------------------|-----------------------|------|------|
+| `/randomtp`（`/rtp`） | 在当前维度随机传送到一个安全位置      | 0    | 60 秒 |
 
-`/rtp` 默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
+`/randomtp`（别名 `/rtp`）默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
 
 ### 模组设置
 
@@ -191,7 +191,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200
-/teleportgui command disable rtp
+/teleportgui command disable randomtp
 /teleportgui reload config
 ```
 
@@ -287,10 +287,10 @@ autoMigrate: true
 | `maxCount`             | 家园/传送点数量上限；`-1` 表示无限制                              |
 | `requestExpireSeconds` | TPA 请求过期秒数；`0` 表示永不过期（在 `tpa.request` 下设置，对两种请求生效） |
 | `safetyCheck`          | 是否启用安全位置检测                                         |
-| `minDistance`          | `/rtp` 的最小水平距离（格）                                  |
-| `maxDistance`          | `/rtp` 的最大水平距离（格）；`/rtp` 必须为正数                     |
+| `minDistance`          | `/randomtp` 的最小水平距离（格）                              |
+| `maxDistance`          | `/randomtp` 的最大水平距离（格）；`/randomtp` 必须为正数       |
 
-> `expireSeconds` 目前是预留字段。`maxDistance` 目前仅用于 `/rtp`。
+> `expireSeconds` 目前是预留字段。`maxDistance` 目前仅用于 `/randomtp`。
 
 ## <a id="permissions"></a>权限
 

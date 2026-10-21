@@ -96,9 +96,9 @@
   "commands.teleportgui.teleportgui.reload.config": "已重新載入 config.json 並重建指令樹。",
   "commands.teleportgui.teleportgui.reload.configFailed": "重新載入 config.json 失敗，請查看伺服器日誌。",
 
-  "commands.teleportgui.rtp.searching": "正在尋找安全的隨機位置，請稍等……",
-  "commands.teleportgui.rtp.go": "已隨機傳送到 X%0% Y%1% Z%2%。",
-  "commands.teleportgui.rtp.failed": "沒有找到安全的隨機位置，請再試一次。",
+  "commands.teleportgui.randomtp.searching": "正在尋找安全的隨機位置，請稍等……",
+  "commands.teleportgui.randomtp.go": "已隨機傳送到 X%0% Y%1% Z%2%。",
+  "commands.teleportgui.randomtp.failed": "沒有找到安全的隨機位置，請再試一次。",
 
   "commands.teleportgui.tpdeathpoint.go": "正在前往你的死亡點",
   "commands.teleportgui.tpdeathpoint.cleared": "死亡地點已清除",

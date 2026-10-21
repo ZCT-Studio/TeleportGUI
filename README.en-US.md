@@ -167,11 +167,11 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 ### Random Teleport
 
-| Command | Description                                                 | Default permission | Default cooldown |
-|---------|-------------------------------------------------------------|--------------------|------------------|
-| `/rtp`  | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
+| Command                   | Description                                                 | Default permission | Default cooldown |
+|---------------------------|-------------------------------------------------------------|--------------------|------------------|
+| `/randomtp` (`/rtp`)      | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
 
-`/rtp` searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
+`/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
 
 ### Mod Settings
 
@@ -192,7 +192,7 @@ Examples:
 /teleportgui config home.go.cooldownSeconds 10
 /teleportgui config tpa.request.requestExpireSeconds 120
 /teleportgui config teleport.random.minDistance 200
-/teleportgui command disable rtp
+/teleportgui command disable randomtp
 /teleportgui reload config
 ```
 
@@ -288,10 +288,10 @@ Common fields:
 | `maxCount`             | Home/warp limit; `-1` means unlimited                                                                     |
 | `requestExpireSeconds` | TPA request expiry in seconds; `0` never expires (set under `tpa.request`; applies to both request types) |
 | `safetyCheck`          | Whether safe-position checks are enabled                                                                  |
-| `minDistance`          | `/rtp` minimum horizontal distance in blocks                                                              |
-| `maxDistance`          | `/rtp` maximum horizontal distance in blocks; must be positive for `/rtp`                                 |
+| `minDistance`          | `/randomtp` minimum horizontal distance in blocks                                                         |
+| `maxDistance`          | `/randomtp` maximum horizontal distance in blocks; must be positive for `/randomtp`                       |
 
-> `expireSeconds` is reserved. `maxDistance` is currently used by `/rtp` only.
+> `expireSeconds` is reserved. `maxDistance` is currently used by `/randomtp` only.
 
 ## <a id="permissions"></a>Permissions
 

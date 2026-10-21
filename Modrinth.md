@@ -83,7 +83,7 @@ TPA requests are kept in memory and are cleared when the server restarts.
 | `/tpworldspawn`, `/tpws` | Teleport to the world spawn                                 |
 | `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                             |
 | `/tpforce`               | Confirm a pending unsafe teleport                           |
-| `/rtp`                   | Teleport to a random safe location in the current dimension |
+| `/randomtp` (`/rtp`)     | Teleport to a random safe location in the current dimension |
 
 Death points and back points are kept in memory and are cleared when the server restarts.
 
@@ -102,7 +102,7 @@ Example:
 
 ```text
 /teleportgui config home.go.cooldownSeconds 10
-/teleportgui command disable rtp
+/teleportgui command disable randomtp
 /teleportgui reload config
 ```
 

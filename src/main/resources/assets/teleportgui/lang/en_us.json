@@ -96,9 +96,9 @@
   "commands.teleportgui.teleportgui.reload.config": "config.json reloaded and the command tree rebuilt.",
   "commands.teleportgui.teleportgui.reload.configFailed": "Could not reload config.json. Check the server logs.",
 
-  "commands.teleportgui.rtp.searching": "Searching for a random safe location...",
-  "commands.teleportgui.rtp.go": "Teleported to a random location: X%0% Y%1% Z%2%",
-  "commands.teleportgui.rtp.failed": "Could not find a safe random location. Try again.",
+  "commands.teleportgui.randomtp.searching": "Searching for a random safe location...",
+  "commands.teleportgui.randomtp.go": "Teleported to a random location: X%0% Y%1% Z%2%",
+  "commands.teleportgui.randomtp.failed": "Could not find a safe random location. Try again.",
 
   "commands.teleportgui.tpdeathpoint.go": "Teleporting to your death point",
   "commands.teleportgui.tpdeathpoint.cleared": "Death location cleared",
