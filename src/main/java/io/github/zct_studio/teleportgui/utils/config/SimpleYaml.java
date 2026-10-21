@@ -5,18 +5,6 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Tiny parser for the block-style YAML subset used by {@code settings.yml}.
- * <p>
- * The mod used to depend on SnakeYAML, but that library is not bundled into the
- * released jar, causing a {@code NoClassDefFoundError} on server startup. The
- * settings file is intentionally simple (nested maps and scalar values), so a
- * small self-contained parser removes the runtime dependency entirely.
- * <p>
- * Supported: comments, nested maps, quoted strings, booleans, integers and
- * {@code null}/{@code ~}. Not supported: lists, flow maps, anchors or
- * multi-line scalars.
- */
 public final class SimpleYaml {
 
     private SimpleYaml() {}

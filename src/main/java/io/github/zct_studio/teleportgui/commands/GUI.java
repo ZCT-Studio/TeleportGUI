@@ -131,7 +131,7 @@ public final class GUI {
         ServerPlayer player = source.getPlayerOrException();
         if (!requireOwner(player)) return 1;
 
-        String group = CommandRegistry.groupNameOf(command);
+        String group = Registry.groupNameOf(command);
         if (group == null) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.teleportgui.command.unknown", player,
@@ -142,7 +142,7 @@ public final class GUI {
         }
 
         CommandLoader.setCommandEnabled(group, enabled);
-        CommandRegistry.rebuild(source.getServer().getCommands().getDispatcher());
+        Registry.rebuild(source.getServer().getCommands().getDispatcher());
         player.sendSystemMessage(
                 Tr_i18n.tr(enabled
                                 ? "commands.teleportgui.teleportgui.command.enabled"

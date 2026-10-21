@@ -16,17 +16,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Owns the mod's top-level commands and can rebuild the command tree at runtime.
- * <p>
- * Brigadier has no public API for removing a root child, so the root's private
- * {@code children} and {@code literals} maps are accessed reflectively. These
- * field names are part of the Brigadier library (not Minecraft), so they are
- * stable across game versions.
- */
-public final class CommandRegistry {
+public final class Registry {
 
-    private CommandRegistry() {}
+    private Registry() {}
 
     public record Group(String name, List<String> literals) {}
 
@@ -51,7 +43,6 @@ public final class CommandRegistry {
     private static final Field ROOT_CHILDREN = findField("children");
     private static final Field ROOT_LITERALS = findField("literals");
 
-    /** Registers all feature commands, then removes the disabled ones. */
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         if (ROOT_CHILDREN == null && hasManagedCommand(dispatcher)) {
             Constants.LOGGER.warn("Command tree access is unavailable; keeping the existing command tree");
@@ -63,7 +54,6 @@ public final class CommandRegistry {
         removeDisabledCommands(dispatcher);
     }
 
-    /** Rebuilds the command tree from the current config and refreshes all clients. */
     public static void rebuild(CommandDispatcher<CommandSourceStack> dispatcher) {
         if (ROOT_CHILDREN == null) {
             Constants.LOGGER.warn("Command tree access is unavailable; skipping command tree rebuild");
@@ -84,11 +74,6 @@ public final class CommandRegistry {
         return groupNameOf(name) != null;
     }
 
-    /**
-     * Resolves a config group name or any command literal (including aliases) to
-     * its group name. For example, both {@code tpdeathpoint} and {@code tpdp}
-     * resolve to {@code tpdeathpoint}.
-     */
     public static String groupNameOf(String name) {
         if (GROUPS.containsKey(name)) return name;
         for (Group group : GROUPS.values()) {

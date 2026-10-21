@@ -21,11 +21,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-/**
- * /rtp - teleports the player to a random safe location in the current dimension.
- * The horizontal distance is randomized between minDistance and maxDistance from
- * the player's current position.
- */
 public final class Rtp {
 
     private static final int MAX_ATTEMPTS = 32;
@@ -98,8 +93,6 @@ public final class Rtp {
             double angle = random.nextDouble() * Math.PI * 2.0D;
             double min = minDistance;
             double max = maxDistance;
-            // sqrt makes the sample uniform over the area of the ring, not just
-            // over the radius.
             double distance = Math.sqrt(min * min
                     + random.nextDouble() * (max * max - min * min));
             int x = (int) Math.floor(player.getX() + Math.cos(angle) * distance);
@@ -120,11 +113,6 @@ public final class Rtp {
         return isSafeDestination(world, pos) ? Optional.of(pos) : Optional.empty();
     }
 
-    /**
-     * Dimensions with a ceiling (the Nether) have their heightmap at the bedrock
-     * roof. Scan downwards from just below the ceiling to find a cave or ledge
-     * that a player can actually stand on.
-     */
     private static Optional<BlockPos> findBelowCeiling(ServerLevel world, int x, int z) {
         int top = Math.min(world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z),
                 world.getMaxY());

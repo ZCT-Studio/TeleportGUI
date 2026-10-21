@@ -5,7 +5,7 @@ import dev.architectury.event.events.common.CommandPerformEvent;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
-import io.github.zct_studio.teleportgui.commands.CommandRegistry;
+import io.github.zct_studio.teleportgui.commands.Registry;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
@@ -46,19 +46,14 @@ public final class ServerMain {
             ModSettingsLoader.load(dataDir.resolve("settings.yml"));
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
-            // Commands may have been registered before config.json was loaded.
-            // Re-apply the command toggles now that the real config is available.
-            CommandRegistry.rebuild(server.getCommands().getDispatcher());
+            Registry.rebuild(server.getCommands().getDispatcher());
         });
 
         CommandRegistrationEvent.EVENT.register((dispatcher, ra, env) ->
-                CommandRegistry.register(dispatcher));
+                Registry.register(dispatcher));
 
-        // Vanilla /reload does not rebuild command trees by itself. Re-read
-        // config.json after the reload command was issued so command toggles and
-        // other settings take effect without a restart.
         CommandPerformEvent.EVENT.register(event -> {
-            if (CommandRegistry.isReloadCommand(event.getResults())) {
+            if (Registry.isReloadCommand(event.getResults())) {
                 CommandSourceStack source = event.getResults().getContext().getSource();
                 if (source != null && source.permissions().hasPermission(
                         new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS))) {
