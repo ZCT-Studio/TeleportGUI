@@ -17,6 +17,7 @@ public class Tpa implements SuggestionProvider<CommandSourceStack> {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
             var server = context.getSource().getServer();
+            //noinspection ConstantValue
             if (server == null) return Suggestions.empty();
 
             for (io.github.zct_studio.teleportgui.commands.Tpa.TpaRequest req : io.github.zct_studio.teleportgui.commands.Tpa.getRequestsFor(player.getStringUUID())) {

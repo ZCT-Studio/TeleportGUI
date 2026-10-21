@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import java.util.HashMap;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class DeathPoint {
 
     private static final HashMap<String, io.github.zct_studio.teleportgui.types.DeathPoint> deathLocations = new HashMap<>();

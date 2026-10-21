@@ -14,15 +14,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
+@SuppressWarnings("unused")
 public final class TeleportUtils {
 
     private static final Set<String> UNSAFE_NON_COLLIDABLE_BLOCKS = Set.of(
@@ -33,7 +31,8 @@ public final class TeleportUtils {
 
     private static final Map<String, PreviousPos> PREV_POS = new HashMap<>();
 
-    public record PreviousPos(Vec3 pos, ResourceKey<Level> dim) {}
+    private TeleportUtils() {
+    }
 
     public static void recordPreviousPos(ServerPlayer player) {
         PREV_POS.put(player.getStringUUID(),
@@ -75,8 +74,6 @@ public final class TeleportUtils {
         VoxelShape belowShape = world.getBlockState(below).getCollisionShape(world, below);
         return belowShape.isEmpty() || belowShape.max(Direction.Axis.Y) <= 1.0D;
     }
-
-    private TeleportUtils() {}
 
     public static boolean isBedrockPlayer(ServerPlayer player) {
         try {
@@ -182,5 +179,8 @@ public final class TeleportUtils {
 
     public static boolean isUnsafeNonCollidable(BlockState state) {
         return UNSAFE_NON_COLLIDABLE_BLOCKS.contains(state.getBlock().getDescriptionId());
+    }
+
+    public record PreviousPos(Vec3 pos, ResourceKey<Level> dim) {
     }
 }

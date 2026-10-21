@@ -6,6 +6,7 @@ import io.github.zct_studio.teleportgui.types.PlayerData;
 import java.nio.file.Path;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface Provider {
 
     void init(Path dataDir) throws Exception;
@@ -14,6 +15,7 @@ public interface Provider {
 
     void saveWarp(NamedLoc warp);
 
+    @SuppressWarnings("UnusedReturnValue")
     boolean deleteWarp(String name);
 
     List<PlayerData> loadPlayers();

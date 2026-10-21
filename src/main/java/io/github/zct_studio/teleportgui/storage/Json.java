@@ -2,9 +2,9 @@ package io.github.zct_studio.teleportgui.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
-import io.github.zct_studio.teleportgui.Constants;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class Json implements Provider {
-
+    private final Gson gson = new GsonBuilder().create();
+    @SuppressWarnings("FieldCanBeLocal")
     private Path dataDir;
     private Path storageFile;
     private StorageData data;
-    private final Gson gson = new GsonBuilder().create();
 
     @Override
     public void init(Path dataDir) throws Exception {

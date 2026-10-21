@@ -26,7 +26,8 @@ public final class Rtp {
     private static final int MAX_ATTEMPTS = 32;
     private static final int DEFAULT_MAX_DISTANCE = 1000;
 
-    private Rtp() {}
+    private Rtp() {
+    }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("rtp")
@@ -91,8 +92,8 @@ public final class Rtp {
 
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             double angle = random.nextDouble() * Math.PI * 2.0D;
-            double min = minDistance;
-            double max = maxDistance;
+            @SuppressWarnings("UnnecessaryLocalVariable") double min = minDistance;
+            @SuppressWarnings("UnnecessaryLocalVariable") double max = maxDistance;
             double distance = Math.sqrt(min * min
                     + random.nextDouble() * (max * max - min * min));
             int x = (int) Math.floor(player.getX() + Math.cos(angle) * distance);

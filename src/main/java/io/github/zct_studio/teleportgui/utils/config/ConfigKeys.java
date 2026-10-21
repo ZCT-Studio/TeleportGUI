@@ -3,28 +3,24 @@ package io.github.zct_studio.teleportgui.utils.config;
 import java.util.List;
 
 public final class ConfigKeys {
-    private ConfigKeys() {}
-
+    @SuppressWarnings("unused")
+    public static final String MODULE_TELEPORTGUI = "teleportgui";
     public static final String MODULE_WARP = "warp";
     public static final String MODULE_HOME = "home";
     public static final String MODULE_TPA = "tpa";
     public static final String MODULE_TELEPORT = "teleport";
-    public static final String MODULE_TELEPORTGUI = "teleportgui";
-
     public static final String TG_BE = "be";
     public static final String TG_CONFIG = "config";
     public static final String TG_COMMAND = "command";
     public static final String TG_RELOAD = "reload";
     public static final String TG_DISABLE = "disable";
     public static final String TG_ENABLE = "enable";
-
     public static final String WARP_CREATE = "create";
     public static final String WARP_GO = "go";
     public static final String WARP_DEL = "del";
     public static final String WARP_RENAME = "rename";
     public static final String WARP_LIST = "list";
     public static final String WARP_GUI = "gui";
-
     public static final String HOME_CREATE = "create";
     public static final String HOME_GO = "go";
     public static final String HOME_DEL = "del";
@@ -32,18 +28,15 @@ public final class ConfigKeys {
     public static final String HOME_LIST = "list";
     public static final String HOME_DEFAULT = "default";
     public static final String HOME_GUI = "gui";
-
     public static final String TPA_REQUEST = "request";
     public static final String TPA_REQUEST_HERE = "requestHere";
     public static final String TPA_ACCEPT = "accept";
     public static final String TPA_DENY = "deny";
-
     public static final String TP_DEATH_POINT = "deathPoint";
     public static final String TP_SPAWN_POINT = "spawnPoint";
     public static final String TP_WORLD_SPAWN = "worldSpawn";
     public static final String TP_BACK = "back";
     public static final String TP_RANDOM = "random";
-
     public static final String FIELD_COOLDOWN = "cooldownSeconds";
     public static final String FIELD_MIN_DISTANCE = "minDistance";
     public static final String FIELD_MAX_DISTANCE = "maxDistance";
@@ -52,7 +45,6 @@ public final class ConfigKeys {
     public static final String FIELD_EXPIRE_REQUEST = "requestExpireSeconds";
     public static final String FIELD_SAFETY = "safetyCheck";
     public static final String FIELD_MAX_COUNT = "maxCount";
-
     // Top-level command groups that can be enabled or disabled from config.json.
     // Aliases belong to the same group, so disabling a group also removes them.
     public static final String COMMAND_HOME = "home";
@@ -64,7 +56,6 @@ public final class ConfigKeys {
     public static final String COMMAND_SPAWN_POINT = "tpspawnpoint";
     public static final String COMMAND_FORCE = "tpforce";
     public static final String COMMAND_RTP = "rtp";
-
     public static final List<String> ALL_COMMANDS = List.of(
             COMMAND_HOME,
             COMMAND_WARP,
@@ -75,4 +66,7 @@ public final class ConfigKeys {
             COMMAND_SPAWN_POINT,
             COMMAND_FORCE,
             COMMAND_RTP);
+
+    private ConfigKeys() {
+    }
 }

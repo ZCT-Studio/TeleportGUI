@@ -1,7 +1,7 @@
 package io.github.zct_studio.teleportgui.gui.menu.anvil;
 
-import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.gui.GUI;
@@ -21,8 +21,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public final class Create extends AnvilMenu {
-
     private final ServerPlayer player;
     private final boolean warp;
     private final int returnPage;
@@ -49,7 +49,12 @@ public final class Create extends AnvilMenu {
         refresh();
     }
 
+    public static void open(ServerPlayer player, boolean warp, int returnPage) {
+        player.openMenu(new Provider(player, warp, returnPage));
+    }
+
     private void refresh() {
+        //noinspection ConstantValue
         if (player == null || resultSlots == null) return;
         String shown = newName == null || newName.isBlank() ? null : newName.trim();
         MutableComponent label = shown == null
@@ -64,6 +69,7 @@ public final class Create extends AnvilMenu {
     @Override
     public boolean setItemName(@NonNull String name) {
         boolean ok = super.setItemName(name);
+        //noinspection ConstantValue
         this.newName = name == null ? "" : name;
         refresh();
         return ok;
@@ -139,10 +145,6 @@ public final class Create extends AnvilMenu {
     @Override
     public @NonNull ItemStack quickMoveStack(@NonNull Player player, int slotIndex) {
         return ItemStack.EMPTY;
-    }
-
-    public static void open(ServerPlayer player, boolean warp, int returnPage) {
-        player.openMenu(new Provider(player, warp, returnPage));
     }
 
     public static class Provider implements MenuProvider {

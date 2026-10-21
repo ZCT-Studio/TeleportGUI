@@ -1,13 +1,11 @@
 package io.github.zct_studio.teleportgui.utils.config;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class SimpleYaml {
 
-    private SimpleYaml() {}
+    private SimpleYaml() {
+    }
 
     public static Map<String, Object> parse(String text) {
         Map<String, Object> root = new LinkedHashMap<>();
@@ -30,7 +28,7 @@ public final class SimpleYaml {
             if (key.isEmpty()) continue;
             String value = content.substring(colon + 1).trim();
 
-            while (stack.peek().indent >= indent) {
+            while (Objects.requireNonNull(stack.peek()).indent >= indent) {
                 stack.pop();
             }
             Map<String, Object> parent = stack.peek().map;
@@ -110,5 +108,6 @@ public final class SimpleYaml {
         return line;
     }
 
-    private record Frame(int indent, Map<String, Object> map) {}
+    private record Frame(int indent, Map<String, Object> map) {
+    }
 }

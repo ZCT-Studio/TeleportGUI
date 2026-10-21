@@ -9,12 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 
+@SuppressWarnings("SameParameterValue")
 public final class CommandLoader {
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static Command CONFIG = new Command();
     public static Path CONFIG_FILE;
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private CommandLoader() {}
+    private CommandLoader() {
+    }
 
     public static void load(Path configFile) {
         CONFIG_FILE = configFile;
@@ -43,7 +45,8 @@ public final class CommandLoader {
                 if (Files.exists(configFile)) {
                     Files.copy(configFile, Path.of(configFile + ".bak"), StandardCopyOption.REPLACE_EXISTING);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             CONFIG = new Command();
             CONFIG.fillDefaults();
         }
@@ -110,6 +113,8 @@ public final class CommandLoader {
         return enabled == null || enabled;
     }
 
+
+    @SuppressWarnings("UnusedReturnValue")
     public static boolean setCommandEnabled(String command, boolean enabled) {
         if (!ConfigKeys.ALL_COMMANDS.contains(command)) return false;
         if (CONFIG.commands == null) CONFIG.commands = new LinkedHashMap<>();

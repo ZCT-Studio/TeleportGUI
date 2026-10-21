@@ -1,17 +1,17 @@
 package io.github.zct_studio.teleportgui.commands;
 
-import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.gui.Form;
+import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.gui.Form;
-import io.github.zct_studio.teleportgui.gui.GUI;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -143,8 +143,8 @@ public final class Tpa {
         if (existing >= 1) {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.alreadySent", from,
-                            Component.literal(to.getName().getString())
-                                    .withStyle(Styles.EMPHASIS))
+                                    Component.literal(to.getName().getString())
+                                            .withStyle(Styles.EMPHASIS))
                             .withStyle(Styles.INFO),
                     true);
             return false;
@@ -161,8 +161,8 @@ public final class Tpa {
                 true);
 
         MutableComponent receivedMsg = Tr_i18n.tr(here
-                        ? "commands.teleportgui.tpa.receivedHere"
-                        : "commands.teleportgui.tpa.received", to,
+                                ? "commands.teleportgui.tpa.receivedHere"
+                                : "commands.teleportgui.tpa.received", to,
                         Component.literal(from.getName().getString())
                                 .withStyle(Styles.INFO_STRONG))
                 .withStyle(Styles.INFO);
@@ -300,7 +300,7 @@ public final class Tpa {
         if (targetName == null || targetName.isBlank()) return;
         ServerPlayer target = ServerMain.SERVER == null ? null
                 : ServerMain.SERVER
-                        .getPlayerList().getPlayerByName(targetName.trim());
+                .getPlayerList().getPlayerByName(targetName.trim());
         if (target == null) {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.playerNotFound", from,

@@ -2,14 +2,13 @@ package io.github.zct_studio.teleportgui.utils.config;
 
 import java.util.LinkedHashMap;
 
+@SuppressWarnings("SameParameterValue")
 public class Command {
     public static final int CURRENT_CONFIG_VERSION = 2;
 
     public int configVersion = CURRENT_CONFIG_VERSION;
     public CommandNode defaults = new CommandNode();
 
-    // Enabled state of every top-level command group (aliases follow their group).
-    // /teleportgui is intentionally not listed: it must always stay available.
     public LinkedHashMap<String, Boolean> commands = new LinkedHashMap<>();
 
     public LinkedHashMap<String, CommandNode> warp = new LinkedHashMap<>();
@@ -17,10 +16,6 @@ public class Command {
     public LinkedHashMap<String, CommandNode> tpa = new LinkedHashMap<>();
     public LinkedHashMap<String, CommandNode> teleport = new LinkedHashMap<>();
 
-    /**
-     * Adds missing sections, nodes and fields and returns {@code true} when the
-     * in-memory config differs from what was loaded from disk.
-     */
     public boolean fillDefaults() {
         boolean changed = configVersion < CURRENT_CONFIG_VERSION;
         configVersion = Math.max(configVersion, CURRENT_CONFIG_VERSION);
@@ -86,8 +81,7 @@ public class Command {
             random.minDistance = 100;
             changed = true;
         }
-        // The generic node default (-1, "no limit") is unusable for RTP, so use a
-        // finite default radius unless the admin configured a positive value.
+
         if (random.maxDistance == null || random.maxDistance < 0) {
             random.maxDistance = 1000;
             changed = true;

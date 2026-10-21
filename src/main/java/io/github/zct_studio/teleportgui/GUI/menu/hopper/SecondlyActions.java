@@ -15,17 +15,14 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.NonNull;
 
+@SuppressWarnings("unused")
 public final class SecondlyActions extends AbstractContainerMenu {
-
-    public record Action(ItemStack icon, Runnable runnable) {}
-
     private static final int SIZE = 5;
-
     private final Action[] actions;
     private final Runnable onClose;
+    @SuppressWarnings("FieldCanBeLocal")
     private final Container container;
     private boolean navigating;
-
     private SecondlyActions(int windowId, Inventory inv, ServerPlayer player,
                             Action[] actions, Runnable onClose) {
         super(MenuType.HOPPER, windowId);
@@ -48,6 +45,15 @@ public final class SecondlyActions extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(inv, col, 8 + col * 18, 109));
         }
+    }
+
+    private static boolean isOffline(Player p) {
+        var server = ServerMain.SERVER;
+        return server == null || server.getPlayerList().getPlayer(p.getUUID()) == null;
+    }
+
+    public static void open(ServerPlayer player, Component title, Action[] actions, Runnable onClose) {
+        player.openMenu(new Provider(player, title, actions, onClose));
     }
 
     @Override
@@ -76,11 +82,6 @@ public final class SecondlyActions extends AbstractContainerMenu {
         onClose.run();
     }
 
-    private static boolean isOffline(Player p) {
-        var server = ServerMain.SERVER;
-        return server == null || server.getPlayerList().getPlayer(p.getUUID()) == null;
-    }
-
     @Override
     public boolean stillValid(@NonNull Player player) {
         return true;
@@ -91,8 +92,7 @@ public final class SecondlyActions extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    public static void open(ServerPlayer player, Component title, Action[] actions, Runnable onClose) {
-        player.openMenu(new Provider(player, title, actions, onClose));
+    public record Action(ItemStack icon, Runnable runnable) {
     }
 
     private record Provider(ServerPlayer player, Component title, Action[] actions, Runnable onClose)

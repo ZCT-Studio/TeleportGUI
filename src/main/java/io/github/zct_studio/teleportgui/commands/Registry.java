@@ -16,13 +16,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public final class Registry {
 
-    private Registry() {}
-
-    public record Group(String name, List<String> literals) {}
-
     private static final LinkedHashMap<String, Group> GROUPS = new LinkedHashMap<>();
+    private static final Field ROOT_CHILDREN = findField("children");
+    private static final Field ROOT_LITERALS = findField("literals");
 
     static {
         group(ConfigKeys.COMMAND_HOME, "home", "ghome");
@@ -36,12 +35,12 @@ public final class Registry {
         group(ConfigKeys.COMMAND_RTP, "rtp");
     }
 
+    private Registry() {
+    }
+
     private static void group(String name, String... literals) {
         GROUPS.put(name, new Group(name, List.of(literals)));
     }
-
-    private static final Field ROOT_CHILDREN = findField("children");
-    private static final Field ROOT_LITERALS = findField("literals");
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         if (ROOT_CHILDREN == null && hasManagedCommand(dispatcher)) {
@@ -85,7 +84,7 @@ public final class Registry {
     public static boolean isReloadCommand(ParseResults<CommandSourceStack> results) {
         var nodes = results.getContext().getNodes();
         if (!nodes.isEmpty()) {
-            String name = nodes.get(0).getNode().getName();
+            String name = nodes.getFirst().getNode().getName();
             if ("reload".equals(name) || "minecraft:reload".equals(name)) return true;
         }
         String input = results.getReader().getString().trim();
@@ -172,5 +171,8 @@ public final class Registry {
                     + "disabling commands at runtime will not work", name, e);
             return null;
         }
+    }
+
+    public record Group(String name, List<String> literals) {
     }
 }

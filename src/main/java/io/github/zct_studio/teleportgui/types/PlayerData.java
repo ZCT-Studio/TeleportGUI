@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class PlayerData {
 
     private final String uuid;
-    private String defaultHome = "";
     private final List<NamedLoc> homes = new ArrayList<>();
+    private String defaultHome = "";
     private Boolean notificationGui = Boolean.TRUE;
 
     public PlayerData(String uuid) {
@@ -24,6 +25,11 @@ public class PlayerData {
 
     public String getDefaultHome() {
         return defaultHome;
+    }
+
+    public void setDefaultHome(String defaultHome) {
+        this.defaultHome = defaultHome;
+        Manager.save();
     }
 
     public boolean isNotificationGuiEnabled() {
@@ -43,11 +49,6 @@ public class PlayerData {
         return homes.stream()
                 .filter(home -> Objects.equals(home.getName(), name))
                 .findFirst();
-    }
-
-    public void setDefaultHome(String defaultHome) {
-        this.defaultHome = defaultHome;
-        Manager.save();
     }
 
     public boolean addHome(NamedLoc home) {

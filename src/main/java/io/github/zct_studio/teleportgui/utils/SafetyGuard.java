@@ -1,10 +1,10 @@
 package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Styles;
-import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
-import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -17,13 +17,13 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("unused")
 public final class SafetyGuard {
-
-    private SafetyGuard() {}
 
     private static final Map<String, Pending> PENDING = new ConcurrentHashMap<>();
 
-    public record Pending(ResourceKey<Level> dim, Vec3 pos, String module, String node) {}
+    private SafetyGuard() {
+    }
 
     public static boolean tryTeleport(ServerPlayer player, ServerLevel world, BlockPos target,
                                       String module, String node) {
@@ -100,5 +100,8 @@ public final class SafetyGuard {
                                 .withStyle(s -> s.withClickEvent(
                                         new ClickEvent.RunCommand("/tpforce")))),
                 false);
+    }
+
+    public record Pending(ResourceKey<Level> dim, Vec3 pos, String module, String node) {
     }
 }

@@ -1,15 +1,15 @@
 package io.github.zct_studio.teleportgui.commands;
 
-import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,8 @@ import static net.minecraft.world.level.Level.OVERWORLD;
 
 public final class TpPoints {
 
-    private TpPoints() {}
+    private TpPoints() {
+    }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("back")

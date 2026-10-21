@@ -1,21 +1,17 @@
 package io.github.zct_studio.teleportgui.commands;
 
-import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.suggestionProviders.CommandGroup;
 import io.github.zct_studio.teleportgui.suggestionProviders.ConfigKey;
-import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.PlayerData;
-import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
-import io.github.zct_studio.teleportgui.utils.config.CommandNode;
-import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
-import io.github.zct_studio.teleportgui.utils.config.PermissionNode;
-import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.utils.config.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -35,12 +31,13 @@ import java.util.List;
  */
 public final class GUI {
 
-    private GUI() {}
-
-    /** 命令字面量：be notification_gui（配置常量里的是 camelCase，这里按命令风格用下划线） */
+    /**
+     * 命令字面量：be notification_gui（配置常量里的是 camelCase，这里按命令风格用下划线）
+     */
     private static final String LITERAL_NOTIFICATION_GUI = "notification_gui";
-
-    /** 可写的 node 字段 */
+    /**
+     * 可写的 node 字段
+     */
     private static final List<String> NODE_FIELDS = List.of(
             ConfigKeys.FIELD_COOLDOWN,
             ConfigKeys.FIELD_MIN_DISTANCE,
@@ -48,9 +45,10 @@ public final class GUI {
             ConfigKeys.FIELD_EXPIRE,
             ConfigKeys.FIELD_EXPIRE_REQUEST,
             ConfigKeys.FIELD_MAX_COUNT);
-
     private static final String FIELD_LEVEL = "level";
     private static final int MAX_PERMISSION_LEVEL = 4;
+    private GUI() {
+    }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("teleportgui")
@@ -95,8 +93,8 @@ public final class GUI {
 
         player.sendSystemMessage(
                 Tr_i18n.tr(enabled
-                                ? "commands.teleportgui.teleportgui.notificationGui.on"
-                                : "commands.teleportgui.teleportgui.notificationGui.off",
+                                        ? "commands.teleportgui.teleportgui.notificationGui.on"
+                                        : "commands.teleportgui.teleportgui.notificationGui.off",
                                 player)
                         .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
                 true);
@@ -145,8 +143,8 @@ public final class GUI {
         Registry.rebuild(source.getServer().getCommands().getDispatcher());
         player.sendSystemMessage(
                 Tr_i18n.tr(enabled
-                                ? "commands.teleportgui.teleportgui.command.enabled"
-                                : "commands.teleportgui.teleportgui.command.disabled",
+                                        ? "commands.teleportgui.teleportgui.command.enabled"
+                                        : "commands.teleportgui.teleportgui.command.disabled",
                                 player, Component.literal(group))
                         .withStyle(Styles.SUCCESS),
                 true);
@@ -183,6 +181,7 @@ public final class GUI {
         return 0;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean requireOwner(ServerPlayer player) {
         if (player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
             return true;

@@ -1,8 +1,8 @@
 package io.github.zct_studio.teleportgui.storage;
 
+import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
-import io.github.zct_studio.teleportgui.Constants;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -96,14 +96,12 @@ public final class Manager {
 
     public static PlayerData addPlayer(String uuid) {
         if (DATA == null) DATA = new StorageData();
-        PlayerData p = DATA.addPlayer(uuid);
-        return p;
+        return DATA.addPlayer(uuid);
     }
 
     public static boolean addWarp(NamedLoc warp) {
         if (DATA == null) DATA = new StorageData();
-        boolean exists = DATA.addWarp(warp);
-        return exists;
+        return DATA.addWarp(warp);
     }
 
     public static void removeWarp(NamedLoc warp) {
@@ -164,6 +162,7 @@ public final class Manager {
             return false;
         }
 
+        @SuppressWarnings("UnusedReturnValue")
         boolean addWarpSilent(NamedLoc warp) {
             if (getWarp(warp.getName()).isPresent()) {
                 return true;

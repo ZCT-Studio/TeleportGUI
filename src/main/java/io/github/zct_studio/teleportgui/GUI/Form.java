@@ -1,18 +1,18 @@
 package io.github.zct_studio.teleportgui.gui;
 
+import io.github.zct_studio.teleportgui.Constants;
+import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
-import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.storage.Manager;
-import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
+import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.utils.TeleportUtils;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,25 +21,21 @@ import net.minecraft.server.permissions.PermissionLevel;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public final class Form {
-
-    private Form() {}
-
     private static final String CUMULUS_CUSTOM = "org.geysermc.cumulus.form.CustomForm";
     private static final String CUMULUS_SIMPLE = "org.geysermc.cumulus.form.SimpleForm";
     private static final String CUMULUS_MODAL = "org.geysermc.cumulus.form.ModalForm";
     private static final String CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
     private static final String FLOODGATE_API = "org.geysermc.floodgate.api.FloodgateApi";
-
     private static final Map<UUID, Integer> FORM_SEQ = new ConcurrentHashMap<>();
+
+    private Form() {
+    }
 
     public static void openHomeForm(ServerPlayer player) {
         Optional<PlayerData> opt = Manager.getPlayer(player.getStringUUID());
@@ -182,7 +178,7 @@ public final class Form {
         int count = warp
                 ? Manager.getWarps().size()
                 : Manager.getPlayer(player.getStringUUID())
-                        .map(d -> d.getHomes().size()).orElse(0);
+                .map(d -> d.getHomes().size()).orElse(0);
         if (max >= 0 && count >= max) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.maxCountReached", player,
@@ -277,7 +273,7 @@ public final class Form {
         List<Tpa.TpaRequest> requests = Tpa.getRequestsFor(player.getStringUUID());
         int perPage = 45;
         int totalPages = Math.max(1, (requests.size() + perPage - 1) / perPage);
-        int p = Math.max(0, Math.min(page, totalPages - 1));
+        @SuppressWarnings("MathClampMigration") int p = Math.max(0, Math.min(page, totalPages - 1));
 
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
@@ -415,7 +411,8 @@ public final class Form {
             call(b, "title", title);
             call(b, "content", content);
             call(b, "button", text(player, "gui.teleportgui.universal.gui.close"));
-            onValid(b, response -> { });
+            onValid(b, response -> {
+            });
             send(player, build(b));
         } catch (Throwable t) {
             fallback(player, t);
@@ -507,6 +504,7 @@ public final class Form {
                     if ("accept".equals(method.getName()) && args != null && args.length == 1) {
                         handler.accept(args[0]);
                     }
+                    //noinspection SuspiciousInvocationHandlerImplementation
                     return null;
                 });
         call(builder, "validResultHandler", proxy);
@@ -525,6 +523,7 @@ public final class Form {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static String stringValue(Object target, String method, Object... args) {
         try {
             Object v = call(target, method, args);

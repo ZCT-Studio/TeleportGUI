@@ -23,12 +23,14 @@ import net.minecraft.world.level.storage.LevelResource;
 
 import java.nio.file.Path;
 
+@SuppressWarnings("unused")
 public final class ServerMain {
 
     public static MinecraftServer SERVER;
     public static Path SAVE_DIR;
 
-    private ServerMain() {}
+    private ServerMain() {
+    }
 
     public static void init(String Loader) {
         Constants.LOGGER.info("Initializing {} v{}, on {}", Constants.MOD_NAME, Constants.VERSION, Loader);
@@ -78,13 +80,20 @@ public final class ServerMain {
         });
 
         LifecycleEvent.SERVER_STOPPING.register(server -> {
-            try { Manager.close(); }
-            catch (Exception e) { Constants.LOGGER.error("Error closing storage", e); }
+            try {
+                Manager.close();
+            } catch (Exception e) {
+                Constants.LOGGER.error("Error closing storage", e);
+            }
         });
     }
 
     private static boolean isClassPresent(String className) {
-        try { Class.forName(className); return true; }
-        catch (ClassNotFoundException e) { return false; }
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

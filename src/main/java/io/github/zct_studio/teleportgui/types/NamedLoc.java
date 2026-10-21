@@ -9,13 +9,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+@SuppressWarnings("unused")
 public class NamedLoc {
 
-    private String name;
     private final int x;
     private final int y;
     private final int z;
     private final String worldId;
+    private String name;
 
     public NamedLoc(String name, BlockPos pos, String worldId) {
         this.name = name;
@@ -27,6 +28,11 @@ public class NamedLoc {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
+        Manager.save();
     }
 
     public BlockPos getBlockPos() {
@@ -55,10 +61,5 @@ public class NamedLoc {
         return StreamSupport.stream(server.getAllLevels().spliterator(), false)
                 .filter(level -> Objects.equals(level.dimension().identifier().toString(), worldId))
                 .findFirst();
-    }
-
-    public void setName(String newName) {
-        this.name = newName;
-        Manager.save();
     }
 }

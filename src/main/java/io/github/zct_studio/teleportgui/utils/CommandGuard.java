@@ -1,9 +1,9 @@
 package io.github.zct_studio.teleportgui.utils;
 
-import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Constants;
-import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
+import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
@@ -14,8 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class CommandGuard {
     private static final ConcurrentHashMap<String, Long> LAST_SUCCESS = new ConcurrentHashMap<>();
 
-    private CommandGuard() {}
+    private CommandGuard() {
+    }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean checkPermission(ServerPlayer player, String module, String node) {
         int requiredLevel = CommandLoader.getPermissionLevel(module, node);
         if (requiredLevel < 0) return true;
@@ -32,7 +34,7 @@ public final class CommandGuard {
 
     private static PermissionLevel intToPermissionLevel(int level) {
         PermissionLevel[] values = PermissionLevel.values();
-        int clamped = Math.max(0, Math.min(level, values.length - 1));
+        @SuppressWarnings("MathClampMigration") int clamped = Math.max(0, Math.min(level, values.length - 1));
         return values[clamped];
     }
 
@@ -48,6 +50,7 @@ public final class CommandGuard {
         return (int) (cooldownSec - elapsed);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean checkAndWarnCooldown(ServerPlayer player, String module, String node) {
         int remaining = checkCooldown(player, module, node);
         if (remaining <= 0) return true;

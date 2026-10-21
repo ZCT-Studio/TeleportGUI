@@ -1,20 +1,20 @@
 package io.github.zct_studio.teleportgui.commands;
 
-import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.Constants;
+import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.CommandUtils;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -194,7 +194,7 @@ public final class Warp {
 
     public static void setWarp(ServerPlayer player, String warpName) {
         warpName = warpName.trim().toLowerCase();
-        if (!CommandUtils.isValidName(player, warpName)) return;
+        if (CommandUtils.isInvalidName(player, warpName)) return;
 
         boolean alreadyExists = Manager.getWarp(warpName).isPresent();
         int maxCount = CommandLoader.getMaxCount(ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE);
@@ -295,7 +295,7 @@ public final class Warp {
     public static void renameWarp(ServerPlayer player, String warpName, String newWarpName) {
         warpName = warpName.trim().toLowerCase();
         newWarpName = newWarpName.trim().toLowerCase();
-        if (!CommandUtils.isValidName(player, newWarpName)) return;
+        if (CommandUtils.isInvalidName(player, newWarpName)) return;
 
         if (Manager.getWarp(newWarpName).isPresent()) {
             player.sendSystemMessage(

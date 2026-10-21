@@ -23,6 +23,7 @@ public final class Tr_i18n {
     public static MutableComponent translate(String key, ServerPlayer player, MutableComponent... args) {
         String translation = lookup(key, player);
         if (translation == null) {
+            //noinspection LoggingSimilarMessage
             Constants.LOGGER.error("Missing translation key: {}", key);
             return Component.literal(key);
         }
@@ -36,6 +37,7 @@ public final class Tr_i18n {
     public static String raw(String key, ServerPlayer player) {
         String translation = lookup(key, player);
         if (translation == null) {
+            //noinspection LoggingSimilarMessage
             Constants.LOGGER.error("Missing translation key: {}", key);
             return key;
         }

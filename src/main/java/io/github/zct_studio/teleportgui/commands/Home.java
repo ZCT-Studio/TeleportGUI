@@ -1,21 +1,21 @@
 package io.github.zct_studio.teleportgui.commands;
 
-import io.github.zct_studio.teleportgui.Styles;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.zct_studio.teleportgui.types.NamedLoc;
-import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.Constants;
+import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.types.NamedLoc;
+import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.CommandUtils;
 import io.github.zct_studio.teleportgui.utils.SafetyGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -32,7 +32,6 @@ import java.util.Optional;
 import static net.minecraft.commands.Commands.argument;
 
 public final class Home {
-
     private Home() {
     }
 
@@ -202,7 +201,7 @@ public final class Home {
 
     public static void setHome(ServerPlayer player, String homeName) {
         homeName = homeName.trim().toLowerCase();
-        if (!CommandUtils.isValidName(player, homeName)) return;
+        if (CommandUtils.isInvalidName(player, homeName)) return;
 
         PlayerData playerStorage = Manager.addPlayer(player.getStringUUID());
 
@@ -352,7 +351,7 @@ public final class Home {
     public static void renameHome(ServerPlayer player, String homeName, String newName) {
         homeName = homeName.trim().toLowerCase();
         newName = newName.trim().toLowerCase();
-        if (!CommandUtils.isValidName(player, newName)) return;
+        if (CommandUtils.isInvalidName(player, newName)) return;
 
         Optional<PlayerData> optStorage = Manager.getPlayer(player.getStringUUID());
         if (optStorage.isEmpty()) {

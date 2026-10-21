@@ -1,6 +1,8 @@
 package io.github.zct_studio.teleportgui.gui;
 
+import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.Styles;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
@@ -8,13 +10,11 @@ import io.github.zct_studio.teleportgui.gui.menu.anvil.Create;
 import io.github.zct_studio.teleportgui.gui.menu.anvil.Rename;
 import io.github.zct_studio.teleportgui.gui.menu.hopper.SecondlyActions;
 import io.github.zct_studio.teleportgui.storage.Manager;
-import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
-import io.github.zct_studio.teleportgui.Tr_i18n;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,21 +39,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class GUI {
-
-    private GUI() {}
-
     private static final int MAX_CONTENT_ROWS = 5;
-
     private static final int NAV_GUIDE = 0;
     private static final int NAV_EXTRA = 1;
     private static final int NAV_BACK = 6;
     private static final int NAV_PREV = 7;
     private static final int NAV_NEXT = 8;
-
     private static final int TPA_PLAYERS = 0;
     private static final int TPA_REQUESTS = 1;
-
+    private GUI() {
+    }
 
     private static boolean bedrockHopper(ServerPlayer player) {
         return TeleportUtils.isBedrockPlayer(player) && !TeleportUtils.hasFloodgate();
@@ -125,6 +122,7 @@ public final class GUI {
     }
 
     private static int contentRowsFor(int count) {
+        //noinspection MathClampMigration
         return Math.min(MAX_CONTENT_ROWS, Math.max(1, (count + 8) / 9));
     }
 
@@ -192,13 +190,22 @@ public final class GUI {
                 () -> openHome(sp, page));
         slots[1] = new SecondlyActions.Action(
                 stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.universal.gui.tp"), null),
-                () -> { Home.goHome(sp, home); sp.closeContainer(); });
+                () -> {
+                    Home.goHome(sp, home);
+                    sp.closeContainer();
+                });
         slots[2] = new SecondlyActions.Action(
                 stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.del"), null),
-                () -> { Home.deleteHome(sp, home); openHome(sp, page); });
+                () -> {
+                    Home.deleteHome(sp, home);
+                    openHome(sp, page);
+                });
         slots[3] = new SecondlyActions.Action(
                 stack(Items.NETHER_STAR, Tr(sp, "gui.teleportgui.home.homeactiongui.defaulthome"), null),
-                () -> { Home.setDefaultHome(sp, home); openHome(sp, page); });
+                () -> {
+                    Home.setDefaultHome(sp, home);
+                    openHome(sp, page);
+                });
         slots[4] = new SecondlyActions.Action(
                 stack(Items.NAME_TAG, Tr(sp, "gui.teleportgui.universal.gui.rename"), null),
                 () -> Rename.open(sp, home, false, page));
@@ -213,11 +220,17 @@ public final class GUI {
                 () -> openWarp(sp, page));
         slots[1] = new SecondlyActions.Action(
                 stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.universal.gui.tp"), null),
-                () -> { Warp.goToWarp(sp, warp); sp.closeContainer(); });
+                () -> {
+                    Warp.goToWarp(sp, warp);
+                    sp.closeContainer();
+                });
         if (manage) {
             slots[2] = new SecondlyActions.Action(
                     stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.del"), null),
-                    () -> { Warp.deleteWarp(sp, warp); openWarp(sp, page); });
+                    () -> {
+                        Warp.deleteWarp(sp, warp);
+                        openWarp(sp, page);
+                    });
             slots[3] = new SecondlyActions.Action(
                     stack(Items.NAME_TAG, Tr(sp, "gui.teleportgui.universal.gui.rename"), null),
                     () -> Rename.open(sp, warp, true, page));
@@ -229,13 +242,19 @@ public final class GUI {
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
                 stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.tpa.tpagui.typeTpa"), null),
-                () -> { Tpa.requestByName(sp, targetName, false); sp.closeContainer(); });
+                () -> {
+                    Tpa.requestByName(sp, targetName, false);
+                    sp.closeContainer();
+                });
         slots[2] = new SecondlyActions.Action(
                 stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
                 () -> openTpa(sp, page, mode));
         slots[4] = new SecondlyActions.Action(
                 stack(Items.ENDER_EYE, Tr(sp, "gui.teleportgui.tpa.tpagui.typeHere"), null),
-                () -> { Tpa.requestByName(sp, targetName, true); sp.closeContainer(); });
+                () -> {
+                    Tpa.requestByName(sp, targetName, true);
+                    sp.closeContainer();
+                });
         SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.tpa.tpagui.title"), slots,
                 () -> openTpa(sp, page, mode));
     }
@@ -262,7 +281,10 @@ public final class GUI {
                 sp::closeContainer);
         slots[4] = new SecondlyActions.Action(
                 stack(Items.ENDER_PEARL, Tr(sp, "commands.teleportgui.common.forceTeleport"), null),
-                () -> { onForce.run(); sp.closeContainer(); });
+                () -> {
+                    onForce.run();
+                    sp.closeContainer();
+                });
         SecondlyActions.open(sp, Tr(sp, "commands.teleportgui.common.noSafeLocation"), slots, null);
     }
 
@@ -296,8 +318,13 @@ public final class GUI {
             this.contentRows = rows - 1;
             this.contentSize = this.contentRows * 9;
             this.totalPages = totalPagesFor(entryCount, hasAdd());
+            //noinspection MathClampMigration
             this.page = Math.max(0, Math.min(page, this.totalPages - 1));
             this.slotNames = new String[rows * 9];
+        }
+
+        private static void resyncInventory(ServerPlayer sp) {
+            sp.inventoryMenu.sendAllDataToRemote();
         }
 
         protected abstract void fillContent(SimpleContainer container);
@@ -308,12 +335,15 @@ public final class GUI {
 
         protected abstract String guideKey();
 
+        @SuppressWarnings("UnusedReturnValue")
         protected boolean onSwap(ServerPlayer sp, String id) {
             return false;
         }
 
-        protected void fillExtraNav(SimpleContainer c, int base) {}
+        protected void fillExtraNav(SimpleContainer c, int base) {
+        }
 
+        @SuppressWarnings("UnusedReturnValue")
         protected boolean onExtraNav(ServerPlayer sp) {
             return false;
         }
@@ -326,7 +356,8 @@ public final class GUI {
             return false;
         }
 
-        protected void onAdd(ServerPlayer sp, int page) {}
+        protected void onAdd(ServerPlayer sp, int page) {
+        }
 
         protected final int slotBase() {
             return (hasAdd() && page == 0) ? 1 : 0;
@@ -412,10 +443,6 @@ public final class GUI {
             String id = slotNames[slotIndex];
             if (id == null) return;
             onEntryClick(sp, id, button, input);
-        }
-
-        private static void resyncInventory(ServerPlayer sp) {
-            sp.inventoryMenu.sendAllDataToRemote();
         }
 
         private void sendGuide(ServerPlayer sp) {
@@ -526,7 +553,7 @@ public final class GUI {
                         Tr(player, "gui.teleportgui.universal.gui.add").withStyle(Styles.SUCCESS),
                         homes.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.home.homegui.empty")
-                                        .withStyle(Styles.MUTED))
+                                .withStyle(Styles.MUTED))
                                 : null));
             }
         }
@@ -666,7 +693,7 @@ public final class GUI {
                         Tr(player, "gui.teleportgui.universal.gui.add").withStyle(Styles.SUCCESS),
                         warps.isEmpty()
                                 ? List.of(Tr(player, "gui.teleportgui.warp.warpgui.empty")
-                                        .withStyle(Styles.MUTED))
+                                .withStyle(Styles.MUTED))
                                 : null));
             }
         }
@@ -821,8 +848,8 @@ public final class GUI {
                 MutableComponent name = Component.literal(senderName(req)).withStyle(Styles.WARNING);
                 List<Component> lore = List.of(
                         Tr(player, req.here
-                                        ? "gui.teleportgui.tpa.tpagui.here"
-                                        : "gui.teleportgui.tpa.tpagui.tocome")
+                                ? "gui.teleportgui.tpa.tpagui.here"
+                                : "gui.teleportgui.tpa.tpagui.tocome")
                                 .withStyle(Styles.INFO),
                         Tr(player, "gui.teleportgui.tpa.tpagui.hintRequests")
                                 .withStyle(Styles.MUTED),
