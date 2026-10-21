@@ -46,6 +46,7 @@ public final class ConfigKeys {
     public static final String FIELD_PERMISSION = "permission";
     public static final String FIELD_EXPIRE = "expireSeconds";
     public static final String FIELD_EXPIRE_REQUEST = "requestExpireSeconds";
+    public static final String FIELD_EXPIRE_REQUEST_HERE = "requestHereExpireSeconds";
     public static final String FIELD_SAFETY = "safetyCheck";
     public static final String FIELD_MAX_COUNT = "maxCount";
     // Top-level command groups that can be enabled or disabled from config.json.

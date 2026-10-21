@@ -84,7 +84,12 @@ public final class CommandLoader {
 
     public static int getRequestExpireSeconds(String module, String node) {
         Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE_REQUEST);
-        return v == null ? 0 : v;
+        return v == null ? Command.DEFAULT_REQUEST_EXPIRE_SECONDS : v;
+    }
+
+    public static int getRequestHereExpireSeconds(String module, String node) {
+        Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE_REQUEST_HERE);
+        return v == null ? Command.DEFAULT_REQUEST_EXPIRE_SECONDS : v;
     }
 
     public static int getExpireSeconds(String module, String node) {
@@ -167,9 +172,14 @@ public final class CommandLoader {
             case ConfigKeys.FIELD_MAX_DISTANCE -> n.maxDistance;
             case ConfigKeys.FIELD_EXPIRE -> n.expireSeconds;
             case ConfigKeys.FIELD_EXPIRE_REQUEST -> n.requestExpireSeconds;
+            case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE -> n.requestHereExpireSeconds;
             case ConfigKeys.FIELD_MAX_COUNT -> n.maxCount;
             default -> null;
         };
+    }
+
+    public static CommandNode nodeIfPresent(String module, String node) {
+        return getNodeIfPresent(module, node);
     }
 
     private static CommandNode getNodeIfPresent(String module, String node) {

@@ -4,7 +4,8 @@ import java.util.LinkedHashMap;
 
 @SuppressWarnings("SameParameterValue")
 public class Command {
-    public static final int CURRENT_CONFIG_VERSION = 2;
+    public static final int CURRENT_CONFIG_VERSION = 3;
+    public static final int DEFAULT_REQUEST_EXPIRE_SECONDS = 120;
 
     public int configVersion = CURRENT_CONFIG_VERSION;
     public CommandNode defaults = new CommandNode();
@@ -71,7 +72,9 @@ public class Command {
         changed |= ensureNode(home, ConfigKeys.HOME_GUI, 0, 0);
 
         changed |= ensureNode(tpa, ConfigKeys.TPA_REQUEST, 30, 0);
+        changed |= ensureRequestExpire(tpa, ConfigKeys.TPA_REQUEST, ConfigKeys.FIELD_EXPIRE_REQUEST);
         changed |= ensureNode(tpa, ConfigKeys.TPA_REQUEST_HERE, 30, 0);
+        changed |= ensureRequestExpire(tpa, ConfigKeys.TPA_REQUEST_HERE, ConfigKeys.FIELD_EXPIRE_REQUEST_HERE);
         changed |= ensureNode(tpa, ConfigKeys.TPA_ACCEPT, 0, 0);
         changed |= ensureNode(tpa, ConfigKeys.TPA_DENY, 0, 0);
 
@@ -102,6 +105,20 @@ public class Command {
     private boolean ensureNode(LinkedHashMap<String, CommandNode> map, String key,
                                int defaultCooldown, int defaultPermLevel, boolean defaultSafety) {
         return ensureNode(map, key, defaultCooldown, defaultPermLevel, defaultSafety, -1);
+    }
+
+    private boolean ensureRequestExpire(LinkedHashMap<String, CommandNode> map, String key,
+                                        String field) {
+        CommandNode n = map.get(key);
+        if (n == null) return false;
+        if (ConfigKeys.FIELD_EXPIRE_REQUEST_HERE.equals(field)) {
+            if (n.requestHereExpireSeconds != null) return false;
+            n.requestHereExpireSeconds = DEFAULT_REQUEST_EXPIRE_SECONDS;
+            return true;
+        }
+        if (n.requestExpireSeconds != null) return false;
+        n.requestExpireSeconds = DEFAULT_REQUEST_EXPIRE_SECONDS;
+        return true;
     }
 
     private boolean ensureNode(LinkedHashMap<String, CommandNode> map, String key,

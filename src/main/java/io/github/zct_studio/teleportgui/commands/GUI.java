@@ -30,6 +30,7 @@ public final class GUI {
             ConfigKeys.FIELD_MAX_DISTANCE,
             ConfigKeys.FIELD_EXPIRE,
             ConfigKeys.FIELD_EXPIRE_REQUEST,
+            ConfigKeys.FIELD_EXPIRE_REQUEST_HERE,
             ConfigKeys.FIELD_MAX_COUNT);
     private static final String FIELD_LEVEL = "level";
     private static final int MAX_PERMISSION_LEVEL = 4;
@@ -330,10 +331,19 @@ public final class GUI {
         if (map == null) return;
         for (String node : map.keySet()) {
             for (String field : NODE_FIELDS) {
+                if (ConfigKeys.FIELD_EXPIRE_REQUEST.equals(field)
+                        || ConfigKeys.FIELD_EXPIRE_REQUEST_HERE.equals(field)) {
+                    if (!supportsRequestExpire(module, node)) continue;
+                }
                 keys.add(module + "." + node + "." + field);
             }
             keys.add(module + "." + node + "." + ConfigKeys.FIELD_PERMISSION + "." + FIELD_LEVEL);
         }
+    }
+
+    private static boolean supportsRequestExpire(String module, String node) {
+        return ConfigKeys.MODULE_TPA.equals(module)
+                && (ConfigKeys.TPA_REQUEST.equals(node) || ConfigKeys.TPA_REQUEST_HERE.equals(node));
     }
 
     static boolean applyConfig(String key, int value) {
@@ -352,6 +362,7 @@ public final class GUI {
                 case ConfigKeys.FIELD_MAX_DISTANCE -> node.maxDistance = value;
                 case ConfigKeys.FIELD_EXPIRE -> node.expireSeconds = value;
                 case ConfigKeys.FIELD_EXPIRE_REQUEST -> node.requestExpireSeconds = value;
+                case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE -> node.requestHereExpireSeconds = value;
                 case ConfigKeys.FIELD_MAX_COUNT -> node.maxCount = value;
                 default -> {
                     return false;
@@ -390,6 +401,8 @@ public final class GUI {
                         CommandLoader.getExpireSeconds(parts[0], parts[1]);
                 case ConfigKeys.FIELD_EXPIRE_REQUEST ->
                         CommandLoader.getRequestExpireSeconds(parts[0], parts[1]);
+                case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE ->
+                        CommandLoader.getRequestHereExpireSeconds(parts[0], parts[1]);
                 case ConfigKeys.FIELD_MAX_COUNT ->
                         CommandLoader.getMaxCount(parts[0], parts[1]);
                 default -> null;

@@ -423,16 +423,21 @@ public final class Form {
             return;
         }
         try {
+            List<String> targets = new ArrayList<>(names.size() + 1);
+            targets.add(text(player, "gui.teleportgui.universal.gui.back"));
+            targets.addAll(names);
+
             Object b = newBuilder(CUMULUS_CUSTOM);
             call(b, "title", title);
-            call(b, "dropdown", text(player, "gui.teleportgui.tpa.tpagui.target"), names);
+            call(b, "dropdown", text(player, "gui.teleportgui.tpa.tpagui.target"), targets, 0);
             call(b, "dropdown", text(player, "gui.teleportgui.tpa.tpagui.type"),
                     List.of(text(player, "gui.teleportgui.tpa.tpagui.typeTpa"),
                             text(player, "gui.teleportgui.tpa.tpagui.typeHere")));
 
             onValid(b, response -> {
-                int target = intValue(response, "getDropdown", 0);
+                int selected = intValue(response, "getDropdown", 0);
                 int type = intValue(response, "getDropdown", 1);
+                int target = selected - 1;
                 if (target >= 0 && target < names.size()) {
                     Tpa.requestByName(player, names.get(target), type == 1);
                 }
