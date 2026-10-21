@@ -1,89 +1,92 @@
-# Changelog
+# 更新日志
 
-All notable changes to this project will be documented in this file.
+本项目所有重要更改都会记录在此文件中。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+格式基于 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，
+本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
-## [Unreleased]
+## [未发布]
 
 ## [1.0.1-rc1] - 2026-10-20
 
-### Fixed
+### 变更
 
-- Extract the repeated code for command format tools into the CommandUtils class
-- Teleporting to a home, warp, death point, or player standing on a non-full block (such as a path, farmland, or slab) no longer places the player below that block. Saved positions now round the Y coordinate, and teleport targets are lifted out of any occupied block, including positions saved by older versions.
+- 将命令格式工具中的重复代码提取到 `CommandUtils` 类。
+
+### 修复
+
+- 传送到位于非完整方块（如土径、耕地、台阶）上的家园、传送点、死亡点或玩家时，不再把玩家放到方块下方。保存位置时会对 Y 坐标四舍五入，传送前还会将目标从被占用的方块中抬升到可站立位置，旧版本保存的位置同样适用。
 
 ## [1.0.0-rc.2] - 2026-10-20
 
-### Added
+### 新增
 
-- Add authors support
+- 新增作者信息支持。
 
-### Removed
+### 移除
 
-- Removed the extra information expressed in the language file
-- Remove Fabric Banner
+- 移除了语言文件中多余的说明信息。
+- 移除 Fabric 横幅。
 
 ## [1.0.0-rc.1] - 2026-10-20
 
-### Added
+### 新增
 
-- Added full docs
-- Added `/tpaY` and `/tpaN` as aliases for accepting and denying teleport requests.
-- Added a mod icon and a mod banner.
-- Added the active loader name to the startup log.
-- The mod version is now read from loader metadata at runtime instead of being hard-coded in a Java constant.
+- 新增完整文档。
+- 新增 `/tpaY` 和 `/tpaN` 作为接受与拒绝传送请求的别名。
+- 新增模组图标与横幅。
+- 启动日志中新增当前加载器名称。
+- 模组版本改为运行时从加载器元数据读取，不再硬编码在 Java 常量中。
 
-### Changed
+### 变更
 
-- Consolidated loader-specific sources into `src/fabric` and `src/neoforge`, removing the per-version source copies.
-- Reworked Bedrock form interactions, including a cancel/force modal for forced teleports and adjusted button order.
-- Unified button styling and moved shared styles into constants.
-- Swapped the Java Edition home/warp list mouse actions: right-click now sets the default home, and `Shift + left-click` deletes.
-- Normalized mod metadata, dependency declarations, and version configuration; Fabric now declares Architectury as a dependency.
-- Updated the NeoForge version and fixed the NeoForge build.
-- Updated the mod description.
+- 将加载器专属源码整合到 `src/fabric` 与 `src/neoforge`，移除按版本复制的源码。
+- 重做基岩版表单交互，包括强制传送的取消/确认弹窗，并调整按钮顺序。
+- 统一按钮样式，并将共享样式移入常量。
+- 交换 Java 版家园/传送点列表的鼠标操作：右键设为默认家园，`Shift + 左键` 删除。
+- 规范化模组元数据、依赖声明与版本配置；Fabric 现在声明 Architectury 依赖。
+- 更新 NeoForge 版本并修复 NeoForge 构建。
+- 更新模组描述。
 
-### Fixed
+### 修复
 
-- Fixed misaligned placeholders in chat messages.
-- Fixed Bedrock form sending failures.
-- Fixed incorrect dropdown and input indices when reading Bedrock home/warp forms.
-- Fixed deprecated click commands in home/warp lists and added support for names containing quotes.
-- Removed duplicate command hints.
-- Removed an extra blank line when returning the feather item in the anvil rename/create screens.
-- Fixed the Fabric dependency list missing Architectury.
-- Removed Fabric/NeoForge entries from `.gitignore` so loader configuration files are tracked.
+- 修复聊天消息中占位符错位的问题。
+- 修复基岩版表单发送失败的问题。
+- 修复读取基岩版家园/传送点表单时下拉框和输入框索引错误的问题。
+- 修复家园/传送点列表中已弃用的点击命令，并支持包含引号的名称。
+- 移除重复的命令提示。
+- 移除铁砧重命名/创建界面返还羽毛物品时多余的空行。
+- 修复 Fabric 依赖列表缺少 Architectury 的问题。
+- 从 `.gitignore` 中移除 Fabric/NeoForge 条目，使加载器配置文件纳入版本管理。
 
-### Removed
+### 移除
 
-- Removed unused parameters, methods, and the unused migration class.
-- Removed the rename action from interactive chat list entries.
+- 移除未使用的参数、方法和未使用的迁移类。
+- 移除交互式聊天列表条目中的重命名操作。
 
 ## [1.0.0-alpha.1] - 2026-10-20
 
-### Added
+### 新增
 
-- Initial release with Fabric and NeoForge support for Minecraft 26.3 through Architectury.
-- Homes: create, go, list, delete, rename, default home, and the `/ghome` GUI.
-- Global warps: create, go, list, delete, rename, and the `/gwarp` GUI.
-- TPA: `/tpa`, `/tpahere`, `/tpaaccept`, `/tpadeny`, and the `/gtpa` request GUI.
-- Teleport shortcuts: `/back`, `/tpdeathpoint` (`/tpdp`), `/tpworldspawn` (`/tpws`), and `/tpspawnpoint` (`/tpsp`).
-- Automatic death-point recording.
-- Java Edition chest-menu GUIs with pagination and anvil naming screens.
-- Bedrock Edition forms through Geyser/Floodgate, with a hopper-menu fallback.
-- Safe-position checks and forced teleport confirmation through `/tpforce`.
-- Per-command cooldowns, permission levels, limits, TPA expiry, and safety checks through `config.json`.
-- JSON and SQLite storage backends with `settings.yml`.
-- English and Simplified Chinese localization.
+- 首个版本，通过 Architectury 支持 Minecraft 26.3 的 Fabric 与 NeoForge。
+- 家园：创建、前往、列表、删除、重命名、默认家园，以及 `/ghome` 界面。
+- 全服传送点：创建、前往、列表、删除、重命名，以及 `/gwarp` 界面。
+- TPA：`/tpa`、`/tpahere`、`/tpaaccept`、`/tpadeny` 以及 `/gtpa` 请求界面。
+- 传送快捷指令：`/back`、`/tpdeathpoint`（`/tpdp`）、`/tpworldspawn`（`/tpws`）、`/tpspawnpoint`（`/tpsp`）。
+- 自动记录死亡点。
+- Java 版箱子菜单界面，支持分页与铁砧命名。
+- 基岩版通过 Geyser/Floodgate 使用表单，并提供漏斗菜单回退。
+- 安全位置检测，以及通过 `/tpforce` 确认强制传送。
+- 通过 `config.json` 配置每个命令的冷却、权限等级、数量上限、TPA 过期时间与安全检测。
+- JSON 与 SQLite 存储后端，以及 `settings.yml`。
+- 简体中文与英文语言文件。
 
-### Changed
+### 变更
 
-- Hid the warp add button from players without permission.
-- Distinguished default homes (red bed) from normal homes (white bed), and changed the add icon to a nether star.
+- 对无权限玩家隐藏传送点添加按钮。
+- 区分默认家园（红色床）与普通家园（白色床），并将添加图标改为下界之星。
 
-### Fixed
+### 修复
 
-- Fixed preview items in the Java GUI being movable to the offhand and usable in creative mode.
-- Fixed TPA accept/deny result messages being sent to the wrong player.
+- 修复 Java 界面中的预览物品可移动到副手并在创造模式下使用的问题。
+- 修复 TPA 接受/拒绝结果消息发送给错误玩家的问题。
