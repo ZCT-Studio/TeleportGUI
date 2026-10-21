@@ -281,18 +281,35 @@ public final class GUI {
     }
 
     public static void openTpaRequestActions(ServerPlayer sp, String fromUuid) {
+        openTpaRequestActions(sp, fromUuid, false);
+    }
+
+    public static void openTpaRequestActions(ServerPlayer sp, String fromUuid, boolean autoOpened) {
+        ServerPlayer from = Tpa.resolveOnline(fromUuid);
+        String senderId = from == null ? fromUuid : from.getStringUUID();
+        Tpa.TpaRequest req = Tpa.findRequest(senderId, sp.getStringUUID());
+        List<Component> lore = req == null
+                ? null
+                : List.of(Tr(sp, req.here
+                        ? "gui.teleportgui.tpa.tpagui.here"
+                        : "gui.teleportgui.tpa.tpagui.tocome")
+                        .withStyle(Styles.INFO));
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
-                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.deny"), null),
+                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.deny"), lore),
                 () -> denyRequest(sp, fromUuid));
         slots[2] = new SecondlyActions.Action(
-                stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
-                () -> openTpa(sp, 0, TPA_REQUESTS));
+                stack(Items.FEATHER,
+                        autoOpened
+                                ? Tr(sp, "gui.teleportgui.universal.gui.close")
+                                : Tr(sp, "gui.teleportgui.universal.gui.back"),
+                        null),
+                autoOpened ? sp::closeContainer : () -> openTpa(sp, 0, TPA_REQUESTS));
         slots[4] = new SecondlyActions.Action(
-                stack(Items.EMERALD, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.accept"), null),
+                stack(Items.EMERALD, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.accept"), lore),
                 () -> acceptRequest(sp, fromUuid));
         SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.title"), slots,
-                () -> openTpa(sp, 0, TPA_REQUESTS));
+                autoOpened ? null : () -> openTpa(sp, 0, TPA_REQUESTS));
     }
 
     public static void openSafetyConfirm(ServerPlayer sp, Runnable onForce) {

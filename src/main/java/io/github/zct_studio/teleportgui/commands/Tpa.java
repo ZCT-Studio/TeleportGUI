@@ -109,6 +109,16 @@ public final class Tpa {
                 .toList();
     }
 
+    public static TpaRequest findRequest(String fromUuid, String toUuid) {
+        long now = currentTick();
+        return REQUESTS.stream()
+                .filter(r -> Objects.equals(fromUuid, r.fromUuid))
+                .filter(r -> Objects.equals(toUuid, r.toUuid))
+                .filter(r -> !r.isExpired(now))
+                .findFirst()
+                .orElse(null);
+    }
+
     private static int cmdSendRequest(ServerPlayer from, ServerPlayer to, boolean here) {
         if (!CommandGuard.checkPermission(from, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST)) return 1;
         String node = here ? ConfigKeys.TPA_REQUEST_HERE : ConfigKeys.TPA_REQUEST;
@@ -218,9 +228,9 @@ public final class Tpa {
 
             if (autoPop) {
                 if (TeleportUtils.hasFloodgate()) {
-                    Form.openTpaRequestDialog(to, from.getStringUUID(), 0);
+                    Form.openTpaRequestDialog(to, from.getStringUUID(), 0, true);
                 } else {
-                    GUI.openTpaRequestActions(to, from.getStringUUID());
+                    GUI.openTpaRequestActions(to, from.getStringUUID(), true);
                 }
             }
         } else {

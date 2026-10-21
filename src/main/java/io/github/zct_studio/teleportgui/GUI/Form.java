@@ -334,7 +334,7 @@ public final class Form {
                                     ? "gui.teleportgui.tpa.tpagui.here"
                                     : "gui.teleportgui.tpa.tpagui.tocome"),
                             ageText(req)));
-                    actions.add(() -> reopen(player, () -> openTpaRequestDialog(player, fromUuid, p)));
+                    actions.add(() -> reopen(player, () -> openTpaRequestDialog(player, fromUuid, p, false)));
                 }
             }
 
@@ -354,13 +354,17 @@ public final class Form {
     }
 
     public static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page) {
+        openTpaRequestDialog(player, fromUuid, page, false);
+    }
+
+    public static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page,
+                                            boolean autoOpened) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
+        Tpa.TpaRequest req = Tpa.findRequest(toSelfUuid(from, fromUuid), player.getStringUUID());
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpareqdialog.title"));
-            call(b, "content", from == null
-                    ? text(player, "commands.teleportgui.tpa.notFound")
-                    : from.getName().getString());
+            call(b, "content", requestDialogContent(player, from, req));
 
             List<Runnable> actions = new ArrayList<>();
             call(b, "button", text(player, "gui.teleportgui.tpa.tpareqdialog.accept"));
@@ -371,8 +375,14 @@ public final class Form {
             actions.add(() -> {
                 if (from != null) Tpa.deny(from, player);
             });
-            call(b, "button", text(player, "gui.teleportgui.universal.gui.back"));
-            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, page)));
+            if (autoOpened) {
+                call(b, "button", text(player, "gui.teleportgui.universal.gui.close"));
+                actions.add(() -> {
+                });
+            } else {
+                call(b, "button", text(player, "gui.teleportgui.universal.gui.back"));
+                actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, page)));
+            }
 
             onValid(b, response -> {
                 int id = intValue(response, "clickedButtonId");
@@ -382,6 +392,20 @@ public final class Form {
         } catch (Throwable t) {
             fallback(player, t);
         }
+    }
+
+    private static String toSelfUuid(ServerPlayer from, String fromUuid) {
+        return from == null ? fromUuid : from.getStringUUID();
+    }
+
+    private static String requestDialogContent(ServerPlayer player, ServerPlayer from,
+                                               Tpa.TpaRequest req) {
+        if (from == null) return text(player, "commands.teleportgui.tpa.notFound");
+        String name = from.getName().getString();
+        if (req == null) return name;
+        return name + " " + text(player, req.here
+                ? "gui.teleportgui.tpa.tpagui.here"
+                : "gui.teleportgui.tpa.tpagui.tocome");
     }
 
     private static void openTpaRequestForm(ServerPlayer player) {
