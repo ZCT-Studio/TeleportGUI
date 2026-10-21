@@ -21,6 +21,7 @@ import net.minecraft.server.permissions.PermissionLevel;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public final class GUI {
 
@@ -29,9 +30,20 @@ public final class GUI {
             ConfigKeys.FIELD_MIN_DISTANCE,
             ConfigKeys.FIELD_MAX_DISTANCE,
             ConfigKeys.FIELD_EXPIRE,
-            ConfigKeys.FIELD_EXPIRE_REQUEST,
-            ConfigKeys.FIELD_EXPIRE_REQUEST_HERE,
             ConfigKeys.FIELD_MAX_COUNT);
+
+    // 目前只有 tpa 的 request / requestHere 真正读取 expireSeconds（请求过期时间）。
+    // 其他节点虽然也有该字段，但没有任何业务逻辑使用它，因此暂不暴露为可配置项。
+    // 以后若有新业务启用 expireSeconds：
+    //   1. 在对应业务代码里通过 CommandLoader.getExpireSeconds(module, node) 读取；
+    //   2. 把该 module.node 加入下面的集合，/teleportgui_admin config 即可设置；
+    //   3. Command.fillDefaults() 中给该节点传入期望的默认秒数（0 = 永不过期）。
+    // 或许以后东西多了就是排除？不造不造，暂时咱就先这儿样咯 :)
+    private static final Set<String> EXPIRE_SECONDS_NODES = Set.of(
+            ConfigKeys.Build(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST),
+            ConfigKeys.Build(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST_HERE)
+    );
+
     private static final String FIELD_LEVEL = "level";
     private static final int MAX_PERMISSION_LEVEL = 4;
     private GUI() {
@@ -331,19 +343,15 @@ public final class GUI {
         if (map == null) return;
         for (String node : map.keySet()) {
             for (String field : NODE_FIELDS) {
-                if (ConfigKeys.FIELD_EXPIRE_REQUEST.equals(field)
-                        || ConfigKeys.FIELD_EXPIRE_REQUEST_HERE.equals(field)) {
-                    if (!supportsRequestExpire(module, node)) continue;
-                }
+                if (ConfigKeys.FIELD_EXPIRE.equals(field) && !isExpireSecondsNode(module, node)) continue;
                 keys.add(module + "." + node + "." + field);
             }
             keys.add(module + "." + node + "." + ConfigKeys.FIELD_PERMISSION + "." + FIELD_LEVEL);
         }
     }
 
-    private static boolean supportsRequestExpire(String module, String node) {
-        return ConfigKeys.MODULE_TPA.equals(module)
-                && (ConfigKeys.TPA_REQUEST.equals(node) || ConfigKeys.TPA_REQUEST_HERE.equals(node));
+    private static boolean isExpireSecondsNode(String module, String node) {
+        return EXPIRE_SECONDS_NODES.contains(module + "." + node);
     }
 
     static boolean applyConfig(String key, int value) {
@@ -354,6 +362,9 @@ public final class GUI {
         }
         String[] parts = key.split("\\.");
         if (parts.length == 3) {
+            if (ConfigKeys.FIELD_EXPIRE.equals(parts[2]) && !isExpireSecondsNode(parts[0], parts[1])) {
+                return false;
+            }
             CommandNode node = nodeOf(parts[0], parts[1]);
             if (node == null) return false;
             switch (parts[2]) {
@@ -361,8 +372,6 @@ public final class GUI {
                 case ConfigKeys.FIELD_MIN_DISTANCE -> node.minDistance = value;
                 case ConfigKeys.FIELD_MAX_DISTANCE -> node.maxDistance = value;
                 case ConfigKeys.FIELD_EXPIRE -> node.expireSeconds = value;
-                case ConfigKeys.FIELD_EXPIRE_REQUEST -> node.requestExpireSeconds = value;
-                case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE -> node.requestHereExpireSeconds = value;
                 case ConfigKeys.FIELD_MAX_COUNT -> node.maxCount = value;
                 default -> {
                     return false;
@@ -389,6 +398,9 @@ public final class GUI {
         }
         String[] parts = key.split("\\.");
         if (parts.length == 3) {
+            if (ConfigKeys.FIELD_EXPIRE.equals(parts[2]) && !isExpireSecondsNode(parts[0], parts[1])) {
+                return null;
+            }
             if (nodeOf(parts[0], parts[1]) == null) return null;
             Integer value = switch (parts[2]) {
                 case ConfigKeys.FIELD_COOLDOWN ->
@@ -399,10 +411,6 @@ public final class GUI {
                         CommandLoader.getMaxDistance(parts[0], parts[1]);
                 case ConfigKeys.FIELD_EXPIRE ->
                         CommandLoader.getExpireSeconds(parts[0], parts[1]);
-                case ConfigKeys.FIELD_EXPIRE_REQUEST ->
-                        CommandLoader.getRequestExpireSeconds(parts[0], parts[1]);
-                case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE ->
-                        CommandLoader.getRequestHereExpireSeconds(parts[0], parts[1]);
                 case ConfigKeys.FIELD_MAX_COUNT ->
                         CommandLoader.getMaxCount(parts[0], parts[1]);
                 default -> null;

@@ -441,11 +441,8 @@ public final class Tpa {
             this.toUuid = toUuid;
             this.here = here;
             this.createdAtTick = now;
-            int expireSec = here
-                    ? CommandLoader.getRequestHereExpireSeconds(
-                    ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST_HERE)
-                    : CommandLoader.getRequestExpireSeconds(
-                    ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST);
+            int expireSec = CommandLoader.getExpireSeconds(ConfigKeys.MODULE_TPA,
+                    here ? ConfigKeys.TPA_REQUEST_HERE : ConfigKeys.TPA_REQUEST);
             this.expiresAtTick = expireSec > 0 ? now + expireSec * 20L : Long.MAX_VALUE;
             REQUESTS.add(this);
         }

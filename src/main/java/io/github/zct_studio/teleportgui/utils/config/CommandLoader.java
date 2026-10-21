@@ -82,19 +82,12 @@ public final class CommandLoader {
         return level;
     }
 
-    public static int getRequestExpireSeconds(String module, String node) {
-        Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE_REQUEST);
-        return v == null ? Command.DEFAULT_REQUEST_EXPIRE_SECONDS : v;
-    }
-
-    public static int getRequestHereExpireSeconds(String module, String node) {
-        Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE_REQUEST_HERE);
-        return v == null ? Command.DEFAULT_REQUEST_EXPIRE_SECONDS : v;
-    }
-
     public static int getExpireSeconds(String module, String node) {
         Integer v = resolveInt(module, node, ConfigKeys.FIELD_EXPIRE);
-        return v == null ? 0 : v;
+        if (v != null) return v;
+        boolean isRequest = ConfigKeys.MODULE_TPA.equals(module)
+                && (ConfigKeys.TPA_REQUEST.equals(node) || ConfigKeys.TPA_REQUEST_HERE.equals(node));
+        return isRequest ? Command.DEFAULT_REQUEST_EXPIRE_SECONDS : 0;
     }
 
     public static boolean isNotifGuiDefaultEnabled() {
@@ -171,8 +164,6 @@ public final class CommandLoader {
             case ConfigKeys.FIELD_MIN_DISTANCE -> n.minDistance;
             case ConfigKeys.FIELD_MAX_DISTANCE -> n.maxDistance;
             case ConfigKeys.FIELD_EXPIRE -> n.expireSeconds;
-            case ConfigKeys.FIELD_EXPIRE_REQUEST -> n.requestExpireSeconds;
-            case ConfigKeys.FIELD_EXPIRE_REQUEST_HERE -> n.requestHereExpireSeconds;
             case ConfigKeys.FIELD_MAX_COUNT -> n.maxCount;
             default -> null;
         };

@@ -45,12 +45,8 @@ public final class ConfigKeys {
     public static final String FIELD_MAX_DISTANCE = "maxDistance";
     public static final String FIELD_PERMISSION = "permission";
     public static final String FIELD_EXPIRE = "expireSeconds";
-    public static final String FIELD_EXPIRE_REQUEST = "requestExpireSeconds";
-    public static final String FIELD_EXPIRE_REQUEST_HERE = "requestHereExpireSeconds";
     public static final String FIELD_SAFETY = "safetyCheck";
     public static final String FIELD_MAX_COUNT = "maxCount";
-    // Top-level command groups that can be enabled or disabled from config.json.
-    // Aliases belong to the same group, so disabling a group also removes them.
     public static final String COMMAND_HOME = "home";
     public static final String COMMAND_WARP = "warp";
     public static final String COMMAND_TPA = "tpa";
@@ -60,6 +56,7 @@ public final class ConfigKeys {
     public static final String COMMAND_SPAWN_POINT = "tpspawnpoint";
     public static final String COMMAND_FORCE = "tpforce";
     public static final String COMMAND_RANDOM_TP = "randomtp";
+
     public static final List<String> ALL_COMMANDS = List.of(
             COMMAND_HOME,
             COMMAND_WARP,
@@ -69,7 +66,12 @@ public final class ConfigKeys {
             COMMAND_WORLD_SPAWN,
             COMMAND_SPAWN_POINT,
             COMMAND_FORCE,
-            COMMAND_RANDOM_TP);
+            COMMAND_RANDOM_TP
+    );
+
+    public static String Build(String Module, String Sub) {
+        return Module + "." + Sub;
+    }
 
     private ConfigKeys() {
     }
