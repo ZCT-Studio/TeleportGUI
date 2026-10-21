@@ -10,14 +10,13 @@ import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
+import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.PermissionLevel;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -93,23 +92,39 @@ public final class Form {
         List<NamedLoc> warps = Manager.getWarps();
         String title = text(player, "gui.teleportgui.warp.warpgui.title");
 
-        boolean canManage = player.permissions().hasPermission(
-                new Permission.HasCommandLevel(PermissionLevel.OWNERS));
+        boolean canCreate = CommandGuard.hasPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE);
+        boolean canDelete = CommandGuard.hasPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL);
+        boolean canRename = CommandGuard.hasPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME);
 
         if (warps.isEmpty()) {
-            if (canManage) openCreateEntryForm(player, true);
+            if (canCreate) openCreateEntryForm(player, true);
             else notice(player, title, text(player, "gui.teleportgui.warp.warpgui.empty"));
             return;
         }
 
         List<String> actions = new ArrayList<>();
         actions.add(text(player, "gui.teleportgui.universal.gui.tp"));
-        if (canManage) {
+        final int deleteIndex;
+        if (canDelete) {
+            deleteIndex = actions.size();
             actions.add(text(player, "gui.teleportgui.universal.gui.del"));
-            actions.add(text(player, "gui.teleportgui.universal.gui.rename"));
-            actions.add(text(player, "gui.teleportgui.universal.gui.add"));
+        } else {
+            deleteIndex = -1;
         }
-        final int addIndex = actions.size() - 1;
+        final int renameIndex;
+        if (canRename) {
+            renameIndex = actions.size();
+            actions.add(text(player, "gui.teleportgui.universal.gui.rename"));
+        } else {
+            renameIndex = -1;
+        }
+        final int createIndex;
+        if (canCreate) {
+            createIndex = actions.size();
+            actions.add(text(player, "gui.teleportgui.universal.gui.add"));
+        } else {
+            createIndex = -1;
+        }
 
         try {
             Object b = newBuilder(CUMULUS_CUSTOM);
@@ -119,7 +134,6 @@ public final class Form {
                     warps.stream().map(NamedLoc::getName).toList());
             call(b, "dropdown", text(player, "gui.teleportgui.be.selectAction"), actions);
 
-            // 0 是 summary label，1 才是选条目，2 是选操作。
             final int entryIdx = 1;
             final int actionIdx = 2;
             onValid(b, response -> {
@@ -129,13 +143,13 @@ public final class Form {
                 String name = warps.get(entry).getName();
                 if (action == 0) {
                     reopen(player, () -> Warp.goToWarp(player, name));
-                } else if (action == 1 && canManage) {
+                } else if (action == deleteIndex) {
                     afterAction(player,
                             () -> Warp.deleteWarp(player, name),
                             () -> openWarpForm(player));
-                } else if (action == 2 && canManage) {
+                } else if (action == renameIndex) {
                     reopen(player, () -> openRenameForm(player, name, true));
-                } else if (canManage && action == addIndex) {
+                } else if (action == createIndex) {
                     reopen(player, () -> openCreateForm(player, true));
                 }
             });
@@ -163,8 +177,8 @@ public final class Form {
     }
 
     private static void openCreateForm(ServerPlayer player, boolean warp) {
-        if (warp && !player.permissions().hasPermission(
-                new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
+        if (warp && !CommandGuard.hasPermission(
+                player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE)) {
             player.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
                             .withStyle(Styles.ERROR_STRONG),

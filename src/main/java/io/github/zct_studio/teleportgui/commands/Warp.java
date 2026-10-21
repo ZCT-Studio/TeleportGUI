@@ -24,8 +24,6 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.PermissionLevel;
 
 import java.util.List;
 import java.util.Optional;
@@ -126,13 +124,6 @@ public final class Warp {
         try {
             if (!CommandGuard.checkPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL)) return 1;
             if (!CommandGuard.checkAndWarnCooldown(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL)) return 1;
-            if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
-                player.sendSystemMessage(
-                        Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                                .withStyle(Styles.ERROR_STRONG),
-                        true);
-                return 1;
-            }
             deleteWarp(player, name);
         } catch (Exception e) {
             Constants.LOGGER.error("Error while deleting the warp!", e);
@@ -150,13 +141,6 @@ public final class Warp {
         try {
             if (!CommandGuard.checkPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME)) return 1;
             if (!CommandGuard.checkAndWarnCooldown(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME)) return 1;
-            if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.OWNERS))) {
-                player.sendSystemMessage(
-                        Tr_i18n.tr("commands.teleportgui.common.noPermission", player)
-                                .withStyle(Styles.ERROR_STRONG),
-                        true);
-                return 1;
-            }
             renameWarp(player, oldName, newName);
         } catch (Exception e) {
             Constants.LOGGER.error("Error while renaming the warp!", e);
@@ -344,8 +328,8 @@ public final class Warp {
             String coords = String.format("[X%d Y%d Z%d]", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ());
             String dimension = String.format(" [%s]", currentWarp.getWorldId());
 
-            boolean canModify = player.permissions().hasPermission(
-                    new Permission.HasCommandLevel(PermissionLevel.OWNERS));
+            boolean canModify = CommandGuard.hasPermission(
+                    player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL);
 
             message.append("\n");
             message.append(Component.literal(name).withStyle(Styles.INFO));

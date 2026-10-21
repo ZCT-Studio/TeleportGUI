@@ -7,7 +7,7 @@ The mod runs on the server. Java players can join with a vanilla client; no clie
 ## Features
 
 - **Homes** — create, teleport to, list, delete, rename, and set a default home. Each player has an independent home list.
-- **Global warps** — server-wide teleport points with operator-controlled deletion and renaming.
+- **Global warps** — server-wide teleport points with permission-controlled deletion and renaming.
 - **TPA requests** — `/tpa` and `/tpahere`, with clickable accept/deny actions, request expiry, and a request-list GUI.
 - **Teleport shortcuts** — death point, world spawn, personal spawn, and `/back` to the previous position.
 - **Safe teleporting** — when enabled, searches for a safe standing position and asks for confirmation before forcing an unsafe teleport.
@@ -56,8 +56,8 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 | `/warp`, `/warp list`                     | List all warps                 | 0          |
 | `/warp add <name>`, `/warp create <name>` | Create a warp at your position | 0          |
 | `/warp go <name>`                         | Teleport to a warp             | 0          |
-| `/warp del <name>`, `/warp delete <name>` | Delete a warp                  | 4          |
-| `/warp rename <old> <new>`                | Rename a warp                  | 4          |
+| `/warp del <name>`, `/warp delete <name>` | Delete a warp                  | 2          |
+| `/warp rename <old> <new>`                | Rename a warp                  | 2          |
 | `/warp gui`, `/gwarp`                     | Open the warp GUI              | 0          |
 
 ### Teleport Requests
@@ -171,7 +171,7 @@ Common fields:
 
 - Most commands default to permission level 0.
 - Config-driven permissions are set with `permission.level`.
-- Warp deletion and renaming, and `/teleportgui config`, always require level 4.
+- Warp deletion and renaming default to level 2 and are controlled by `warp.del.permission.level` and `warp.rename.permission.level`; `/teleportgui config` always requires level 4.
 - Players without permission receive a message and the command is not executed.
 
 ## Storage

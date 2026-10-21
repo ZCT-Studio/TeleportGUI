@@ -58,7 +58,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 - 全服共享的传送点，可创建、前往、删除和重命名。
 - 默认最多创建 20 个传送点。
-- 删除与重命名需要管理员权限；没有管理权限的玩家不会在界面中看到管理按钮。
+- 删除与重命名默认需要权限等级 **2**，可在 `config.json` 的 `warp.del.permission.level` 与 `warp.rename.permission.level` 中修改；没有对应权限的玩家不会在界面中看到管理按钮。
 - 普通玩家仍可通过 `/warp create` 创建传送点，是否允许由配置中的权限等级和数量上限决定。
 - Java 版与基岩版均提供图形化传送点列表。
 
@@ -138,11 +138,9 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 | `/warp`、`/warp list`                 | 列出全部传送点    | 0    | 无    |
 | `/warp add <名字>`、`/warp create <名字>` | 在当前位置创建传送点 | 0    | 无    |
 | `/warp go <名字>`                      | 前往传送点      | 0    | 5 秒  |
-| `/warp del <名字>`、`/warp delete <名字>` | 删除传送点      | 4    | 无    |
-| `/warp rename <旧名字> <新名字>`           | 重命名传送点     | 4    | 无    |
+| `/warp del <名字>`、`/warp delete <名字>` | 删除传送点      | 2    | 无    |
+| `/warp rename <旧名字> <新名字>`           | 重命名传送点     | 2    | 无    |
 | `/warp gui`、`/gwarp`                 | 打开传送点界面    | 0    | 无    |
-
-> 删除与重命名传送点始终要求权限等级 4，不受配置中的权限值影响。
 
 ### 玩家传送请求
 
@@ -168,9 +166,9 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 | 命令                  | 说明                    | 默认权限 | 默认冷却 |
 |---------------------|-----------------------|------|------|
-| `/randomtp`（`/rtp`） | 在当前维度随机传送到一个安全位置      | 0    | 60 秒 |
+| `/randomtp`、`/rtp`） | 在当前维度随机传送到一个安全位置      | 0    | 60 秒 |
 
-`/randomtp`（别名 `/rtp`）默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
+> `/randomtp`（别名 `/rtp`）默认以玩家当前位置为中心，在 **100–1000 格**的范围内随机寻找安全落点；最小距离、最大距离、冷却时间与权限等级可在 `config.json` 的 `teleport.random` 中修改。
 
 ### 模组设置
 
@@ -289,8 +287,8 @@ runtimePersistence: true
 | `maxCount`             | 家园/传送点数量上限；`-1` 表示无限制                              |
 | `requestExpireSeconds` | TPA 请求过期秒数；`0` 表示永不过期（在 `tpa.request` 下设置，对两种请求生效） |
 | `safetyCheck`          | 是否启用安全位置检测                                         |
-| `minDistance`          | `/randomtp` 的最小水平距离（格）                              |
-| `maxDistance`          | `/randomtp` 的最大水平距离（格）；`/randomtp` 必须为正数       |
+| `minDistance`          | `/randomtp` 的最小水平距离（格）                             |
+| `maxDistance`          | `/randomtp` 的最大水平距离（格）；`/randomtp` 必须为正数           |
 
 > `expireSeconds` 目前是预留字段。`maxDistance` 目前仅用于 `/randomtp`。
 
@@ -298,18 +296,18 @@ runtimePersistence: true
 
 - 除下方特别说明的命令外，命令默认权限等级为 **0**，即所有玩家可用。
 - 由配置控制的权限通过 `permission.level` 设置，取值为原版权限等级 `0`–`4`。
-- `/warp del`、`/warp delete`、`/warp rename` 额外硬性要求等级 **4**。
+- `/warp del`、`/warp delete`、`/warp rename` 默认要求等级 **2**，由 `warp.del.permission.level` 与 `warp.rename.permission.level` 控制。
 - `/teleportgui config`、`/teleportgui command` 与 `/teleportgui reload` 要求等级 **4**。
 - 权限等级不足时，命令不会执行，并会向玩家发送无权限提示。
 
 ## <a id="storage"></a>数据存储
 
-| 路径                         | 内容                |
-|----------------------------|-------------------|
-| `teleportgui/settings.yml` | 模组设置              |
-| `teleportgui/config.json`  | 命令冷却、权限、数量上限、安全检测 |
-| `teleportgui/storage.json` | 家园、传送点、玩家偏好等数据    |
-| `teleportgui/runtime.json` | 冷却与待处理的 TPA 请求（`runtimePersistence=true` 时）    |
+| 路径                         | 内容                                          |
+|----------------------------|---------------------------------------------|
+| `teleportgui/settings.yml` | 模组设置                                        |
+| `teleportgui/config.json`  | 命令冷却、权限、数量上限、安全检测                           |
+| `teleportgui/storage.json` | 家园、传送点、玩家偏好等数据                              |
+| `teleportgui/runtime.json` | 冷却与待处理的 TPA 请求（`runtimePersistence=true` 时） |
 
 需要注意的运行期数据：
 

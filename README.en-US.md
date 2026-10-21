@@ -58,7 +58,7 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 
 - Server-wide warp points with create, go, delete, and rename actions.
 - Up to 20 warps by default.
-- Deleting and renaming warps requires operator permissions; players without them do not see management buttons in the GUI.
+- Deleting and renaming default to permission level **2** and can be changed with `warp.del.permission.level` and `warp.rename.permission.level` in `config.json`; players without the required permission do not see management buttons in the GUI.
 - Regular players can still create warps with `/warp create`, subject to the configured permission level and warp limit.
 - Warp lists are available as a GUI on both Java and Bedrock.
 
@@ -139,11 +139,9 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 | `/warp`, `/warp list`                     | List all warps                         | 0                  | None             |
 | `/warp add <name>`, `/warp create <name>` | Create a warp at your current position | 0                  | None             |
 | `/warp go <name>`                         | Teleport to a warp                     | 0                  | 5 s              |
-| `/warp del <name>`, `/warp delete <name>` | Delete a warp                          | 4                  | None             |
-| `/warp rename <old> <new>`                | Rename a warp                          | 4                  | None             |
+| `/warp del <name>`, `/warp delete <name>` | Delete a warp                          | 2                  | None             |
+| `/warp rename <old> <new>`                | Rename a warp                          | 2                  | None             |
 | `/warp gui`, `/gwarp`                     | Open the warp GUI                      | 0                  | None             |
-
-> Deleting and renaming warps always require permission level 4, regardless of the configured permission value.
 
 ### Teleport Requests
 
@@ -167,11 +165,11 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 ### Random Teleport
 
-| Command                   | Description                                                 | Default permission | Default cooldown |
-|---------------------------|-------------------------------------------------------------|--------------------|------------------|
-| `/randomtp` (`/rtp`)      | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
+| Command              | Description                                                 | Default permission | Default cooldown |
+|----------------------|-------------------------------------------------------------|--------------------|------------------|
+| `/randomtp`, `/rtp`) | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
 
-`/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
+> `/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
 
 ### Mod Settings
 
@@ -299,17 +297,17 @@ Common fields:
 
 - Except for the commands noted below, commands default to permission level **0**, available to all players.
 - Config-driven permissions use `permission.level` with vanilla levels `0`–`4`.
-- `/warp del`, `/warp delete`, and `/warp rename` additionally require level **4**.
+- `/warp del`, `/warp delete`, and `/warp rename` default to level **2**, controlled by `warp.del.permission.level` and `warp.rename.permission.level`.
 - `/teleportgui config`, `/teleportgui command`, and `/teleportgui reload` require level **4**.
 - When a player lacks permission, the command is not executed and a message is sent to them.
 
 ## <a id="storage"></a>Storage
 
-| Path                       | Contents                                                  |
-|----------------------------|-----------------------------------------------------------|
-| `teleportgui/settings.yml` | Mod settings                                              |
-| `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks |
-| `teleportgui/storage.json` | Homes, warps, player preferences, and other data          |
+| Path                       | Contents                                                                  |
+|----------------------------|---------------------------------------------------------------------------|
+| `teleportgui/settings.yml` | Mod settings                                                              |
+| `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks                 |
+| `teleportgui/storage.json` | Homes, warps, player preferences, and other data                          |
 | `teleportgui/runtime.json` | Cooldowns and pending TPA requests (when `runtimePersistence` is enabled) |
 
 Runtime data:

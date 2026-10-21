@@ -27,10 +27,8 @@ public final class CommandGuard {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean checkPermission(ServerPlayer player, String module, String node) {
+        if (hasPermission(player, module, node)) return true;
         int requiredLevel = CommandLoader.getPermissionLevel(module, node);
-        if (requiredLevel < 0) return true;
-        PermissionLevel pLevel = intToPermissionLevel(requiredLevel);
-        if (player.permissions().hasPermission(new Permission.HasCommandLevel(pLevel))) return true;
         Constants.LOGGER.debug("{} failed permission check for {}.{} (required level {})",
                 player.getName().getString(), module, node, requiredLevel);
         player.sendSystemMessage(
@@ -38,6 +36,13 @@ public final class CommandGuard {
                         .withStyle(Styles.ERROR_STRONG),
                 true);
         return false;
+    }
+
+    public static boolean hasPermission(ServerPlayer player, String module, String node) {
+        int requiredLevel = CommandLoader.getPermissionLevel(module, node);
+        if (requiredLevel < 0) return true;
+        return player.permissions().hasPermission(
+                new Permission.HasCommandLevel(intToPermissionLevel(requiredLevel)));
     }
 
     private static PermissionLevel intToPermissionLevel(int level) {

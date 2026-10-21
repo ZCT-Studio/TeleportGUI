@@ -12,6 +12,7 @@ import io.github.zct_studio.teleportgui.gui.menu.hopper.SecondlyActions;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
+import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
@@ -19,8 +20,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -170,11 +169,6 @@ public final class GUI {
         return lines;
     }
 
-    private static boolean canManage(ServerPlayer player) {
-        return player.permissions().hasPermission(
-                new Permission.HasCommandLevel(PermissionLevel.OWNERS));
-    }
-
     private static List<ServerPlayer> onlineOthers(ServerPlayer player) {
         var server = ServerMain.SERVER;
         if (server == null) return List.of();
@@ -213,7 +207,8 @@ public final class GUI {
     }
 
     static void openWarpActions(ServerPlayer sp, String warp, int page) {
-        boolean manage = canManage(sp);
+        boolean canDelete = CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL);
+        boolean canRename = CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME);
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
                 stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
@@ -224,13 +219,15 @@ public final class GUI {
                     Warp.goToWarp(sp, warp);
                     sp.closeContainer();
                 });
-        if (manage) {
+        if (canDelete) {
             slots[2] = new SecondlyActions.Action(
                     stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.del"), null),
                     () -> {
                         Warp.deleteWarp(sp, warp);
                         openWarp(sp, page);
                     });
+        }
+        if (canRename) {
             slots[3] = new SecondlyActions.Action(
                     stack(Items.NAME_TAG, Tr(sp, "gui.teleportgui.universal.gui.rename"), null),
                     () -> Rename.open(sp, warp, true, page));
@@ -641,7 +638,7 @@ public final class GUI {
 
         @Override
         protected boolean hasAdd() {
-            return canManage(player);
+            return CommandGuard.hasPermission(player, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE);
         }
 
         @Override
@@ -652,7 +649,7 @@ public final class GUI {
 
         @Override
         protected void onAdd(ServerPlayer sp, int page) {
-            if (!canManage(sp)) {
+            if (!CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_CREATE)) {
                 sp.sendSystemMessage(
                         Tr(sp, "commands.teleportgui.common.noPermission")
                                 .withStyle(Styles.ERROR_STRONG),
@@ -709,7 +706,7 @@ public final class GUI {
                 return;
             }
             if (input == ContainerInput.QUICK_MOVE) {
-                if (canManage(sp)) {
+                if (CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL)) {
                     Warp.deleteWarp(sp, id);
                     reopen(sp, page);
                 } else {
@@ -726,7 +723,7 @@ public final class GUI {
 
         @Override
         protected boolean onSwap(ServerPlayer sp, String id) {
-            if (!canManage(sp)) {
+            if (!CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME)) {
                 sp.sendSystemMessage(
                         Tr(sp, "commands.teleportgui.common.noPermission")
                                 .withStyle(Styles.ERROR_STRONG),
