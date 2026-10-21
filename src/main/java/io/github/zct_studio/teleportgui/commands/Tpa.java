@@ -66,7 +66,7 @@ public final class Tpa {
                             return cmdAccept(from, to);
                         })));
 
-        dispatcher.register(Commands.literal("tpaY")
+        dispatcher.register(Commands.literal("tpay")
                 .then(argument("player", EntityArgument.player())
                         .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
                         .executes(ctx -> {
@@ -84,7 +84,7 @@ public final class Tpa {
                             return cmdDeny(from, to);
                         })));
 
-        dispatcher.register(Commands.literal("tpaN")
+        dispatcher.register(Commands.literal("tpan")
                 .then(argument("player", EntityArgument.player())
                         .suggests(new io.github.zct_studio.teleportgui.suggestionProviders.Tpa())
                         .executes(ctx -> {

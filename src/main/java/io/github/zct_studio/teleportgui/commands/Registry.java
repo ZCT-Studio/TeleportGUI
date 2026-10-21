@@ -26,7 +26,7 @@ public final class Registry {
     static {
         group(ConfigKeys.COMMAND_HOME, "home", "ghome");
         group(ConfigKeys.COMMAND_WARP, "warp", "gwarp");
-        group(ConfigKeys.COMMAND_TPA, "tpa", "tpahere", "tpaaccept", "tpaY", "tpadeny", "tpaN", "gtpa");
+        group(ConfigKeys.COMMAND_TPA, "tpa", "tpahere", "tpaaccept", "tpay", "tpadeny", "tpan", "gtpa");
         group(ConfigKeys.COMMAND_BACK, "back");
         group(ConfigKeys.COMMAND_DEATH_POINT, "tpdeathpoint", "tpdp");
         group(ConfigKeys.COMMAND_WORLD_SPAWN, "tpworldspawn", "tpws");

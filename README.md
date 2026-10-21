@@ -149,8 +149,8 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 |--------------------------------|------------|------|------|
 | `/tpa <玩家>`                    | 请求传送到对方身边  | 0    | 30 秒 |
 | `/tpahere <玩家>`                | 请求对方传送到你身边 | 0    | 30 秒 |
-| `/tpaaccept <玩家>`、`/tpaY <玩家>` | 接受来自该玩家的请求 | 0    | 无    |
-| `/tpadeny <玩家>`、`/tpaN <玩家>`   | 拒绝来自该玩家的请求 | 0    | 无    |
+| `/tpaaccept <玩家>`、`/tpay <玩家>` | 接受来自该玩家的请求 | 0    | 无    |
+| `/tpadeny <玩家>`、`/tpan <玩家>`   | 拒绝来自该玩家的请求 | 0    | 无    |
 | `/gtpa`                        | 打开传送请求界面   | 0    | 无    |
 
 ### 传送点快捷指令
@@ -297,7 +297,7 @@ runtimePersistence: true
 }
 ```
 
-`commands` 中的每个键控制一组命令是否启用。除 `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpaY`、`/tpadeny`、`/tpaN`、`/gtpa` 也会被移除。也可以使用 `/teleportgui_admin command <命令>` 查看状态、`/teleportgui_admin command <命令> <true/false>` 在线修改。
+`commands` 中的每个键控制一组命令是否启用。除 `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令外，所有命令都可以关闭；别名跟随主命令一起启用或禁用，例如关闭 `tpa` 后 `/tpahere`、`/tpaaccept`、`/tpay`、`/tpadeny`、`/tpan`、`/gtpa` 也会被移除。也可以使用 `/teleportgui_admin command <命令>` 查看状态、`/teleportgui_admin command <命令> <true/false>` 在线修改。
 
 常用字段：
 

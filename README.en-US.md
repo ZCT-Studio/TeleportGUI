@@ -150,8 +150,8 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 |-----------------------------------------|---------------------------------------|--------------------|------------------|
 | `/tpa <player>`                         | Ask to teleport to another player     | 0                  | 30 s             |
 | `/tpahere <player>`                     | Ask another player to teleport to you | 0                  | 30 s             |
-| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request from that player     | 0                  | None             |
-| `/tpadeny <player>`, `/tpaN <player>`   | Deny a request from that player       | 0                  | None             |
+| `/tpaaccept <player>`, `/tpay <player>` | Accept a request from that player     | 0                  | None             |
+| `/tpadeny <player>`, `/tpan <player>`   | Deny a request from that player       | 0                  | None             |
 | `/gtpa`                                 | Open the teleport request GUI         | 0                  | None             |
 
 ### Teleport Shortcuts
@@ -298,7 +298,7 @@ runtimePersistence: true
 }
 ```
 
-Each key in `commands` enables or disables a command group. Every command except the `teleportgui`, `teleportgui_admin`, and `teleportgui_be` roots can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpaY`, `/tpadeny`, `/tpaN`, and `/gtpa`. You can also check a group with `/teleportgui_admin command <command>` and change it at runtime with `/teleportgui_admin command <command> <true/false>`.
+Each key in `commands` enables or disables a command group. Every command except the `teleportgui`, `teleportgui_admin`, and `teleportgui_be` roots can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpay`, `/tpadeny`, `/tpan`, and `/gtpa`. You can also check a group with `/teleportgui_admin command <command>` and change it at runtime with `/teleportgui_admin command <command> <true/false>`.
 
 Common fields:
 

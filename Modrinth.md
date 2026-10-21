@@ -66,8 +66,8 @@ Permission levels use the vanilla 0–4 scale. Defaults are shown below. Cooldow
 |-----------------------------------------|---------------------------------------|------------|
 | `/tpa <player>`                         | Ask to teleport to another player     | 0          |
 | `/tpahere <player>`                     | Ask another player to teleport to you | 0          |
-| `/tpaaccept <player>`, `/tpaY <player>` | Accept a request                      | 0          |
-| `/tpadeny <player>`, `/tpaN <player>`   | Deny a request                        | 0          |
+| `/tpaaccept <player>`, `/tpay <player>` | Accept a request                      | 0          |
+| `/tpadeny <player>`, `/tpan <player>`   | Deny a request                        | 0          |
 | `/gtpa`                                 | Open the request GUI                  | 0          |
 
 > TPA requests are kept in memory and are cleared when the server restarts.
