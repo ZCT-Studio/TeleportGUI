@@ -14,7 +14,7 @@ The mod runs on the server. Java players can join with a vanilla client; no clie
 - **Java GUI** — server-side chest menus with pagination and anvil naming screens.
 - **Bedrock forms** — dropdown-based Cumulus forms for homes, warps, and TPA; automatic fallback to hopper menus when Floodgate is unavailable.
 - **Configurable** — per-command cooldowns, permission levels, home/warp limits, TPA expiry, and safety checks.
-- **Storage** — JSON or SQLite backend.
+- **Storage** — JSON backend.
 - **Localization** — English and Simplified Chinese included.
 
 ## Requirements
@@ -123,14 +123,14 @@ With Floodgate installed, homes, warps, and TPA use Cumulus forms. Choose an ent
 
 Files are created under `<world directory>/teleportgui/`.
 
-`settings.yml` selects the storage backend:
+`settings.yml` contains general mod settings:
 
 ```yaml
-storage:
-  type: json
+logLevel: INFO
+autoMigrate: true
 ```
 
-Use `json` for `storage.json` or `sqlite` for `storage.db`. Changing the backend does not migrate existing data. Back up the `teleportgui/` directory before switching.
+TeleportGUI always uses `storage.json`. The old `storage` / `storage.sqlite` settings are ignored; SQLite support has been removed and an existing `storage.db` is not migrated automatically.
 
 `config.json` controls per-command behavior. Missing values are filled with defaults on load. A minimal example:
 
@@ -175,10 +175,9 @@ Common fields:
 
 ## Storage
 
-- `teleportgui/settings.yml` — mod settings and storage backend.
+- `teleportgui/settings.yml` — mod settings.
 - `teleportgui/config.json` — command cooldowns, permissions, limits, and safety checks.
-- `teleportgui/storage.json` — JSON backend data.
-- `teleportgui/storage.db` — SQLite backend data.
+- `teleportgui/storage.json` — homes, warps, and player preferences.
 
 Homes, warps, and Bedrock notification preferences persist across restarts. Death points, back points, and pending TPA requests do not.
 

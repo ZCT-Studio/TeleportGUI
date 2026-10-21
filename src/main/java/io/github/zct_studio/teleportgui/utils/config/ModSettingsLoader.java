@@ -24,8 +24,7 @@ public final class ModSettingsLoader {
             String yamlText = Files.readString(settingsFile);
             Map<String, Object> raw = SimpleYaml.parse(yamlText);
             SETTINGS = buildSettings(raw);
-            Constants.LOGGER.info("Settings loaded from {}, storage.type={}",
-                    settingsFile, SETTINGS.storage.type);
+            Constants.LOGGER.info("Settings loaded from {}", settingsFile);
         } catch (Exception e) {
             Constants.LOGGER.error("Failed to load settings.yml — using defaults", e);
             SETTINGS = new ModSettings();
@@ -45,18 +44,12 @@ public final class ModSettingsLoader {
         if (autoMigrate instanceof Boolean b) s.autoMigrate = b;
 
         Object storageRaw = root.get("storage");
-        if (storageRaw instanceof Map) {
-            Map<String, Object> storage = (Map<String, Object>) storageRaw;
-            Object stype = storage.get("type");
-            if (stype instanceof String str) s.storage.type = str;
-
-            Object sqliteRaw = storage.get("sqlite");
-            if (sqliteRaw instanceof Map) {
-                Map<String, Object> sqlite = (Map<String, Object>) sqliteRaw;
-                Object path = sqlite.get("path");
-                if (path instanceof String str) s.storage.sqlite.path = str;
-                Object timeout = sqlite.get("busyTimeoutMs");
-                if (timeout instanceof Number n) s.storage.sqlite.busyTimeoutMs = n.intValue();
+        if (storageRaw instanceof Map<?, ?> storage) {
+            Object type = storage.get("type");
+            if (type instanceof String str && !"json".equalsIgnoreCase(str)) {
+                Constants.LOGGER.warn(
+                        "Storage type '{}' is no longer supported; TeleportGUI now always uses JSON storage.",
+                        str);
             }
         }
         return s;
@@ -66,11 +59,6 @@ public final class ModSettingsLoader {
         String defaultYaml = """
                 # TeleportGUI mod settings
                 logLevel: INFO
-                storage:
-                  type: json
-                  sqlite:
-                    path: data/teleport.db
-                    busyTimeoutMs: 5000
                 autoMigrate: true
                 """;
         Files.writeString(file, defaultYaml);

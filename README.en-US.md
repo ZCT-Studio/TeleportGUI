@@ -90,7 +90,7 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 - Name tab-completion for home, warp, and TPA commands.
 - Clickable coordinates and dimension IDs in Java Edition chat.
 - Built-in English and Simplified Chinese language files.
-- JSON and SQLite storage backends.
+- JSON storage backend.
 - Fabric and NeoForge support through a shared Architectury API codebase.
 
 ## <a id="requirements"></a>Requirements
@@ -228,20 +228,11 @@ All files are stored under `<world directory>/teleportgui/`.
 
 ```yaml
 logLevel: INFO
-storage:
-  type: json          # json | sqlite
-  sqlite:
-    path: data/teleport.db
-    busyTimeoutMs: 5000
 autoMigrate: true
 ```
 
-Only `storage.type` currently takes effect:
-
-- `json`: data is saved to `teleportgui/storage.json`.
-- `sqlite`: data is saved to `teleportgui/storage.db`.
-
-> `logLevel`, `autoMigrate`, and `storage.sqlite.*` are currently reserved fields and do not take effect immediately. Switching storage backends does **not** migrate existing data — back up the whole `teleportgui/` directory before switching.
+> `logLevel` and `autoMigrate` are currently reserved fields and do not take effect immediately.  
+> The old `storage` / `storage.sqlite` settings are ignored: TeleportGUI now always uses `teleportgui/storage.json`. SQLite support has been removed, and an existing `storage.db` is not migrated automatically.
 
 ### `config.json`
 
@@ -314,16 +305,15 @@ Common fields:
 
 | Path | Contents |
 | --- | --- |
-| `teleportgui/settings.yml` | Storage backend and mod settings |
+| `teleportgui/settings.yml` | Mod settings |
 | `teleportgui/config.json` | Command cooldowns, permissions, limits, and safety checks |
-| `teleportgui/storage.json` | JSON backend data (homes, warps, player preferences) |
-| `teleportgui/storage.db` | SQLite backend data |
+| `teleportgui/storage.json` | Homes, warps, player preferences, and other data |
 
 Runtime-only data:
 
 - **Death points**, **back points**, and **pending TPA requests** are kept in memory and are cleared when the server restarts.
 - Homes, global warps, and Bedrock notification preferences are persisted and survive restarts.
-- Back up the whole `teleportgui/` directory before upgrading or changing storage backends.
+- Back up the whole `teleportgui/` directory before upgrading.
 
 ## <a id="build"></a>Building from Source
 

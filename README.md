@@ -89,7 +89,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 - 家园、传送点与 TPA 命令支持名称 Tab 补全；Java 版聊天栏中的坐标和维度可点击复制。
 - 内置简体中文与英文语言文件。
-- 支持 JSON 与 SQLite 两种存储后端。
+- 使用 JSON 存储后端。
 - 支持 Fabric 与 NeoForge，通过 Architectury API 共享同一套逻辑。
 
 ## <a id="requirements"></a>环境要求
@@ -227,20 +227,11 @@ Java 版使用服务端箱子菜单，不需要安装客户端模组。
 
 ```yaml
 logLevel: INFO
-storage:
-  type: json          # json | sqlite
-  sqlite:
-    path: data/teleport.db
-    busyTimeoutMs: 5000
 autoMigrate: true
 ```
 
-目前实际生效的是 `storage.type`：
-
-- `json`：数据保存到 `teleportgui/storage.json`。
-- `sqlite`：数据保存到 `teleportgui/storage.db`。
-
-> `logLevel`、`autoMigrate` 与 `storage.sqlite.*` 目前为预留字段，修改后不会立即生效。切换存储后端也**不会自动迁移数据**，切换前请先备份 `teleportgui/` 目录。
+> `logLevel` 与 `autoMigrate` 目前为预留字段，修改后不会立即生效。  
+> 旧版本中的 `storage` / `storage.sqlite` 配置会被忽略；TeleportGUI 现在始终使用 `teleportgui/storage.json`。SQLite 支持已移除，原 `storage.db` 不会自动迁移。
 
 ### `config.json`
 
@@ -313,16 +304,15 @@ autoMigrate: true
 
 | 路径 | 内容 |
 | --- | --- |
-| `teleportgui/settings.yml` | 存储后端等模组设置 |
+| `teleportgui/settings.yml` | 模组设置 |
 | `teleportgui/config.json` | 命令冷却、权限、数量上限、安全检测 |
-| `teleportgui/storage.json` | JSON 后端数据（家园、传送点、玩家偏好） |
-| `teleportgui/storage.db` | SQLite 后端数据 |
+| `teleportgui/storage.json` | 家园、传送点、玩家偏好等数据 |
 
 需要注意的运行期数据：
 
 - **死亡点**、**返回点**和**待处理的 TPA 请求**保存在内存中，服务器重启后会清空。
 - 家园、公共传送点和基岩版通知偏好会写入存储文件，重启后保留。
-- 升级或更换存储后端前，请先备份整个 `teleportgui/` 目录。
+- 升级或备份前，请先备份整个 `teleportgui/` 目录。
 
 ## <a id="build"></a>从源码构建
 

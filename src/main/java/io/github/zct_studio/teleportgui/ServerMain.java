@@ -45,9 +45,7 @@ public final class ServerMain {
             Path dataDir = SAVE_DIR.resolve(Constants.MOD_ID);
             ModSettingsLoader.load(dataDir.resolve("settings.yml"));
             CommandLoader.load(dataDir.resolve("config.json"));
-            String storageType = ModSettingsLoader.SETTINGS.storage.type;
-            Constants.LOGGER.info("Initializing storage backend: {}", storageType);
-            Manager.init(SAVE_DIR, storageType);
+            Manager.init(SAVE_DIR);
             // Commands may have been registered before config.json was loaded.
             // Re-apply the command toggles now that the real config is available.
             CommandRegistry.rebuild(server.getCommands().getDispatcher());

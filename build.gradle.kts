@@ -42,9 +42,6 @@ dependencies {
     } else if (loader == "neoforge") {
         implementation("dev.architectury:architectury-neoforge:$archVersion")
     }
-
-    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
-    include("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
 if (mod.isNeoforge) {
