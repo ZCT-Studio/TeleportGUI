@@ -44,6 +44,9 @@ public final class TeleportUtils {
     private static final String CLASS_FLOODGATE_API = Constants.CLASS_FLOODGATE_API;
     private static final String CLASS_CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
 
+    /** 安全落点搜索的最大半径（方块）。 */
+    private static final int SAFE_SEARCH_RADIUS = 3;
+
     /**
      * Geyser / Floodgate 的反射句柄缓存。
      * <p>
@@ -229,35 +232,81 @@ public final class TeleportUtils {
         world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
+    /**
+     * 在 {@code pos} 附近寻找一个可以站人的位置。
+     * <p>
+     * 以 {@code pos} 为中心，半径 1..3 逐层向外搜索，每层只枚举该立方体的「外壳」
+     * （六个面），不再像以前那样遍历整个立方体再用条件过滤掉内部点——内部点在更小的
+     * 半径里已经被检查过了，重复检查纯属浪费。
+     */
     public static Optional<BlockPos> findSafeBlock(BlockPos pos, ServerLevel world) {
         if (isSafe(pos, world)) return Optional.of(pos);
-        int[] rowArr = {1, 2, 3};
-        for (int row : rowArr) {
-            for (int z = -row; z <= row; z++) {
-                for (int x = -row; x <= row; x++) {
-                    for (int y = -row; y <= row; y++) {
-                        if ((x == -row || x == row) || (z == -row || z == row) || (y == -row || y == row)) {
-                            BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                            if (isSafe(newPos, world)) return Optional.of(newPos);
-                        }
-                    }
+
+        for (int radius = 1; radius <= SAFE_SEARCH_RADIUS; radius++) {
+            Optional<BlockPos> found = searchShell(pos, world, radius);
+            if (found.isPresent()) return found;
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 检查给定半径的立方体外壳；先查水平面（y = ±r 以外的上下两个平面），
+     * 再查竖直的四个侧面，这样更容易先命中「同一高度附近」的落点。
+     */
+    private static Optional<BlockPos> searchShell(BlockPos center, ServerLevel world, int radius) {
+        int cx = center.getX();
+        int cy = center.getY();
+        int cz = center.getZ();
+
+        // 上、下两个面
+        for (int y : new int[]{-radius, radius}) {
+            for (int z = -radius; z <= radius; z++) {
+                for (int x = -radius; x <= radius; x++) {
+                    Optional<BlockPos> found = check(world, cx + x, cy + y, cz + z);
+                    if (found.isPresent()) return found;
+                }
+            }
+        }
+
+        // 四个侧面：x = ±radius 与 z = ±radius，y 不再取端值（上面已经查过）
+        for (int x : new int[]{-radius, radius}) {
+            for (int z = -radius + 1; z <= radius - 1; z++) {
+                for (int y = -radius + 1; y <= radius - 1; y++) {
+                    Optional<BlockPos> found = check(world, cx + x, cy + y, cz + z);
+                    if (found.isPresent()) return found;
+                }
+            }
+        }
+        for (int z : new int[]{-radius, radius}) {
+            for (int x = -radius + 1; x <= radius - 1; x++) {
+                for (int y = -radius + 1; y <= radius - 1; y++) {
+                    Optional<BlockPos> found = check(world, cx + x, cy + y, cz + z);
+                    if (found.isPresent()) return found;
                 }
             }
         }
         return Optional.empty();
     }
 
+    private static Optional<BlockPos> check(ServerLevel world, int x, int y, int z) {
+        BlockPos candidate = new BlockPos(x, y, z);
+        return isSafe(candidate, world) ? Optional.of(candidate) : Optional.empty();
+    }
+
     private static boolean isSafe(BlockPos bottomPlayer, ServerLevel world) {
         BlockPos below = bottomPlayer.below();
-        String belowId = world.getBlockState(below).getBlock().getDescriptionId();
-        String bottomId = world.getBlockState(bottomPlayer).getBlock().getDescriptionId();
+        BlockState belowState = world.getBlockState(below);
+        BlockState feetState = world.getBlockState(bottomPlayer);
         BlockPos top = bottomPlayer.above();
-        String topId = world.getBlockState(top).getBlock().getDescriptionId();
+        BlockState topState = world.getBlockState(top);
+
+        String belowId = belowState.getBlock().getDescriptionId();
         boolean hasStandableGround = !"block.minecraft.water".equals(belowId)
-                && !world.getBlockState(below).getCollisionShape(world, below).isEmpty();
-        boolean bottomIsPassable = world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty()
-                && !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(bottomId);
-        boolean topIsNotDanger = !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(topId);
+                && !belowState.getCollisionShape(world, below).isEmpty();
+        boolean bottomIsPassable = feetState.getCollisionShape(world, bottomPlayer).isEmpty()
+                && !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(feetState.getBlock().getDescriptionId());
+        boolean topIsNotDanger =
+                !UNSAFE_NON_COLLIDABLE_BLOCKS.contains(topState.getBlock().getDescriptionId());
         return hasStandableGround && bottomIsPassable && topIsNotDanger;
     }
 
