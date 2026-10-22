@@ -12,7 +12,8 @@ import java.util.Map;
 public final class ModSettingsLoader {
     public static ModSettings SETTINGS = new ModSettings();
 
-    private ModSettingsLoader() {}
+    private ModSettingsLoader() {
+    }
 
     public static void load(Path settingsFile) {
         try {

@@ -11,33 +11,16 @@ import java.util.List;
 
 public final class RuntimeStore {
 
-    public static final class CooldownEntry {
-        public String uuid;
-        public String module;
-        public String node;
-        public long remainingTicks;
-    }
-
-    public static final class TpaEntry {
-        public String from;
-        public String to;
-        public boolean here;
-        public long ageTicks;
-        public long remainingTicks;
-    }
-
-    public static final class Data {
-        public List<CooldownEntry> cooldowns = new ArrayList<>();
-        public List<TpaEntry> tpa = new ArrayList<>();
-    }
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static Path file;
     private static Data data = new Data();
     private static boolean dirty;
     private static boolean enabled = true;
-
     private RuntimeStore() {
+    }
+
+    public static boolean isEnabled() {
+        return enabled;
     }
 
     public static void setEnabled(boolean value) {
@@ -46,10 +29,6 @@ public final class RuntimeStore {
             data = new Data();
             dirty = false;
         }
-    }
-
-    public static boolean isEnabled() {
-        return enabled;
     }
 
     public static void load(Path path) {
@@ -103,5 +82,25 @@ public final class RuntimeStore {
             dirty = true;
             Constants.LOGGER.error("Failed to save runtime data", e);
         }
+    }
+
+    public static final class CooldownEntry {
+        public String uuid;
+        public String module;
+        public String node;
+        public long remainingTicks;
+    }
+
+    public static final class TpaEntry {
+        public String from;
+        public String to;
+        public boolean here;
+        public long ageTicks;
+        public long remainingTicks;
+    }
+
+    public static final class Data {
+        public List<CooldownEntry> cooldowns = new ArrayList<>();
+        public List<TpaEntry> tpa = new ArrayList<>();
     }
 }

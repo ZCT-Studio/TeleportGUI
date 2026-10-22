@@ -39,18 +39,24 @@
 
 ## <a id="introduction"></a>Introduction
 
-TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, global warps, player teleport requests (TPA), death points, spawn points, and return points into Java Edition chest menus and Bedrock Edition forms — while keeping the full command interface available.
+TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, global warps, player teleport requests (TPA),
+death points, spawn points, and return points into Java Edition chest menus and Bedrock Edition forms — while keeping
+the full command interface available.
 
-- **Java Edition players** can use a vanilla client. Teleport menus are rendered as server-side chest menus and anvil naming screens.
-- **Bedrock Edition players** get Cumulus forms when Geyser and Floodgate are installed. Without Floodgate, the mod falls back to hopper menus, so the features remain usable.
-- **No client mod required** on dedicated servers. Java players connect with a vanilla client; the mod only needs to be installed on the server.
+- **Java Edition players** can use a vanilla client. Teleport menus are rendered as server-side chest menus and anvil
+  naming screens.
+- **Bedrock Edition players** get Cumulus forms when Geyser and Floodgate are installed. Without Floodgate, the mod
+  falls back to hopper menus, so the features remain usable.
+- **No client mod required** on dedicated servers. Java players connect with a vanilla client; the mod only needs to be
+  installed on the server.
 
 ## <a id="features"></a>Features
 
 ### Homes
 
 - Every player has an independent home list with create, go, delete, rename, and set-default actions.
-- The first home a player creates automatically becomes their default home; it can be changed with `/home default <name>`.
+- The first home a player creates automatically becomes their default home; it can be changed with
+  `/home default <name>`.
 - Players can create up to 10 homes by default. The limit is configurable and can be disabled.
 - Home lists are available as a GUI on both Java and Bedrock.
 
@@ -58,8 +64,11 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 
 - Server-wide warp points with create, go, delete, and rename actions.
 - Up to 20 warps by default.
-- Creating, deleting, and renaming default to permission level **2** and can be changed with `warp.create.permission.level`, `warp.del.permission.level`, and `warp.rename.permission.level` in `config.json`; players without the required permission do not see management buttons in the GUI.
-- Whether players can create warps is controlled by `warp.create.permission.level`; lower it to let regular players use `/warp create`, subject to `maxCount`.
+- Creating, deleting, and renaming default to permission level **2** and can be changed with
+  `warp.create.permission.level`, `warp.del.permission.level`, and `warp.rename.permission.level` in `config.json`;
+  players without the required permission do not see management buttons in the GUI.
+- Whether players can create warps is controlled by `warp.create.permission.level`; lower it to let regular players use
+  `/warp create`, subject to `maxCount`.
 - Warp lists are available as a GUI on both Java and Bedrock.
 
 ### Player Teleport Requests (TPA)
@@ -67,8 +76,10 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 - `/tpa <player>`: ask to teleport to another player.
 - `/tpahere <player>`: ask another player to teleport to you.
 - Requests can be handled through chat buttons, `/tpaaccept`, `/tpadeny`, or the `/gtpa` request list.
-- Request expiry is configurable, defaults to 120 seconds, and can be set separately for `/tpa` and `/tpahere`; `0` disables expiry.
-- Bedrock players can receive an automatic form when a request arrives, or disable it with `/teleportgui_be notif_gui false`.
+- Request expiry is configurable, defaults to 120 seconds, and can be set separately for `/tpa` and `/tpahere`; `0`
+  disables expiry.
+- Bedrock players can receive an automatic form when a request arrives, or disable it with
+  `/teleportgui_be notif_gui false`.
 - Players can block incoming requests with `/teleportgui allow_request false`; requests are allowed by default.
 
 ### Teleport Shortcuts
@@ -76,14 +87,17 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 - **Death point**: recorded automatically when a player dies and reachable with `/tpdeathpoint`.
 - **Back point**: the position before each teleport is recorded and can be restored with `/back`.
 - **World spawn**: `/tpworldspawn` teleports to the Overworld spawn.
-- **Personal spawn**: `/tpspawnpoint` teleports to the player's bed or respawn anchor, falling back to world spawn when none is set.
+- **Personal spawn**: `/tpspawnpoint` teleports to the player's bed or respawn anchor, falling back to world spawn when
+  none is set.
+- These commands are available to all players by default (permission level `0`); raise the level or toggle safety checks
+  in `config.json`.
 
 ### Safe Teleporting
 
 - When safety checks are enabled, the mod searches for a safe standing position near the target before teleporting.
 - If no safe position is found, the teleport is not performed immediately. Instead, the player is asked to confirm:
-  - **Java Edition**: click the “Force Teleport” chat button or run `/tpforce`.
-  - **Bedrock Edition**: confirm “Cancel / Force Teleport” in a form or the fallback menu.
+    - **Java Edition**: click the “Force Teleport” chat button or run `/tpforce`.
+    - **Bedrock Edition**: confirm “Cancel / Force Teleport” in a form or the fallback menu.
 - Safety checks can be enabled or disabled per command.
 
 ### More
@@ -115,11 +129,13 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 4. (Optional) Install **Geyser** and **Floodgate** to enable Bedrock forms.
 5. Start the server. On first start, configuration and data files are generated under `<world directory>/teleportgui/`.
 
-> Download the jar that matches your loader: `TeleportGUI-fabric-<version>.jar` or `TeleportGUI-neoforge-<version>.jar`. Do not install both loader variants at the same time.
+> Download the jar that matches your loader: `TeleportGUI-fabric-<version>.jar` or `TeleportGUI-neoforge-<version>.jar`.
+> Do not install both loader variants at the same time.
 
 ## <a id="commands"></a>Commands
 
-Permission levels use the vanilla command permission scale (0–4) and can be changed in `config.json`. Cooldowns start after a successful action.
+Permission levels use the vanilla command permission scale (0–4) and can be changed in `config.json`. Cooldowns start
+after a successful action.
 
 ### Homes
 
@@ -156,49 +172,55 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 
 ### Teleport Shortcuts
 
-| Command                  | Description                                      | Safety check |
-|--------------------------|--------------------------------------------------|--------------|
-| `/back`                  | Return to the position before your last teleport | Enabled      |
-| `/tpdeathpoint`, `/tpdp` | Teleport to your death point                     | Enabled      |
-| `/tpworldspawn`, `/tpws` | Teleport to the world spawn                      | Enabled      |
-| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                  | Disabled     |
-| `/tpforce`               | Confirm a pending unsafe teleport                | —            |
+| Command                  | Description                                      | Default permission | Safety check |
+|--------------------------|--------------------------------------------------|--------------------|--------------|
+| `/back`                  | Return to the position before your last teleport | 0                  | Enabled      |
+| `/tpdeathpoint`, `/tpdp` | Teleport to your death point                     | 0                  | Enabled      |
+| `/tpworldspawn`, `/tpws` | Teleport to the world spawn                      | 0                  | Enabled      |
+| `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                  | 0                  | Disabled     |
+| `/tpforce`               | Confirm a pending unsafe teleport                | Inherited          | —            |
+
+> Permission levels can be changed with `permission.level` under `teleport.<node>` in `config.json`, where `<node>` is
+`back`, `deathPoint`, `worldSpawn`, or `spawnPoint`. `/tpforce` has no separate permission and is only used when a
+> command's safety check produces a pending confirmation.
 
 ### Random Teleport
 
-| Command              | Description                                                 | Default permission | Default cooldown |
-|----------------------|-------------------------------------------------------------|--------------------|------------------|
-| `/randomtp`, `/rtp`  | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
+| Command             | Description                                                 | Default permission | Default cooldown |
+|---------------------|-------------------------------------------------------------|--------------------|------------------|
+| `/randomtp`, `/rtp` | Teleport to a random safe location in the current dimension | 0                  | 60 s             |
 
-> `/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in `config.json`.
+> `/randomtp` (alias `/rtp`) searches around the player's current position within a default radius of **100–1000 blocks
+**. The minimum/maximum distance, cooldown, and permission level can be changed under `teleport.random` in`config.json`.
 >
 > The command toggle is named `randomtp`; `/rtp` is enabled and disabled together with it.
 
 ### Player Settings
 
-| Command                                         | Description                                                   | Permission |
-|-------------------------------------------------|---------------------------------------------------------------|------------|
-| `/teleportgui allow_request`                    | Show whether you accept incoming teleport requests             | Everyone   |
-| `/teleportgui allow_request <true/false>`       | Allow or block other players from sending you teleport requests | Everyone   |
-| `/teleportgui_be notif_gui`                     | Show whether automatic Bedrock forms are enabled for you       | Everyone   |
-| `/teleportgui_be notif_gui <true/false>`        | Toggle automatic Bedrock forms for your incoming TPA requests  | Everyone   |
+| Command                                   | Description                                                     | Permission |
+|-------------------------------------------|-----------------------------------------------------------------|------------|
+| `/teleportgui allow_request`              | Show whether you accept incoming teleport requests              | Everyone   |
+| `/teleportgui allow_request <true/false>` | Allow or block other players from sending you teleport requests | Everyone   |
+| `/teleportgui_be notif_gui`               | Show whether automatic Bedrock forms are enabled for you        | Everyone   |
+| `/teleportgui_be notif_gui <true/false>`  | Toggle automatic Bedrock forms for your incoming TPA requests   | Everyone   |
 
 ### Admin Settings
 
 `/teleportgui_admin` is only visible and executable to permission level **4**.
 
-| Command                                         | Description                                                   | Permission |
-|-------------------------------------------------|---------------------------------------------------------------|------------|
-| `/teleportgui_admin config <key>`               | Show the current value of a key in `config.json`               | Level 4    |
-| `/teleportgui_admin config <key> <value>`       | Change and save a value in `config.json`                      | Level 4    |
-| `/teleportgui_admin command <command>`          | Show whether a command group is enabled                       | Level 4    |
-| `/teleportgui_admin command <command> <true/false>` | Enable or disable a command group                         | Level 4    |
-| `/teleportgui_admin reload command`             | Re-apply command toggles and rebuild the command tree         | Level 4    |
-| `/teleportgui_admin reload config`              | Reload `config.json` and rebuild the command tree             | Level 4    |
+| Command                                             | Description                                           | Permission |
+|-----------------------------------------------------|-------------------------------------------------------|------------|
+| `/teleportgui_admin config <key>`                   | Show the current value of a key in `config.json`      | Level 4    |
+| `/teleportgui_admin config <key> <value>`           | Change and save a value in `config.json`              | Level 4    |
+| `/teleportgui_admin command <command>`              | Show whether a command group is enabled               | Level 4    |
+| `/teleportgui_admin command <command> <true/false>` | Enable or disable a command group                     | Level 4    |
+| `/teleportgui_admin reload command`                 | Re-apply command toggles and rebuild the command tree | Level 4    |
+| `/teleportgui_admin reload config`                  | Reload `config.json` and rebuild the command tree     | Level 4    |
 
 > `teleportgui`, `teleportgui_admin`, and `teleportgui_be` cannot be disabled by command toggles.
 >
-> `notifGuiDefault` is the global default, e.g. `/teleportgui_admin config notifGuiDefault true`; a player's own `/teleportgui_be notif_gui` setting takes priority.
+> `notifGuiDefault` is the global default, e.g. `/teleportgui_admin config notifGuiDefault true`; a player's own
+`/teleportgui_be notif_gui` setting takes priority.
 >
 > Vanilla `/reload` also reloads `config.json` and updates the command tree.
 
@@ -227,8 +249,8 @@ Java Edition uses server-side chest menus, so no client mod is needed.
 | Home list      | Left click to teleport, right click to set default, `Shift + left click` to delete, press `F` on an entry to rename, nether star to add a home            |
 | Warp list      | Left click to teleport, `Shift + left click` to delete (operators), press `F` on an entry to rename (operators), nether star to create a warp (operators) |
 | Request screen | In the player list: left click to send a request, right click to ask them to come. In the request list: left click to accept, right click to deny         |
-| Request toggle | Emerald block next to the guide = accept requests, redstone block = deny; click to toggle                                                                |
-| Navigation     | `[6]` close, `[7]` previous page, `[8]` next page; `[2]` switches between the player list and request list                                                 |
+| Request toggle | Emerald block next to the guide = accept requests, redstone block = deny; click to toggle                                                                 |
+| Navigation     | `[6]` close, `[7]` previous page, `[8]` next page; `[2]` switches between the player list and request list                                                |
 
 Creating or renaming a location opens an anvil input screen.
 
@@ -251,12 +273,16 @@ All files are stored under `<world directory>/teleportgui/`.
 runtimePersistence: true
 ```
 
-> `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to `teleportgui/runtime.json`. When set to `false`, the file is never read or written, and cooldowns/TPA requests exist only in memory and are cleared on restart.  
-> The old `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored. TeleportGUI always uses `teleportgui/storage.json`, and an existing `storage.db` is not migrated automatically.
+> `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to `teleportgui/runtime.json`.
+> When set to `false`, the file is never read or written, and cooldowns/TPA requests exist only in memory and are cleared
+> on restart.  
+> The old `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored.
+> TeleportGUI always uses `teleportgui/storage.json`, and an existing `storage.db` is not migrated automatically.
 
 ### `config.json`
 
-`config.json` stores per-command cooldowns, permissions, limits, and safety settings. You only need to include the fields you want to override; missing nodes and values are filled with defaults on load.
+`config.json` stores per-command cooldowns, permissions, limits, and safety settings. You only need to include the
+fields you want to override; missing nodes and values are filled with defaults on load.
 
 ```json
 {
@@ -273,54 +299,91 @@ runtimePersistence: true
     "randomtp": true
   },
   "home": {
-    "create": { "maxCount": 10, "cooldownSeconds": 0, "permission": { "level": 0 } },
-    "go": { "cooldownSeconds": 5, "permission": { "level": 0 } }
+    "create": {
+      "maxCount": 10,
+      "cooldownSeconds": 0,
+      "permission": {
+        "level": 0
+      }
+    },
+    "go": {
+      "cooldownSeconds": 5,
+      "permission": {
+        "level": 0
+      }
+    }
   },
   "warp": {
-    "create": { "maxCount": 20 },
-    "go": { "cooldownSeconds": 5 }
+    "create": {
+      "maxCount": 20
+    },
+    "go": {
+      "cooldownSeconds": 5
+    }
   },
   "tpa": {
-    "request": { "cooldownSeconds": 30, "expireSeconds": 120 },
-    "requestHere": { "cooldownSeconds": 30, "expireSeconds": 120 }
+    "request": {
+      "cooldownSeconds": 30,
+      "expireSeconds": 120
+    },
+    "requestHere": {
+      "cooldownSeconds": 30,
+      "expireSeconds": 120
+    }
   },
   "teleport": {
-    "deathPoint": { "safetyCheck": true },
-    "worldSpawn": { "safetyCheck": true },
-    "back": { "safetyCheck": true },
-    "spawnPoint": { "safetyCheck": false },
+    "deathPoint": {
+      "safetyCheck": true
+    },
+    "worldSpawn": {
+      "safetyCheck": true
+    },
+    "back": {
+      "safetyCheck": true
+    },
+    "spawnPoint": {
+      "safetyCheck": false
+    },
     "random": {
       "minDistance": 100,
       "maxDistance": 1000,
       "cooldownSeconds": 60,
-      "permission": { "level": 0 }
+      "permission": {
+        "level": 0
+      }
     }
   }
 }
 ```
 
-Each key in `commands` enables or disables a command group. Every command except the `teleportgui`, `teleportgui_admin`, and `teleportgui_be` roots can be disabled. Aliases follow their main command: disabling `tpa`, for example, also removes `/tpahere`, `/tpaaccept`, `/tpay`, `/tpadeny`, `/tpan`, and `/gtpa`. You can also check a group with `/teleportgui_admin command <command>` and change it at runtime with `/teleportgui_admin command <command> <true/false>`.
+Each key in `commands` enables or disables a command group. Every command except the `teleportgui`, `teleportgui_admin`,
+and `teleportgui_be` roots can be disabled. Aliases follow their main command: disabling `tpa`, for example, also
+removes `/tpahere`, `/tpaaccept`, `/tpay`, `/tpadeny`, `/tpan`, and `/gtpa`. You can also check a group with
+`/teleportgui_admin command <command>` and change it at runtime with`/teleportgui_admin command <command> <true/false>`.
 
 Common fields:
 
-| Field                  | Description                                                                                                |
-|------------------------|------------------------------------------------------------------------------------------------------------|
-| `cooldownSeconds`      | Cooldown in seconds; `0` disables the cooldown                                                             |
-| `permission.level`     | Vanilla permission level `0`–`4`; `-1` inherits from `defaults`                                            |
-| `maxCount`             | Home/warp limit; `-1` means unlimited                                                                      |
-| `expireSeconds`        | Expiry in seconds; `0` never expires. Set separately under `tpa.request` and `tpa.requestHere`, default `120`; reserved elsewhere |
-| `safetyCheck`          | Whether safe-position checks are enabled                                                                   |
-| `minDistance`          | `/randomtp` minimum horizontal distance in blocks                                                          |
-| `maxDistance`          | `/randomtp` maximum horizontal distance in blocks; must be positive for `/randomtp`                        |
+| Field              | Description                                                                                                                       |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `cooldownSeconds`  | Cooldown in seconds; `0` disables the cooldown                                                                                    |
+| `permission.level` | Vanilla permission level `0`–`4`; `-1` inherits from `defaults`                                                                   |
+| `maxCount`         | Home/warp limit; `-1` means unlimited                                                                                             |
+| `expireSeconds`    | Expiry in seconds; `0` never expires. Set separately under `tpa.request` and `tpa.requestHere`, default `120`; reserved elsewhere |
+| `safetyCheck`      | Whether safe-position checks are enabled                                                                                          |
+| `minDistance`      | `/randomtp` minimum horizontal distance in blocks                                                                                 |
+| `maxDistance`      | `/randomtp` maximum horizontal distance in blocks; must be positive for `/randomtp`                                               |
 
-> `expireSeconds` currently applies to `tpa.request` (`/tpa`) and `tpa.requestHere` (`/tpahere`) only, and only those two can be changed with `/teleportgui_admin config`. `maxDistance` is currently used by `/randomtp` only.
+> `expireSeconds` currently applies to `tpa.request` (`/tpa`) and `tpa.requestHere` (`/tpahere`) only, and only those
+> two can be changed with `/teleportgui_admin config`. `maxDistance` is currently used by `/randomtp` only.
 
 ## <a id="permissions"></a>Permissions
 
 - Except for the commands noted below, commands default to permission level **0**, available to all players.
 - Config-driven permissions use `permission.level` with vanilla levels `0`–`4`.
-- `/warp del`, `/warp delete`, and `/warp rename` default to level **2**, controlled by `warp.del.permission.level` and `warp.rename.permission.level`.
-- `/teleportgui_admin config`, `/teleportgui_admin command`, and `/teleportgui_admin reload` require level **4**; `/teleportgui_admin` is hidden from players without permission.
+- `/warp del`, `/warp delete`, and `/warp rename` default to level **2**, controlled by `warp.del.permission.level` and
+  `warp.rename.permission.level`.
+- `/teleportgui_admin config`, `/teleportgui_admin command`, and `/teleportgui_admin reload` require level **4**;
+  `/teleportgui_admin` is hidden from players without permission.
 - `/teleportgui allow_request` and `/teleportgui_be notif_gui` are available to everyone.
 - When a player lacks permission, the command is not executed and a message is sent to them.
 
@@ -375,4 +438,5 @@ Thanks to everyone who helped with this project. See [ACKNOWLEDGMENTS.MD](ACKNOW
 
 Licensed under the [MIT License](LICENSE).
 
-***TeleportGUI is not an official product of, endorsed by, or affiliated with Mojang Studios, Microsoft, GeyserMC, or Floodgate.***
+***TeleportGUI is not an official product of, endorsed by, or affiliated with Mojang Studios, Microsoft, GeyserMC, or
+Floodgate.***

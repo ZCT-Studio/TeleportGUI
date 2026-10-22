@@ -11,7 +11,8 @@
 
 ### 变更
 
-- `/warp create`（含 `/warp add`）的默认权限等级由 `0` 调整为 `2`，与 `/warp del`、`/warp rename` 保持一致。已有配置中的显式值不受影响，可通过 `warp.create.permission.level` 调整。
+- `/warp create`（含 `/warp add`）的默认权限等级由 `0` 调整为 `2`，与 `/warp del`、`/warp rename` 保持一致。已有配置中的显式值不受影响，可通过
+  `warp.create.permission.level` 调整。
 
 ## [1.0.1] - 2026-10-21
 
@@ -23,7 +24,8 @@
 
 ### 变更
 
-- `config.json` 中 `tpa.request` 与 `tpa.requestHere` 的过期时间统一为 `expireSeconds` 字段，默认 `120`；`0` 表示永不过期。此前 TPA 请求实际永不过期。
+- `config.json` 中 `tpa.request` 与 `tpa.requestHere` 的过期时间统一为 `expireSeconds` 字段，默认 `120`；`0` 表示永不过期。此前
+  TPA 请求实际永不过期。
 - 只有 `tpa.request` 与 `tpa.requestHere` 的 `expireSeconds` 可通过配置命令设置，其余节点的该字段仍为预留。
 - 基岩版 `/gtpa` 主界面新增“基岩版TPA请求弹窗”开关按钮，可直接切换收到请求时是否自动弹出表单。
 - 基岩版发起请求表单的玩家下拉框第一位改为“返回”并作为默认选项，提交后回到 `/gtpa` 主界面。
@@ -48,23 +50,28 @@
 ### 新增
 
 - 新增 `/randomtp` 随机传送命令（`/rtp` 为别名）：在当前维度内以玩家当前位置为中心，在配置的最小距离与最大距离之间随机寻找安全落点；支持冷却、权限等级、距离范围配置。
-- `config.json` 新增 `commands` 命令开关，除 `teleportgui`、`teleportgui_admin`、`teleportgui_be` 三个根命令外所有命令（含别名）均可禁用；禁用后命令会从命令树中移除，启用后重新加入。
-- 新增 `/teleportgui_admin command <命令>` 查看命令组状态、`/teleportgui_admin command <命令> <true/false>` 启用或禁用，修改后会自动保存配置、重建命令树并同步在线玩家的命令列表。
+- `config.json` 新增 `commands` 命令开关，除 `teleportgui`、`teleportgui_admin`、`teleportgui_be`
+  三个根命令外所有命令（含别名）均可禁用；禁用后命令会从命令树中移除，启用后重新加入。
+- 新增 `/teleportgui_admin command <命令>` 查看命令组状态、`/teleportgui_admin command <命令> <true/false>`
+  启用或禁用，修改后会自动保存配置、重建命令树并同步在线玩家的命令列表。
 - 新增 `/teleportgui_admin config <键>`，可在游戏内查看任意配置项的当前值（含从 `defaults` 继承的结果）。
 - 新增 `/teleportgui_be notif_gui` 查询和设置基岩版传送请求弹窗开关。
 - 新增 `/teleportgui allow_request` 查询和设置是否允许其他玩家向自己发送传送请求。
 - 新增 `/teleportgui_admin config notifGuiDefault true/false`，可调整 `notifGuiDefault` 全局默认值。
-- 新增 `/teleportgui_admin reload command` 与 `/teleportgui_admin reload config`：前者重建当前命令树，后者重新读取 `config.json` 后再重建。
+- 新增 `/teleportgui_admin reload command` 与 `/teleportgui_admin reload config`：前者重建当前命令树，后者重新读取
+  `config.json` 后再重建。
 - `/reload` 现在会同时重新加载 `config.json` 并更新命令树。
 - `config.json` 新增 `teleport.random` 节点，可配置 `minDistance`、`maxDistance`、`cooldownSeconds` 与 `permission.level`。
 - 新增 `zh_hk`（繁体中文·香港）与 `zh_tw`（繁体中文·台湾）语言文件。
-- `settings.yml` 新增 `runtimePersistence` 选项，默认 `true`；设为 `false` 后冷却与 TPA 请求仅保存在内存中，完全不读取、不写入 `runtime.json`。
+- `settings.yml` 新增 `runtimePersistence` 选项，默认 `true`；设为 `false` 后冷却与 TPA 请求仅保存在内存中，完全不读取、不写入
+  `runtime.json`。
 
 ### 变更
 
 - `config.json` 配置版本升级到 3；旧配置在加载时会自动补齐 `commands`、`teleport.random` 等新字段并保存。
 - 随机传送的命令开关统一命名为 `randomtp`（此前为 `rtp`），`/rtp` 别名跟随该开关一起启用或禁用。
-- 命令根拆分为玩家命令 `/teleportgui`、管理员命令 `/teleportgui_admin` 与基岩版设置 `/teleportgui_be`；`/teleportgui_admin` 对无权限玩家不可见。
+- 命令根拆分为玩家命令 `/teleportgui`、管理员命令 `/teleportgui_admin` 与基岩版设置 `/teleportgui_be`；
+  `/teleportgui_admin` 对无权限玩家不可见。
 - `/gtpa` 界面新增接收请求开关（绿宝石块开启、红石块关闭），原请求列表切换按钮移到其右侧；首页导航栏改为“关闭”。
 - TPA 请求列表改用真正的玩家头颅：附魔光效表示 `/tpa` 请求，无光效表示 `/tpahere` 请求。
 - 命令开关按功能分组，别名跟随主命令一起启用或禁用（例如禁用 `tpa` 会同时移除 `/tpahere`、`/tpaaccept`、`/gtpa` 等）。
@@ -78,14 +85,17 @@
 ### 移除
 
 - 移除 SQLite 存储后端，TeleportGUI 现在始终使用 JSON 存储（`teleportgui/storage.json`）。
-- 移除 `settings.yml` 中的 `logLevel`、`autoMigrate` 与 `storage` / `storage.type` 预留配置；这些旧键会被忽略，`settings.yml` 现在只保留 `runtimePersistence`。
+- 移除 `settings.yml` 中的 `logLevel`、`autoMigrate` 与 `storage` / `storage.type` 预留配置；这些旧键会被忽略，
+  `settings.yml` 现在只保留 `runtimePersistence`。
 - 旧 `settings.yml` 中的 `storage` / `storage.sqlite` 配置会被忽略；已有 `storage.db` 不会自动迁移。
 
 ### 修复
 
 - 重做创建/重命名铁砧界面：第一格按家/传送点显示对应图标与名称，第二格统一为“返回上一级”，修复创建家时默认名字被填成“返回上一级”的问题。
-- 修复传送点删除与重命名始终硬性要求权限等级 4 的问题。现在由 `warp.del.permission.level` 与 `warp.rename.permission.level` 控制，默认等级 2；GUI 管理按钮也按配置权限显示。
-- 修复发布版未打包 SnakeYAML，导致服务器启动时因 `NoClassDefFoundError: org/yaml/snakeyaml/Yaml` 崩溃的问题。`settings.yml` 现在使用内置的轻量解析器，不再依赖第三方 YAML 库。
+- 修复传送点删除与重命名始终硬性要求权限等级 4 的问题。现在由 `warp.del.permission.level` 与
+  `warp.rename.permission.level` 控制，默认等级 2；GUI 管理按钮也按配置权限显示。
+- 修复发布版未打包 SnakeYAML，导致服务器启动时因 `NoClassDefFoundError: org/yaml/snakeyaml/Yaml` 崩溃的问题。
+  `settings.yml` 现在使用内置的轻量解析器，不再依赖第三方 YAML 库。
 
 ## [1.0.1-rc1] - 2026-10-20
 
@@ -95,7 +105,8 @@
 
 ### 修复
 
-- 传送到位于非完整方块（如土径、耕地、台阶）上的家园、传送点、死亡点或玩家时，不再把玩家放到方块下方。保存位置时会对 Y 坐标四舍五入，传送前还会将目标从被占用的方块中抬升到可站立位置，旧版本保存的位置同样适用。
+- 传送到位于非完整方块（如土径、耕地、台阶）上的家园、传送点、死亡点或玩家时，不再把玩家放到方块下方。保存位置时会对 Y
+  坐标四舍五入，传送前还会将目标从被占用的方块中抬升到可站立位置，旧版本保存的位置同样适用。
 
 ## [1.0.0-rc.2] - 2026-10-20
 

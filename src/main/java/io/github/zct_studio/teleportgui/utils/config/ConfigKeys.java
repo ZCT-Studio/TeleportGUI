@@ -69,10 +69,10 @@ public final class ConfigKeys {
             COMMAND_RANDOM_TP
     );
 
-    public static String Build(String Module, String Sub) {
-        return Module + "." + Sub;
+    private ConfigKeys() {
     }
 
-    private ConfigKeys() {
+    public static String Build(String Module, String Sub) {
+        return Module + "." + Sub;
     }
 }

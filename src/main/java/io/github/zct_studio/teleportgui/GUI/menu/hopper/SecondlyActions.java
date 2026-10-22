@@ -23,6 +23,7 @@ public final class SecondlyActions extends AbstractContainerMenu {
     @SuppressWarnings("FieldCanBeLocal")
     private final Container container;
     private boolean navigating;
+
     private SecondlyActions(int windowId, Inventory inv, ServerPlayer player,
                             Action[] actions, Runnable onClose) {
         super(MenuType.HOPPER, windowId);

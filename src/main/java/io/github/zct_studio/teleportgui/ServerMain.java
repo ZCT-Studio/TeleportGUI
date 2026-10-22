@@ -1,11 +1,7 @@
 package io.github.zct_studio.teleportgui;
 
 import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.CommandPerformEvent;
-import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.event.events.common.EntityEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.event.events.common.*;
 import io.github.zct_studio.teleportgui.commands.Registry;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;

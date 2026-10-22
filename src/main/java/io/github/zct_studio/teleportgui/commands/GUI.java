@@ -46,6 +46,7 @@ public final class GUI {
 
     private static final String FIELD_LEVEL = "level";
     private static final int MAX_PERMISSION_LEVEL = 4;
+
     private GUI() {
     }
 
@@ -403,16 +404,11 @@ public final class GUI {
             }
             if (nodeOf(parts[0], parts[1]) == null) return null;
             Integer value = switch (parts[2]) {
-                case ConfigKeys.FIELD_COOLDOWN ->
-                        CommandLoader.getCooldown(parts[0], parts[1]);
-                case ConfigKeys.FIELD_MIN_DISTANCE ->
-                        CommandLoader.getMinDistance(parts[0], parts[1]);
-                case ConfigKeys.FIELD_MAX_DISTANCE ->
-                        CommandLoader.getMaxDistance(parts[0], parts[1]);
-                case ConfigKeys.FIELD_EXPIRE ->
-                        CommandLoader.getExpireSeconds(parts[0], parts[1]);
-                case ConfigKeys.FIELD_MAX_COUNT ->
-                        CommandLoader.getMaxCount(parts[0], parts[1]);
+                case ConfigKeys.FIELD_COOLDOWN -> CommandLoader.getCooldown(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MIN_DISTANCE -> CommandLoader.getMinDistance(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MAX_DISTANCE -> CommandLoader.getMaxDistance(parts[0], parts[1]);
+                case ConfigKeys.FIELD_EXPIRE -> CommandLoader.getExpireSeconds(parts[0], parts[1]);
+                case ConfigKeys.FIELD_MAX_COUNT -> CommandLoader.getMaxCount(parts[0], parts[1]);
                 default -> null;
             };
             return value == null ? null : String.valueOf(value);
