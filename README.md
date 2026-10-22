@@ -104,7 +104,7 @@ Java 版的箱子菜单和基岩版的表单界面，同时保留完整的命令
 | Minecraft | **26.3+**                                     |
 | Java      | **25+**                                       |
 | Fabric    | Fabric Loader + Fabric API                    |
-| NeoForge  | NeoForge +                                    |
+| NeoForge  | NeoForge                                      |
 | 前置模组      | **Architectury API**（Fabric 与 NeoForge 均需安装）  |
 | 基岩版支持（可选） | Geyser + Floodgate；未安装 Floodgate 时基岩版使用漏斗菜单回退 |
 
