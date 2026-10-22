@@ -112,26 +112,37 @@ public final class Manager {
         }
     }
 
+    /**
+     * 运行期的数据容器：负责增删查和写盘时机。
+     * 落盘结构由 {@link StorageSnapshot} 统一描述，这里不再重复声明字段模型。
+     */
     public static class StorageData {
-        private final java.util.ArrayList<NamedLoc> warps = new java.util.ArrayList<>();
-        private final java.util.ArrayList<PlayerData> players = new java.util.ArrayList<>();
+        private final StorageSnapshot snapshot = new StorageSnapshot();
+
+        private List<NamedLoc> warps() {
+            return snapshot.warps;
+        }
+
+        private List<PlayerData> players() {
+            return snapshot.players;
+        }
 
         public List<NamedLoc> getWarps() {
-            return List.copyOf(warps);
+            return List.copyOf(warps());
         }
 
         public int rawPlayersSize() {
-            return players.size();
+            return players().size();
         }
 
         public Optional<NamedLoc> getWarp(String name) {
-            return warps.stream()
+            return warps().stream()
                     .filter(w -> Objects.equals(w.getName(), name))
                     .findFirst();
         }
 
         public Optional<PlayerData> getPlayer(String uuid) {
-            return players.stream()
+            return players().stream()
                     .filter(p -> Objects.equals(p.getUuid(), uuid))
                     .findFirst();
         }
@@ -139,7 +150,7 @@ public final class Manager {
         public PlayerData addPlayer(String uuid) {
             return getPlayer(uuid).orElseGet(() -> {
                 PlayerData p = new PlayerData(uuid);
-                players.add(p);
+                players().add(p);
                 save();
                 return p;
             });
@@ -147,7 +158,7 @@ public final class Manager {
 
         void addPlayerSilent(PlayerData p) {
             getPlayer(p.getUuid()).orElseGet(() -> {
-                players.add(p);
+                players().add(p);
                 return p;
             });
         }
@@ -156,7 +167,7 @@ public final class Manager {
             if (getWarp(warp.getName()).isPresent()) {
                 return true;
             }
-            warps.add(warp);
+            warps().add(warp);
             save();
             return false;
         }
@@ -166,17 +177,17 @@ public final class Manager {
             if (getWarp(warp.getName()).isPresent()) {
                 return true;
             }
-            warps.add(warp);
+            warps().add(warp);
             return false;
         }
 
         public void removeWarp(NamedLoc warp) {
-            warps.remove(warp);
+            warps().remove(warp);
             save();
         }
 
         List<PlayerData> playersSnapshot() {
-            return List.copyOf(players);
+            return List.copyOf(players());
         }
     }
 }
