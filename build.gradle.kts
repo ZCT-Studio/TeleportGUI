@@ -102,12 +102,87 @@ modSettings {
     )
 }
 
-publishMods {
-    modrinth {
-        if (mod.isFabric) requires("fabric-api")
+fun inferReleaseType(version: String): String {
+    val v = version.lowercase()
+    return when {
+        "snapshot" in v || "alpha" in v -> "ALPHA"
+        "beta" in v -> "BETA"
+        else -> "STABLE"
+    }
+}
+
+val publishType: String = providers.environmentVariable("PUBLISH_TYPE")
+    .orElse(providers.provider { inferReleaseType(mod.version) })
+    .get()
+
+val releaseTag: String = providers.environmentVariable("PUBLISH_TAG")
+    .orElse(providers.provider { "v${mod.version}" })
+    .get()
+
+val releaseVersion: String = providers.environmentVariable("PUBLISH_VERSION")
+    .orElse(providers.provider { mod.version })
+    .get()
+
+val githubRepository: String = providers.environmentVariable("GITHUB_REPOSITORY")
+    .orElse("ZCT-Studio/TeleportGUI")
+    .get()
+
+val releaseChangelog: String = providers.environmentVariable("PUBLISH_CHANGELOG_FILE")
+    .map { path ->
+        val f = file(path)
+        if (path.isBlank() || !f.isFile) "" else f.readText()
+    }
+    .orElse("")
+    .get()
+    .ifBlank {
+        "完整更新日志请见 https://github.com/$githubRepository/blob/master/CHANGELOG.MD"
     }
 
-    curseforge {
-        if (mod.isFabric) requires("fabric-api")
+val isPrimaryPublisher = mod.isFabric
+
+publishMods {
+    version.set(releaseVersion)
+    type.set(
+        when (publishType.uppercase()) {
+            "ALPHA" -> ALPHA
+            "BETA" -> BETA
+            else -> STABLE
+        }
+    )
+    changelog.set(releaseChangelog)
+    displayName.set("${findProperty("mod.name") ?: "TeleportGUI"} ${releaseVersion}")
+
+    if (isPrimaryPublisher) {
+        github {
+            repository.set(githubRepository)
+            commitish.set(providers.environmentVariable("GITHUB_REF_NAME").orElse("master"))
+            tagName.set(releaseTag)
+            accessToken.set(providers.environmentVariable("GITHUB_TOKEN")
+                .orElse(providers.environmentVariable("GH_TOKEN")))
+
+            val siblingJar = rootProject.layout.projectDirectory
+                .dir("versions/26.3-neoforge/build/libs")
+                .file("TeleportGUI-neoforge-${releaseVersion}+mc${mod.minecraftVersion}.jar")
+            additionalFiles.from(siblingJar)
+
+            tasks.named("publishGithub") {
+                dependsOn(":26.3-neoforge:build")
+            }
+        }
     }
+
+    modrinth {
+        if (mod.isFabric) requires("fabric-api")
+        projectId.set(
+            (findProperty("mod.modrinth.project") ?: findProperty("mod.id") ?: "teleportgui").toString()
+        )
+        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+    }
+
+    // CurseForge
+    // require("fabric-api") 之类的依赖声明放在对应位置即可。
+    // curseforge {
+    //     if (mod.isFabric) requires("fabric-api")
+    //     accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
+    // }
 }

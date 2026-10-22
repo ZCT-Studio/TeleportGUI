@@ -1,0 +1,163 @@
+name: Release
+
+# 发布流程：只有推送 v* 标签才触发。
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: Validate tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      publish_type: ${{ steps.meta.outputs.publish_type }}
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version and release type
+        id: meta
+        run: |
+          set -euo pipefail
+
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#[vV]}"
+
+          # 与 gradle.properties 的 mod.version 比对，不一致直接失败
+          PROP_VERSION="$(grep -E '^mod\.version=' gradle.properties | cut -d= -f2- | tr -d '[:space:]')"
+          if [ "$VERSION" != "$PROP_VERSION" ]; then
+            echo "::error::tag 版本与 gradle.properties 不一致：tag=$VERSION, mod.version=$PROP_VERSION"
+            exit 1
+          fi
+
+          LOWER="$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')"
+          if [[ "$LOWER" == *snapshot* || "$LOWER" == *alpha* ]]; then
+            TYPE="ALPHA"
+          elif [[ "$LOWER" == *beta* ]]; then
+            TYPE="BETA"
+          else
+            TYPE="STABLE"
+          fi
+
+          echo "tag=$TAG"           >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION"   >> "$GITHUB_OUTPUT"
+          echo "publish_type=$TYPE" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### 发布信息"
+            echo "| 项目 | 值 |"
+            echo "| --- | --- |"
+            echo "| tag | \`$TAG\` |"
+            echo "| version | \`$VERSION\` |"
+            echo "| 发布类型 | \`$TYPE\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    name: Build and publish
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract changelog
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.prepare.outputs.version }}"
+          OUT="$RUNNER_TEMP/release-notes.md"
+
+          # 从 CHANGELOG.MD 截取 "## [<version>]" 到下一个 "## [" 之间的内容
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' CHANGELOG.MD > "$OUT" || true
+
+          if [ ! -s "$OUT" ]; then
+            printf '_本次发布未在 CHANGELOG.MD 中找到对应条目。_\n' > "$OUT"
+          fi
+
+          printf '\n---\n\n完整更新日志：[CHANGELOG.MD](%s/%s/blob/%s/CHANGELOG.MD)\n' \
+            "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_REF_NAME" >> "$OUT"
+
+          echo "PUBLISH_CHANGELOG_FILE=$OUT" >> "$GITHUB_ENV"
+          cat "$OUT"
+
+      # 一次 gradle 调用跑完所有发布任务：
+      # 编译只会执行一次，后面的任务全部命中 UP-TO-DATE。
+      # 某个平台失败不会中断其它平台（--continue），最后统一汇总。
+      - name: Publish to GitHub, Modrinth, CurseForge
+        id: publish
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          # CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          PUBLISH_VERSION: ${{ needs.prepare.outputs.version }}
+          PUBLISH_TYPE: ${{ needs.prepare.outputs.publish_type }}
+          PUBLISH_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          # 启用 CurseForge 时，在这里追加
+          #   :26.3-fabric:publishCurseforge :26.3-neoforge:publishCurseforge
+          # 并同时取消 build.gradle.kts 中 curseforge 块的注释。
+          ./gradlew \
+            :26.3-fabric:publishGithub \
+            :26.3-fabric:publishModrinth \
+            :26.3-neoforge:publishModrinth \
+            --continue \
+            --stacktrace
+
+      - name: Upload built jars
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-jars
+          path: |
+            versions/26.3-*/build/libs/*.jar
+            !versions/26.3-*/build/libs/*-sources.jar
+            !versions/26.3-*/build/libs/*-dev.jar
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Summarize
+        if: always()
+        run: |
+          {
+            echo "### 发布结果"
+            echo "- 版本：\`${{ needs.prepare.outputs.version }}\`"
+            echo "- 类型：\`${{ needs.prepare.outputs.publish_type }}\`"
+            echo "- 平台：GitHub Release（fabric + neoforge 两个 jar）、Modrinth（两个加载器各一条）"
+            echo "- 状态：\`${{ steps.publish.outcome }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # 上面用 --continue + continue-on-error 是为了让某个平台失败时其它平台照常发布，
+      # 但作业最终必须反映真实结果，所以这里显式把失败抛出来。
+      - name: Fail if any publish failed
+        if: steps.publish.outcome == 'failure'
+        run: |
+          echo "::error::至少有一个平台发布失败，请查看上面的日志。"
+          exit 1
