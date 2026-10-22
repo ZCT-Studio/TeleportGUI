@@ -7,6 +7,12 @@
 
 ## [未发布]
 
+## [1.0.1-patch.1] - 2026-10-21
+
+### 变更
+
+- `/warp create`（含 `/warp add`）的默认权限等级由 `0` 调整为 `2`，与 `/warp del`、`/warp rename` 保持一致。已有配置中的显式值不受影响，可通过 `warp.create.permission.level` 调整。
+
 ## [1.0.1] - 2026-10-21
 
 ### 新增

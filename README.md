@@ -58,8 +58,8 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 
 - 全服共享的传送点，可创建、前往、删除和重命名。
 - 默认最多创建 20 个传送点。
-- 删除与重命名默认需要权限等级 **2**，可在 `config.json` 的 `warp.del.permission.level` 与 `warp.rename.permission.level` 中修改；没有对应权限的玩家不会在界面中看到管理按钮。
-- 普通玩家仍可通过 `/warp create` 创建传送点，是否允许由配置中的权限等级和数量上限决定。
+- 创建、删除与重命名默认需要权限等级 **2**，可分别在 `config.json` 的 `warp.create.permission.level`、`warp.del.permission.level` 与 `warp.rename.permission.level` 中修改；没有对应权限的玩家不会在界面中看到管理按钮。
+- 是否允许创建由 `warp.create.permission.level` 控制，可将该值调低以允许普通玩家通过 `/warp create` 创建传送点，创建数量同时受 `maxCount` 限制。
 - Java 版与基岩版均提供图形化传送点列表。
 
 ### 玩家传送请求（TPA）
@@ -137,7 +137,7 @@ TeleportGUI 是一个运行在服务端的 Minecraft 传送模组。它把家园
 | 命令                                   | 说明         | 默认权限 | 默认冷却 |
 |--------------------------------------|------------|------|------|
 | `/warp`、`/warp list`                 | 列出全部传送点    | 0    | 无    |
-| `/warp add <名字>`、`/warp create <名字>` | 在当前位置创建传送点 | 0    | 无    |
+| `/warp add <名字>`、`/warp create <名字>` | 在当前位置创建传送点 | 2    | 无    |
 | `/warp go <名字>`                      | 前往传送点      | 0    | 5 秒  |
 | `/warp del <名字>`、`/warp delete <名字>` | 删除传送点      | 2    | 无    |
 | `/warp rename <旧名字> <新名字>`           | 重命名传送点     | 2    | 无    |

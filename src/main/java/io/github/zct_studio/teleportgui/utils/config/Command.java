@@ -56,7 +56,7 @@ public class Command {
             }
         }
 
-        changed |= ensureNode(warp, ConfigKeys.WARP_CREATE, 0, 0, false, 20);
+        changed |= ensureNode(warp, ConfigKeys.WARP_CREATE, 0, 2, false, 20);
         changed |= ensureNode(warp, ConfigKeys.WARP_GO, 5, 0);
         changed |= ensureNode(warp, ConfigKeys.WARP_DEL, 0, 2);
         changed |= ensureNode(warp, ConfigKeys.WARP_RENAME, 0, 2);

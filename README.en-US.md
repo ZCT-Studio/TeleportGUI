@@ -58,8 +58,8 @@ TeleportGUI is a server-side Minecraft teleportation mod. It brings homes, globa
 
 - Server-wide warp points with create, go, delete, and rename actions.
 - Up to 20 warps by default.
-- Deleting and renaming default to permission level **2** and can be changed with `warp.del.permission.level` and `warp.rename.permission.level` in `config.json`; players without the required permission do not see management buttons in the GUI.
-- Regular players can still create warps with `/warp create`, subject to the configured permission level and warp limit.
+- Creating, deleting, and renaming default to permission level **2** and can be changed with `warp.create.permission.level`, `warp.del.permission.level`, and `warp.rename.permission.level` in `config.json`; players without the required permission do not see management buttons in the GUI.
+- Whether players can create warps is controlled by `warp.create.permission.level`; lower it to let regular players use `/warp create`, subject to `maxCount`.
 - Warp lists are available as a GUI on both Java and Bedrock.
 
 ### Player Teleport Requests (TPA)
@@ -138,7 +138,7 @@ Permission levels use the vanilla command permission scale (0–4) and can be ch
 | Command                                   | Description                            | Default permission | Default cooldown |
 |-------------------------------------------|----------------------------------------|--------------------|------------------|
 | `/warp`, `/warp list`                     | List all warps                         | 0                  | None             |
-| `/warp add <name>`, `/warp create <name>` | Create a warp at your current position | 0                  | None             |
+| `/warp add <name>`, `/warp create <name>` | Create a warp at your current position | 2                  | None             |
 | `/warp go <name>`                         | Teleport to a warp                     | 0                  | 5 s              |
 | `/warp del <name>`, `/warp delete <name>` | Delete a warp                          | 2                  | None             |
 | `/warp rename <old> <new>`                | Rename a warp                          | 2                  | None             |
