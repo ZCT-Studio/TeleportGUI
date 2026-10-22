@@ -3,13 +3,14 @@ package io.github.zct_studio.teleportgui.storage;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public interface Provider {
 
-    void init(Path dataDir) throws Exception;
+    void init(Path dataDir) throws IOException;
 
     List<NamedLoc> loadWarps();
 
@@ -29,5 +30,5 @@ public interface Provider {
      */
     void saveAll(List<NamedLoc> warps, List<PlayerData> players);
 
-    void close() throws Exception;
+    void close();
 }

@@ -6,7 +6,9 @@ import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -24,37 +26,34 @@ public class Json implements Provider {
     private StorageData data;
 
     @Override
-    public void init(Path dataDir) throws Exception {
+    public void init(Path dataDir) throws IOException {
         this.dataDir = dataDir;
         this.storageFile = dataDir.resolve("storage.json");
 
-        try {
-            if (!Files.exists(dataDir)) {
-                Files.createDirectories(dataDir);
-            }
+        if (!Files.exists(dataDir)) {
+            Files.createDirectories(dataDir);
+        }
 
-            if (!Files.exists(storageFile)) {
-                Files.createFile(storageFile);
-            }
+        if (!Files.exists(storageFile)) {
+            Files.createFile(storageFile);
+        }
 
-            if (new File(storageFile.toString()).length() == 0) {
-                this.data = new StorageData();
-                write();
-            } else {
-                String json = Files.readString(storageFile);
-                this.data = gson.fromJson(json, StorageData.class);
-                if (this.data == null) {
-                    Constants.LOGGER.warn("Storage file was empty or malformed — starting fresh");
-                    this.data = new StorageData();
-                } else {
-                    Constants.LOGGER.info("Loaded storage: {} warps, {} players",
-                            this.data.warps.size(), this.data.players.size());
-                }
-            }
-        } catch (Exception e) {
-            throw e;
-        } catch (java.lang.Exception e) {
-            throw new Exception("Failed to initialize JSON storage", e);
+        if (Files.size(storageFile) == 0L) {
+            this.data = new StorageData();
+            write();
+            return;
+        }
+
+        String json = Files.readString(storageFile);
+        this.data = gson.fromJson(json, StorageData.class);
+        if (this.data == null) {
+            Constants.LOGGER.warn("Storage file was empty or malformed — starting fresh");
+            this.data = new StorageData();
+        } else {
+            if (this.data.warps == null) this.data.warps = new ArrayList<>();
+            if (this.data.players == null) this.data.players = new ArrayList<>();
+            Constants.LOGGER.info("Loaded storage: {} warps, {} players",
+                    this.data.warps.size(), this.data.players.size());
         }
     }
 
@@ -103,19 +102,19 @@ public class Json implements Provider {
     }
 
     @Override
-    public void close() throws Exception {
-        // JSON has no persistent connections — nothing to close
+    public void close() {
+        // JSON 没有持久连接，无需关闭
     }
 
     private void write() {
         if (data == null || storageFile == null) return;
         try {
             Gson pretty = new GsonBuilder().setPrettyPrinting().create();
-            byte[] json = pretty.toJson(data).getBytes();
+            byte[] json = pretty.toJson(data).getBytes(StandardCharsets.UTF_8);
             Files.write(storageFile, json,
                     StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (java.lang.Exception e) {
-            throw new Exception("Failed to write storage file", e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to write storage file " + storageFile, e);
         }
     }
 
