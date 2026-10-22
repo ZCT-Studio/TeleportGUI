@@ -16,6 +16,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 命令注册与「运行期增删命令」的管理器。
+ *
+ * <h2>为什么要用反射动 Brigadier 的内部结构</h2>
+ * Brigadier 的 {@link CommandNode} 只提供 {@code addChild}，<b>没有</b>任何公开的
+ * 「移除子节点」API。但本模组需要支持 {@code /teleportgui_admin command home false}
+ * 之后立刻让 {@code /home} 从补全和命令分发里消失，因此只能反射拿到底层的两个 map：
+ * <ul>
+ *   <li>{@code children}：{@code String -> CommandNode}，真正参与命令分发与补全。</li>
+ *   <li>{@code literals}：{@code String -> LiteralCommandNode}，供补全加速使用。</li>
+ * </ul>
+ * 两者必须同时删除，只删一个会出现「命令不能用但补全还列着」或反过来的不一致状态。
+ *
+ * <h2>反射失败时的降级</h2>
+ * 若 Brigadier 改了内部字段名，{@link #ROOT_CHILDREN} 会是 null。此时不抛异常，
+ * 只是退化成「启动时注册好命令之后不再依赖运行期增删」，模组仍可正常使用，
+ * 代价是配置里的开关需要重启服务器才生效。
+ *
+ * <h2>{@link #GROUPS} 的意义</h2>
+ * 一个功能往往有多个别名（{@code home} / {@code ghome}），而配置文件里的开关是按「功能」
+ * 而不是按「别名」记录的。GROUPS 维护「功能名 → 全部别名」的映射，
+ * 使得启用/禁用某个功能时能一次性处理它的所有别名。
+ */
 @SuppressWarnings("unused")
 public final class Registry {
 
@@ -23,7 +46,6 @@ public final class Registry {
     private static final Field ROOT_CHILDREN = findField("children");
     private static final Field ROOT_LITERALS = findField("literals");
 
-    /** 原版 {@code /reload} 的命令名，用于识别配置重载。 */
     private static final String RELOAD_LITERAL = "reload";
 
     static {
@@ -195,6 +217,21 @@ public final class Registry {
         removeFromMap(ROOT_LITERALS, root, literal);
     }
 
+    /**
+     * 从指定字段（{@code children} 或 {@code literals}）对应的 map 中移除一个字面量。
+     * <p>
+     * 注意两个容易被忽略的点：
+     * <ul>
+     *   <li>{@code field} 为 null 说明反射不可用，此时直接跳过——调用方会走降级逻辑。</li>
+     *   <li>若字段拿到的 map 是<b>不可变</b>的，{@code map.remove} 会抛
+     *       {@link UnsupportedOperationException}，这里没有捕获，属于预期外的情况，
+     *       应该让它在启动阶段就暴露出来，而不是静默失败导致命令树状态错乱。</li>
+     * </ul>
+     *
+     * @param field   字段句柄，可能为 null
+     * @param root    命令树根节点
+     * @param literal 要移除的字面量
+     */
     private static void removeFromMap(Field field, Object root, String literal) {
         if (field == null) return;
         try {

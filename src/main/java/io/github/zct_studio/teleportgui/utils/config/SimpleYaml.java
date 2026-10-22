@@ -2,6 +2,25 @@ package io.github.zct_studio.teleportgui.utils.config;
 
 import java.util.*;
 
+/**
+ * 一个<b>极简</b>的 YAML 子集解析器，只为 {@code settings.yml} 服务。
+ *
+ * <h2>支持什么</h2>
+ * <ul>
+ *   <li>嵌套映射（靠缩进层级）</li>
+ *   <li>标量：{@code true}/{@code false}/{@code null}/{@code ~}、整数、长整数、字符串</li>
+ *   <li>单双引号字符串、行尾 {@code #} 注释（引号内的 {@code #} 不算注释）</li>
+ * </ul>
+ *
+ * <h2>不支持什么</h2>
+ * <ul>
+ *   <li>列表（{@code - item}）：这类行没有冒号，会被直接忽略</li>
+ *   <li>多行块（{@code |} / {@code >}）、锚点与别名、流式写法（{@code {a: 1}}）</li>
+ * </ul>
+ * 之所以不引入完整 YAML 库，是为了避免为了一个只含两三个布尔值的配置文件
+ * 拖进整个 SnakeYAML。若将来设置项需要列表，请直接换成正式库，
+ * 不要在本类上继续堆特性。
+ */
 public final class SimpleYaml {
 
     private SimpleYaml() {

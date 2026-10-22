@@ -10,6 +10,29 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 
+/**
+ * 命令配置（{@code config.json}）的读写与查询入口。
+ *
+ * <h2>配置层级与「null = 继承」约定</h2>
+ * 配置分两层：功能模块里的具体节点（如 {@code tpa.request}）和全局兜底
+ * {@link Command#defaults}。{@link CommandNode} 的每个字段都用包装类型，
+ * <b>null 表示「本层没有设置，向上继承」</b>：
+ * <ul>
+ *   <li>{@code cooldownSeconds}：null 继承 defaults；0 表示明确「无冷却」。</li>
+ *   <li>{@code maxDistance}：null 继承；-1 表示「无限制」。</li>
+ *   <li>{@code expireSeconds}：null 继承；0 表示「永不过期」。</li>
+ *   <li>{@code permission.level}：null 或小于 0 表示继承；-1 的最终含义是「无需权限」。</li>
+ * </ul>
+ * 因此查询方法一律返回「已经解析过继承关系」的最终值，调用方不必再关心层级。
+ *
+ * <h2>为什么用包装类型而不是原始类型</h2>
+ * 若字段是 {@code int}，Gson 反序列化时缺失字段会被填成 0，与「明确设置为 0」
+ * 无法区分，继承机制就失效了。
+ *
+ * <h2>配置损坏的处理</h2>
+ * 解析失败时不让服务器崩溃：先把坏文件备份成 {@code config.json.bak}，
+ * 再用默认值重建，尽量保住上一次能用的配置以便人工恢复。
+ */
 @SuppressWarnings("SameParameterValue")
 public final class CommandLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
