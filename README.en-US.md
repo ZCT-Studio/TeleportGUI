@@ -18,7 +18,7 @@
 <p align="center">
   <a href="README.md">简体中文</a> ·
   <a href="Modrinth.md">Modrinth Description</a> ·
-  <a href="CHANGELOG.MD">Change Log</a>
+  <a href="changelog.md">Change Log</a>
 </p>
 
 ## Table of Contents
@@ -428,11 +428,11 @@ The project uses Stonecutter for multi-loader sources and Stonecraft for loader 
 
 ## <a id="credits"></a>Credits
 
-Thanks to everyone who helped with this project. See [ACKNOWLEDGMENTS.MD](acknowledgments.md) for the full list.
+Thanks to everyone who helped with this project. See [Acknowledgments](acknowledgments.md) for the full list.
 
 ## <a id="todo"></a>TODO
 
-- [TODO.MD](todo.md)
+- [TODO](todo.md)
 
 ## <a id="license"></a>License
 

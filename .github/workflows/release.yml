@@ -98,13 +98,13 @@ jobs:
             $0 ~ "^## \\[" ver "\\]" { capture = 1; next }
             capture && /^## \[/ { exit }
             capture { print }
-          ' CHANGELOG.MD > "$OUT" || true
+          ' changelog.md > "$OUT" || true
 
           if [ ! -s "$OUT" ]; then
-            printf '_本次发布未在 CHANGELOG.MD 中找到对应条目。_\n' > "$OUT"
+            printf '_本次发布未在 changelog.md 中找到对应条目。_\n' > "$OUT"
           fi
 
-          printf '\n---\n\n完整更新日志：[CHANGELOG.MD](%s/%s/blob/%s/CHANGELOG.MD)\n' \
+          printf '\n---\n\n完整更新日志：[changelog.md](%s/%s/blob/%s/changelog.md)\n' \
             "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_REF_NAME" >> "$OUT"
 
           echo "PUBLISH_CHANGELOG_FILE=$OUT" >> "$GITHUB_ENV"

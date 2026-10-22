@@ -18,7 +18,7 @@
 <p align="center">
   <a href="README.en-US.md">English</a> ·
   <a href="Modrinth.md">Modrinth描述</a> ·
-  <a href="CHANGELOG.MD">更新日志</a>
+  <a href="changelog.md">更新日志</a>
 </p>
 
 ## 目录
@@ -413,11 +413,11 @@ versions/26.<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<版本
 
 ## <a id="credits"></a>鸣谢
 
-感谢所有为这个项目提供帮助的人，完整名单见 [ACKNOWLEDGMENTS.MD](acknowledgments.md)。
+感谢所有为这个项目提供帮助的人，完整名单见 [Acknowledgments](acknowledgments.md)。
 
 ## <a id="todo"></a>TODO
 
-- [TODO.MD](todo.md)
+- [TODO](todo.md)
 
 ## <a id="license"></a>许可证
 
