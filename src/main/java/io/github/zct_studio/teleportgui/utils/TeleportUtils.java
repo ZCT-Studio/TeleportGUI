@@ -29,6 +29,12 @@ public final class TeleportUtils {
             "block.minecraft.powder_snow", "block.minecraft.nether_portal"
     );
 
+    /**
+     * 玩家 UUID → 最近一次传送前的位置，供 {@code /back} 使用。
+     * <p>
+     * 只在服务端主线程访问；玩家退出时由 {@code ServerMain} 调用
+     * {@link #clearPreviousPos(String)} 清理，避免表无限增长。
+     */
     private static final Map<String, PreviousPos> PREV_POS = new HashMap<>();
 
     private TeleportUtils() {

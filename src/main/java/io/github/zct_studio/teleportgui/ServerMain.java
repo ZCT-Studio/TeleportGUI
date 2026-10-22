@@ -5,6 +5,7 @@ import dev.architectury.event.events.common.CommandPerformEvent;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import io.github.zct_studio.teleportgui.commands.Registry;
 import io.github.zct_studio.teleportgui.commands.Tpa;
@@ -103,6 +104,14 @@ public final class ServerMain {
                 );
             }
             return EventResult.pass();
+        });
+
+        PlayerEvent.PLAYER_QUIT.register(player -> {
+            // back 的上一位置和死亡点都是「本次在线期间」的数据，玩家退出后没有意义。
+            // 不清理的话这两个静态表会随着玩家进出无限增长。
+            String uuid = player.getStringUUID();
+            TeleportUtils.clearPreviousPos(uuid);
+            DeathPoint.remove(uuid);
         });
 
         LifecycleEvent.SERVER_STOPPING.register(server -> {
