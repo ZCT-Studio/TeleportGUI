@@ -428,11 +428,11 @@ The project uses Stonecutter for multi-loader sources and Stonecraft for loader 
 
 ## <a id="credits"></a>Credits
 
-Thanks to everyone who helped with this project. See [ACKNOWLEDGMENTS.MD](ACKNOWLEDGMENTS.MD) for the full list.
+Thanks to everyone who helped with this project. See [ACKNOWLEDGMENTS.MD](acknowledgments.md) for the full list.
 
 ## <a id="todo"></a>TODO
 
-- [TODO.MD](TODO.MD)
+- [TODO.MD](todo.md)
 
 ## <a id="license"></a>License
 

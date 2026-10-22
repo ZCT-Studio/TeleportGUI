@@ -251,7 +251,7 @@ points and back points do not.
 
 ## TODO
 
-- [TODO.MD](https://github.com/ZCT-Studio/TeleportGUI/blob/master/TODO.MD)
+- [TODO in GitHub](https://github.com/ZCT-Studio/TeleportGUI/blob/master/todo.md)
 
 ## License
 
@@ -262,5 +262,5 @@ Floodgate.***
 
 ## Links
 
-- Changelog: [CHANGELOG.MD](https://github.com/ZCT-Studio/TeleportGUI/blob/master/CHANGELOG.MD)
-- Acknowledgments: [ACKNOWLEDGMENTS.MD](https://github.com/ZCT-Studio/TeleportGUI/blob/master/ACKNOWLEDGMENTS.MD)
+- [ChangeLog in GitHub](https://github.com/ZCT-Studio/TeleportGUI/blob/master/changelog.md)
+- [Acknowledgments in GitHub](https://github.com/ZCT-Studio/TeleportGUI/blob/master/acknowledgments.md)
