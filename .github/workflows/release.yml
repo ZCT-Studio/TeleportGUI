@@ -7,9 +7,7 @@ on:
       - 'v*'
 
 env:
-  # Modrinth 项目 ID / slug。改项目时可以在这里统一调整，
-  # 也可以用仓库变量 MODRINTH_ID 覆盖（不设置时使用下面的默认值）。
-  MODRINTH_PROJECT: ${{ vars.MODRINTH_ID || 'teleportgui' }}
+  MODRINTH_PROJECT: ${{ vars.MODRINTH_ID || '5tC6IJAL' }}
 
 concurrency:
   group: release-${{ github.ref }}
@@ -40,7 +38,6 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#[vV]}"
 
-          # 与 gradle.properties 的 mod.version 比对，不一致直接失败
           PROP_VERSION="$(grep -E '^mod\.version=' gradle.properties | cut -d= -f2- | tr -d '[:space:]')"
           if [ "$VERSION" != "$PROP_VERSION" ]; then
             echo "::error::tag 版本与 gradle.properties 不一致：tag=$VERSION, mod.version=$PROP_VERSION"
@@ -97,7 +94,6 @@ jobs:
           VERSION="${{ needs.prepare.outputs.version }}"
           OUT="$RUNNER_TEMP/release-notes.md"
 
-          # 从 CHANGELOG.MD 截取 "## [<version>]" 到下一个 "## [" 之间的内容
           awk -v ver="$VERSION" '
             $0 ~ "^## \\[" ver "\\]" { capture = 1; next }
             capture && /^## \[/ { exit }
@@ -114,22 +110,16 @@ jobs:
           echo "PUBLISH_CHANGELOG_FILE=$OUT" >> "$GITHUB_ENV"
           cat "$OUT"
 
-      # 一次 gradle 调用跑完所有发布任务：
-      # 编译只会执行一次，后面的任务全部命中 UP-TO-DATE。
-      # 某个平台失败不会中断其它平台（--continue），最后统一汇总。
       - name: Publish to GitHub and Modrinth
         id: publish
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # stonecraft 要求 MODRINTH_TOKEN 与 MODRINTH_ID 同时存在才会启用 Modrinth 发布。
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           MODRINTH_ID: ${{ env.MODRINTH_PROJECT }}
-          # CURSEFORGE_SLUG / CURSEFORGE_ID / CURSEFORGE_TOKEN 预留
           PUBLISH_VERSION: ${{ needs.prepare.outputs.version }}
           RELEASE_TYPE: ${{ needs.prepare.outputs.publish_type }}
           PUBLISH_TAG: ${{ needs.prepare.outputs.tag }}
-          # stonecraft 的 dryRun 默认为 true，必须显式置 false 才会真正上传
           DO_PUBLISH: 'true'
         run: |
           set -euo pipefail
@@ -159,12 +149,9 @@ jobs:
             echo "### 发布结果"
             echo "- 版本：\`${{ needs.prepare.outputs.version }}\`"
             echo "- 类型：\`${{ needs.prepare.outputs.publish_type }}\`"
-            echo "- 平台：GitHub Release（fabric + neoforge 两个 jar）、Modrinth（两个加载器各一条）"
             echo "- 状态：\`${{ steps.publish.outcome }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # 上面用 --continue + continue-on-error 是为了让某个平台失败时其它平台照常发布，
-      # 但作业最终必须反映真实结果，所以这里显式把失败抛出来。
       - name: Fail if any publish failed
         if: steps.publish.outcome == 'failure'
         run: |

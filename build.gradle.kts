@@ -125,8 +125,6 @@ val releaseChangelog: String = providers.environmentVariable("PUBLISH_CHANGELOG_
         "完整更新日志请见 https://github.com/$githubRepository/blob/master/changelog.md"
     }
 
-// GitHub Release 只有一份（同一个 tag 不能建两个），固定由 fabric 子项目发布，
-// 并把 neoforge 的 jar 作为附加文件一起上传。
 val isPrimaryPublisher = mod.isFabric
 
 publishMods {
@@ -134,7 +132,6 @@ publishMods {
     changelog.set(releaseChangelog)
     displayName.set("${findProperty("mod.name") ?: "TeleportGUI"} ${releaseVersion}")
 
-    // 发布类型：优先用 CI 传入的 RELEASE_TYPE，其次由 stonecraft 按版本号推断。
     providers.environmentVariable("RELEASE_TYPE").orNull?.let { raw ->
         type.set(
             when (raw.uppercase()) {
@@ -164,12 +161,8 @@ publishMods {
         }
     }
 
-    // Modrinth 的 accessToken / projectId / minecraftVersions 由 stonecraft 的
-    // configurePublishing 从 MODRINTH_TOKEN 与 MODRINTH_ID 环境变量自动填充，
-    // 这里只补充平台依赖声明。
-    if (mod.isFabric) {
-        modrinth {
-            requires("fabric-api")
-        }
+    modrinth {
+        requires("architectury-api")
+        optional("geyser", "floodgate")
     }
 }
