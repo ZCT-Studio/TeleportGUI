@@ -131,15 +131,30 @@ public final class Tpa {
     }
 
     private static int cmdAccept(ServerPlayer from, ServerPlayer to) {
-        if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT)) return 1;
-        accept(from, to);
+        if (!acceptChecked(from, to)) return 1;
         return 0;
     }
 
     private static int cmdDeny(ServerPlayer from, ServerPlayer to) {
-        if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_DENY)) return 1;
-        deny(from, to);
+        if (!denyChecked(from, to)) return 1;
         return 0;
+    }
+
+    /**
+     * 接受请求前先校验权限，供命令、GUI 和表单共用，避免绕过 {@code tpa.accept} 节点。
+     * 返回 false 表示权限不足或没有待处理请求。
+     */
+    public static boolean acceptChecked(ServerPlayer from, ServerPlayer to) {
+        if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT)) return false;
+        return accept(from, to);
+    }
+
+    /**
+     * 拒绝请求前先校验权限，供命令、GUI 和表单共用，避免绕过 {@code tpa.deny} 节点。
+     */
+    public static boolean denyChecked(ServerPlayer from, ServerPlayer to) {
+        if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_DENY)) return false;
+        return deny(from, to);
     }
 
     private static boolean sendRequest(ServerPlayer from, ServerPlayer to, boolean here) {
@@ -254,7 +269,13 @@ public final class Tpa {
         return true;
     }
 
-    public static void accept(ServerPlayer from, ServerPlayer to) {
+    /**
+     * 接受一个 TPA 请求。调用方必须先完成权限校验（命令走 {@link #acceptChecked}，
+     * GUI/表单同样只能通过 {@link #acceptChecked} 进入）。
+     *
+     * @return 找到并处理了请求时返回 true
+     */
+    public static boolean accept(ServerPlayer from, ServerPlayer to) {
         long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()
                 .filter(r -> Objects.equals(from.getStringUUID(), r.fromUuid))
@@ -266,7 +287,7 @@ public final class Tpa {
                     Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
                             .withStyle(Styles.ERROR),
                     true);
-            return;
+            return false;
         }
 
         TpaRequest req = reqOpt.get();
@@ -274,10 +295,8 @@ public final class Tpa {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
-            REQUESTS.remove(req);
-            RuntimeStore.markDirty();
-            persist();
-            return;
+            removeRequest(req);
+            return false;
         }
 
         ServerPlayer destination = req.here ? from : to;
@@ -298,12 +317,16 @@ public final class Tpa {
                     true);
         }
 
-        REQUESTS.remove(req);
-        RuntimeStore.markDirty();
-        persist();
+        removeRequest(req);
+        return true;
     }
 
-    public static void deny(ServerPlayer from, ServerPlayer to) {
+    /**
+     * 拒绝一个 TPA 请求。调用方必须先完成权限校验（见 {@link #denyChecked}）。
+     *
+     * @return 找到并处理了请求时返回 true
+     */
+    public static boolean deny(ServerPlayer from, ServerPlayer to) {
         long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()
                 .filter(r -> Objects.equals(from.getStringUUID(), r.fromUuid))
@@ -315,7 +338,7 @@ public final class Tpa {
                     Tr_i18n.tr("commands.teleportgui.tpa.notFound", to)
                             .withStyle(Styles.ERROR),
                     true);
-            return;
+            return false;
         }
 
         TpaRequest req = reqOpt.get();
@@ -323,15 +346,11 @@ public final class Tpa {
             Component expired = Tr_i18n.tr("commands.teleportgui.tpa.expired", to)
                     .withStyle(Styles.ERROR);
             to.sendSystemMessage(expired, true);
-            REQUESTS.remove(req);
-            RuntimeStore.markDirty();
-            persist();
-            return;
+            removeRequest(req);
+            return false;
         }
 
-        REQUESTS.remove(req);
-        RuntimeStore.markDirty();
-        persist();
+        removeRequest(req);
 
         from.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", from)
@@ -341,6 +360,13 @@ public final class Tpa {
                 Tr_i18n.tr("commands.teleportgui.tpa.denied", to)
                         .withStyle(Styles.ERROR_STRONG),
                 true);
+        return true;
+    }
+
+    private static void removeRequest(TpaRequest request) {
+        REQUESTS.remove(request);
+        RuntimeStore.markDirty();
+        persist();
     }
 
     public static void requestByName(ServerPlayer from, String targetName, boolean here) {

@@ -328,14 +328,14 @@ public final class GUI {
 
     private static void acceptRequest(ServerPlayer sp, String fromUuid) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
-        if (from != null) Tpa.accept(from, sp);
+        if (from != null) Tpa.acceptChecked(from, sp);
         else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
         sp.closeContainer();
     }
 
     private static void denyRequest(ServerPlayer sp, String fromUuid) {
         ServerPlayer from = Tpa.resolveOnline(fromUuid);
-        if (from != null) Tpa.deny(from, sp);
+        if (from != null) Tpa.denyChecked(from, sp);
         else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
         sp.closeContainer();
     }
@@ -979,10 +979,10 @@ public final class GUI {
                             Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
                     reopen(sp, 0);
                 } else if (button == 0) {
-                    Tpa.accept(from, sp);
+                    Tpa.acceptChecked(from, sp);
                     sp.closeContainer();
                 } else if (button == 1) {
-                    Tpa.deny(from, sp);
+                    Tpa.denyChecked(from, sp);
                     sp.closeContainer();
                 }
                 return;

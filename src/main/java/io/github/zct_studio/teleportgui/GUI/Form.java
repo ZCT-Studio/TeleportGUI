@@ -369,11 +369,11 @@ public final class Form {
             List<Runnable> actions = new ArrayList<>();
             call(b, "button", text(player, "gui.teleportgui.tpa.tpareqdialog.accept"));
             actions.add(() -> {
-                if (from != null) Tpa.accept(from, player);
+                if (from != null) Tpa.acceptChecked(from, player);
             });
             call(b, "button", text(player, "gui.teleportgui.tpa.tpareqdialog.deny"));
             actions.add(() -> {
-                if (from != null) Tpa.deny(from, player);
+                if (from != null) Tpa.denyChecked(from, player);
             });
             if (autoOpened) {
                 call(b, "button", text(player, "gui.teleportgui.universal.gui.close"));
