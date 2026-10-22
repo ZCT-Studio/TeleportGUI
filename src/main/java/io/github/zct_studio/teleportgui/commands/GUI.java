@@ -40,8 +40,8 @@ public final class GUI {
     //   3. Command.fillDefaults() 中给该节点传入期望的默认秒数（0 = 永不过期）。
     // 或许以后东西多了就是排除？不造不造，暂时咱就先这儿样咯 :)
     private static final Set<String> EXPIRE_SECONDS_NODES = Set.of(
-            ConfigKeys.Build(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST),
-            ConfigKeys.Build(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST_HERE)
+            ConfigKeys.nodeKey(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST),
+            ConfigKeys.nodeKey(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST_HERE)
     );
 
     private static final String FIELD_LEVEL = "level";

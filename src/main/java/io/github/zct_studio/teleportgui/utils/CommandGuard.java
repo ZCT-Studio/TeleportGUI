@@ -5,7 +5,6 @@ import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.storage.RuntimeStore;
-import io.github.zct_studio.teleportgui.utils.config.CommandIds;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -28,7 +27,7 @@ public final class CommandGuard {
      * <p>
      * 注意：本字段不持有锁，请勿在异步线程访问。
      */
-    private static final Map<UUID, Map<Integer, Long>> COOLDOWNS = new HashMap<>();
+    private static final Map<UUID, Map<NodeKey, Long>> COOLDOWNS = new HashMap<>();
 
     private CommandGuard() {
     }
@@ -63,10 +62,10 @@ public final class CommandGuard {
         int cooldownSec = CommandLoader.getCooldown(module, node);
         if (cooldownSec <= 0) return 0;
 
-        Map<Integer, Long> playerCooldowns = COOLDOWNS.get(player.getUUID());
+        Map<NodeKey, Long> playerCooldowns = COOLDOWNS.get(player.getUUID());
         if (playerCooldowns == null) return 0;
 
-        Long expiresAt = playerCooldowns.get(CommandIds.of(module, node));
+        Long expiresAt = playerCooldowns.get(new NodeKey(module, node));
         if (expiresAt == null) return 0;
 
         long now = tick();
@@ -93,14 +92,14 @@ public final class CommandGuard {
 
         long expiresAt = tick() + cooldownSec * 20L;
         COOLDOWNS.computeIfAbsent(player.getUUID(), key -> new HashMap<>())
-                .put(CommandIds.of(module, node), expiresAt);
+                .put(new NodeKey(module, node), expiresAt);
         RuntimeStore.markDirty();
     }
 
     public static void cleanup(long now) {
         boolean changed = false;
-        for (Iterator<Map<Integer, Long>> it = COOLDOWNS.values().iterator(); it.hasNext(); ) {
-            Map<Integer, Long> playerCooldowns = it.next();
+        for (Iterator<Map<NodeKey, Long>> it = COOLDOWNS.values().iterator(); it.hasNext(); ) {
+            Map<NodeKey, Long> playerCooldowns = it.next();
             if (playerCooldowns.values().removeIf(expiresAt -> expiresAt <= now)) {
                 changed = true;
             }
@@ -120,15 +119,10 @@ public final class CommandGuard {
                 long remaining = commandEntry.getValue() - now;
                 if (remaining <= 0) continue;
 
-                int id = commandEntry.getKey();
-                String module = CommandIds.module(id);
-                String node = CommandIds.node(id);
-                if (module == null || node == null) continue;
-
                 RuntimeStore.CooldownEntry entry = new RuntimeStore.CooldownEntry();
                 entry.uuid = uuid;
-                entry.module = module;
-                entry.node = node;
+                entry.module = commandEntry.getKey().module();
+                entry.node = commandEntry.getKey().node();
                 entry.remainingTicks = remaining;
                 result.add(entry);
             }
@@ -146,9 +140,8 @@ public final class CommandGuard {
 
             try {
                 UUID uuid = UUID.fromString(entry.uuid);
-                int id = CommandIds.of(entry.module, entry.node);
                 COOLDOWNS.computeIfAbsent(uuid, key -> new HashMap<>())
-                        .put(id, now + entry.remainingTicks);
+                        .put(new NodeKey(entry.module, entry.node), now + entry.remainingTicks);
             } catch (IllegalArgumentException ignored) {
             }
         }
@@ -157,5 +150,11 @@ public final class CommandGuard {
     private static long tick() {
         MinecraftServer server = ServerMain.SERVER;
         return server == null ? 0L : server.getTickCount();
+    }
+
+    /**
+     * 一条命令的配置节点标识，例如 {@code tpa.request} 拆成 module=tpa、node=request。
+     */
+    private record NodeKey(String module, String node) {
     }
 }
