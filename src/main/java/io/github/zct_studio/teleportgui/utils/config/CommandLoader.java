@@ -3,6 +3,7 @@ package io.github.zct_studio.teleportgui.utils.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.zct_studio.teleportgui.Constants;
+import io.github.zct_studio.teleportgui.storage.AtomicFiles;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,7 +55,7 @@ public final class CommandLoader {
 
     public static void save(Path configFile) {
         try {
-            Files.writeString(configFile, GSON.toJson(CONFIG));
+            AtomicFiles.write(configFile, GSON.toJson(CONFIG));
         } catch (Exception e) {
             Constants.LOGGER.error("Failed to save config", e);
         }

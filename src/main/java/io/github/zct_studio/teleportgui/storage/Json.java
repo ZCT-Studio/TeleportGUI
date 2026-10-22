@@ -11,7 +11,6 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Objects;
 
@@ -101,9 +100,7 @@ public class Json implements Provider {
     private void write() {
         if (storageFile == null) return;
         try {
-            byte[] json = prettyGson.toJson(data).getBytes(StandardCharsets.UTF_8);
-            Files.write(storageFile, json,
-                    StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            AtomicFiles.write(storageFile, prettyGson.toJson(data));
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write storage file " + storageFile, e);
         }

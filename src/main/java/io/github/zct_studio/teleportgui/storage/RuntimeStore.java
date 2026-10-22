@@ -94,11 +94,7 @@ public final class RuntimeStore {
         if (file == null) return;
 
         try {
-            Path parent = file.getParent();
-            if (parent != null && !Files.exists(parent)) {
-                Files.createDirectories(parent);
-            }
-            Files.writeString(file, GSON.toJson(snapshot));
+            AtomicFiles.write(file, GSON.toJson(snapshot));
         } catch (java.lang.Exception e) {
             dirty = true;
             Constants.LOGGER.error("Failed to save runtime data", e);
