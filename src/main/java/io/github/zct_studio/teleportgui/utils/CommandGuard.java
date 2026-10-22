@@ -14,13 +14,21 @@ import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class CommandGuard {
-    private static final ConcurrentHashMap<UUID, ConcurrentHashMap<Integer, Long>> COOLDOWNS =
-            new ConcurrentHashMap<>();
+    /**
+     * 玩家 UUID → (命令 id → 冷却到期 tick)。
+     * <p>
+     * 只在服务端主线程访问（命令执行与 tick 回调），因此不需要并发容器。
+     * <p>
+     * 注意：本字段不持有锁，请勿在异步线程访问。
+     */
+    private static final Map<UUID, Map<Integer, Long>> COOLDOWNS = new HashMap<>();
 
     private CommandGuard() {
     }
@@ -55,7 +63,7 @@ public final class CommandGuard {
         int cooldownSec = CommandLoader.getCooldown(module, node);
         if (cooldownSec <= 0) return 0;
 
-        ConcurrentHashMap<Integer, Long> playerCooldowns = COOLDOWNS.get(player.getUUID());
+        Map<Integer, Long> playerCooldowns = COOLDOWNS.get(player.getUUID());
         if (playerCooldowns == null) return 0;
 
         Long expiresAt = playerCooldowns.get(CommandIds.of(module, node));
@@ -84,23 +92,20 @@ public final class CommandGuard {
         if (cooldownSec <= 0) return;
 
         long expiresAt = tick() + cooldownSec * 20L;
-        COOLDOWNS.computeIfAbsent(player.getUUID(), key -> new ConcurrentHashMap<>())
+        COOLDOWNS.computeIfAbsent(player.getUUID(), key -> new HashMap<>())
                 .put(CommandIds.of(module, node), expiresAt);
         RuntimeStore.markDirty();
     }
 
     public static void cleanup(long now) {
         boolean changed = false;
-        for (var playerEntry : COOLDOWNS.entrySet()) {
-            var playerCooldowns = playerEntry.getValue();
-            for (var commandEntry : playerCooldowns.entrySet()) {
-                if (commandEntry.getValue() <= now
-                        && playerCooldowns.remove(commandEntry.getKey(), commandEntry.getValue())) {
-                    changed = true;
-                }
+        for (Iterator<Map<Integer, Long>> it = COOLDOWNS.values().iterator(); it.hasNext(); ) {
+            Map<Integer, Long> playerCooldowns = it.next();
+            if (playerCooldowns.values().removeIf(expiresAt -> expiresAt <= now)) {
+                changed = true;
             }
-            if (playerCooldowns.isEmpty()
-                    && COOLDOWNS.remove(playerEntry.getKey(), playerCooldowns)) {
+            if (playerCooldowns.isEmpty()) {
+                it.remove();
                 changed = true;
             }
         }
@@ -142,7 +147,7 @@ public final class CommandGuard {
             try {
                 UUID uuid = UUID.fromString(entry.uuid);
                 int id = CommandIds.of(entry.module, entry.node);
-                COOLDOWNS.computeIfAbsent(uuid, key -> new ConcurrentHashMap<>())
+                COOLDOWNS.computeIfAbsent(uuid, key -> new HashMap<>())
                         .put(id, now + entry.remainingTicks);
             } catch (IllegalArgumentException ignored) {
             }

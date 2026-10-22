@@ -14,13 +14,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("unused")
 public final class SafetyGuard {
 
-    private static final Map<String, Pending> PENDING = new ConcurrentHashMap<>();
+    /**
+     * 等待玩家确认「强制传送」的目标位置。
+     * 只在服务端主线程访问（命令执行与容器/表单回调），因此使用普通 HashMap。
+     * 注意：本字段不持有锁，请勿在异步线程访问。
+     */
+    private static final Map<String, Pending> PENDING = new HashMap<>();
 
     private SafetyGuard() {
     }

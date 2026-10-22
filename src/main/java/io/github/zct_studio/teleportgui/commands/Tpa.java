@@ -29,13 +29,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static net.minecraft.commands.Commands.argument;
 
 public final class Tpa {
 
-    public static final CopyOnWriteArrayList<TpaRequest> REQUESTS = new CopyOnWriteArrayList<>();
+    /**
+     * 待处理的传送请求。
+     * <p>
+     * 所有读写都发生在服务端主线程（命令执行、容器点击、tick 回调），因此用普通
+     * ArrayList 即可。之前用的是 CopyOnWriteArrayList，但它的 remove 会复制整个底层数组，
+     * cleanup 里一边遍历一边删是 O(n²)，请求一多就明显变慢。
+     * <p>
+     * 注意：本字段不持有锁，请勿在异步线程访问。
+     */
+    private static final List<TpaRequest> REQUESTS = new ArrayList<>();
 
     private Tpa() {
     }
@@ -180,15 +188,10 @@ public final class Tpa {
         }
 
         long now = currentTick();
-        boolean purged = false;
-        for (TpaRequest request : REQUESTS) {
-            if (Objects.equals(from.getStringUUID(), request.fromUuid)
-                    && Objects.equals(to.getStringUUID(), request.toUuid)
-                    && request.isExpired(now)
-                    && REQUESTS.remove(request)) {
-                purged = true;
-            }
-        }
+        boolean purged = REQUESTS.removeIf(request ->
+                Objects.equals(from.getStringUUID(), request.fromUuid)
+                        && Objects.equals(to.getStringUUID(), request.toUuid)
+                        && request.isExpired(now));
         if (purged) RuntimeStore.markDirty();
 
         long existing = REQUESTS.stream()
@@ -396,13 +399,9 @@ public final class Tpa {
     }
 
     public static void cleanup(long now) {
-        boolean changed = false;
-        for (TpaRequest request : REQUESTS) {
-            if (request.isExpired(now) && REQUESTS.remove(request)) {
-                changed = true;
-            }
+        if (REQUESTS.removeIf(request -> request.isExpired(now))) {
+            RuntimeStore.markDirty();
         }
-        if (changed) RuntimeStore.markDirty();
     }
 
     public static List<RuntimeStore.TpaEntry> snapshot(long now) {

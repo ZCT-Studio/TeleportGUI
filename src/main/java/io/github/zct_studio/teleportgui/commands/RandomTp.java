@@ -28,10 +28,10 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public final class RandomTp {
@@ -41,7 +41,11 @@ public final class RandomTp {
     private static final int NETHER_SCAN_DEPTH = 48;
     private static final int DEFAULT_MAX_DISTANCE = 1000;
     private static final long CHUNK_TIMEOUT_SECONDS = 10L;
-    private static final Set<String> PENDING = ConcurrentHashMap.newKeySet();
+    /**
+     * 正在随机传送中的玩家 UUID。只在服务端主线程访问（命令执行与 server.execute 回调），
+     * 因此使用普通 HashSet。注意：本字段不持有锁，请勿在异步线程访问。
+     */
+    private static final Set<String> PENDING = new HashSet<>();
 
     private RandomTp() {
     }
