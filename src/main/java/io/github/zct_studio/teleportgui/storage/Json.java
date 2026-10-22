@@ -94,6 +94,15 @@ public class Json implements Provider {
     }
 
     @Override
+    public void saveAll(List<NamedLoc> warps, List<PlayerData> players) {
+        StorageData snapshot = new StorageData();
+        if (warps != null) snapshot.warps.addAll(warps);
+        if (players != null) snapshot.players.addAll(players);
+        this.data = snapshot;
+        write();
+    }
+
+    @Override
     public void close() throws Exception {
         // JSON has no persistent connections — nothing to close
     }

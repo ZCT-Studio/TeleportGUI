@@ -56,17 +56,16 @@ public final class Manager {
         }
     }
 
+    /**
+     * 把当前内存中的全部数据写成一份快照落盘。
+     * 这是一次整体写入，不会逐条调用 provider 的单项保存方法。
+     */
     public static void save() {
         if (INITIALIZING) return;
         if (DATA == null || provider == null) return;
 
         try {
-            for (NamedLoc w : DATA.getWarps()) {
-                provider.saveWarp(w);
-            }
-            for (PlayerData p : DATA.playersSnapshot()) {
-                provider.savePlayer(p);
-            }
+            provider.saveAll(DATA.getWarps(), DATA.playersSnapshot());
         } catch (Exception e) {
             Constants.LOGGER.error("Failed to save storage!", e);
         }
