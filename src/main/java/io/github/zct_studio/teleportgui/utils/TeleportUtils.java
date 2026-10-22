@@ -1,5 +1,6 @@
 package io.github.zct_studio.teleportgui.utils;
 
+import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +39,21 @@ public final class TeleportUtils {
      * {@link #clearPreviousPos(String)} 清理，避免表无限增长。
      */
     private static final Map<String, PreviousPos> PREV_POS = new HashMap<>();
+
+    private static final String CLASS_GEYSER_API = Constants.CLASS_GEYSER_API;
+    private static final String CLASS_FLOODGATE_API = Constants.CLASS_FLOODGATE_API;
+    private static final String CLASS_CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
+
+    /**
+     * Geyser / Floodgate 的反射句柄缓存。
+     * <p>
+     * 这两个依赖都是可选的，插件也可能在运行期被重载，因此只在解析成功后缓存；
+     * 调用失败时清空缓存，下次重新解析。
+     */
+    private static volatile GeyserHandle GEYSER_HANDLE;
+    private static volatile Method FLOODGATE_API_GETTER;
+    private static volatile Object FLOODGATE_API_INSTANCE;
+    private static volatile boolean CUMULUS_AVAILABLE;
 
     private TeleportUtils() {
     }
@@ -82,44 +100,104 @@ public final class TeleportUtils {
     }
 
     public static boolean isBedrockPlayer(ServerPlayer player) {
+        GeyserHandle handle = geyserHandle();
+        if (handle == null) return false;
         try {
-            Class.forName("org.geysermc.geyser.api.GeyserApi");
-            Class<?> apiClass = Class.forName("org.geysermc.geyser.api.GeyserApi");
-            Object api = apiClass.getMethod("api").invoke(null);
+            Object api = handle.api().invoke(null);
             if (api == null) return false;
-            Object connection = apiClass.getMethod("connectionByUuid", java.util.UUID.class)
-                    .invoke(api, player.getUUID());
+            Object connection = handle.connectionByUuid().invoke(api, player.getUUID());
             return connection != null;
         } catch (Exception e) {
+            // Geyser 被卸载或重载后旧句柄会失效，丢掉缓存让下次重新解析。
+            GEYSER_HANDLE = null;
             return false;
         }
+    }
+
+    /**
+     * Geyser 反射句柄。解析成功前为 null；解析成功后缓存，避免每次判断都做
+     * Class.forName + getMethod。Geyser 未安装时同样保持 null（只是重新判断一次加载状态）。
+     */
+    private static GeyserHandle geyserHandle() {
+        GeyserHandle cached = GEYSER_HANDLE;
+        if (cached != null) return cached;
+        try {
+            Class<?> apiClass = Class.forName(CLASS_GEYSER_API);
+            GeyserHandle handle = new GeyserHandle(
+                    apiClass.getMethod("api"),
+                    apiClass.getMethod("connectionByUuid", UUID.class));
+            GEYSER_HANDLE = handle;
+            return handle;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private record GeyserHandle(Method api, Method connectionByUuid) {
     }
 
     public static boolean hasFloodgate() {
-        try {
-            Class.forName("org.geysermc.cumulus.form.Form");
-        } catch (Throwable e) {
-            return false;
-        }
+        if (!cumulusAvailable()) return false;
         return floodgateApi() != null;
     }
 
-    public static Object floodgateApi() {
+    /**
+     * Cumulus（Floodgate 的表单库）是否可用。
+     * <p>
+     * 惰性判断并缓存成功结果：插件可能在模组初始化之后才加载，因此失败结果不做缓存。
+     */
+    private static boolean cumulusAvailable() {
+        if (CUMULUS_AVAILABLE) return true;
         try {
-            Class<?> apiClass = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+            Class.forName(CLASS_CUMULUS_FORM);
+            CUMULUS_AVAILABLE = true;
+        } catch (Throwable ignored) {
+            // 未安装 Floodgate
+        }
+        return CUMULUS_AVAILABLE;
+    }
+
+    public static Object floodgateApi() {
+        Object cached = floodgateApiInstance();
+        if (cached != null) return cached;
+
+        Method getter = floodgateApiGetter();
+        if (getter == null) return null;
+        try {
+            Object api = getter.invoke(null);
+            if (api != null) {
+                FLOODGATE_API_INSTANCE = api;
+            }
+            return api;
+        } catch (Throwable e) {
+            FLOODGATE_API_GETTER = null;
+            return null;
+        }
+    }
+
+    private static Object floodgateApiInstance() {
+        return FLOODGATE_API_INSTANCE;
+    }
+
+    private static Method floodgateApiGetter() {
+        Method cached = FLOODGATE_API_GETTER;
+        if (cached != null) return cached;
+        try {
+            Class<?> apiClass = Class.forName(CLASS_FLOODGATE_API);
             for (String name : new String[]{"getInstance", "api"}) {
-                java.lang.reflect.Method m;
+                Method m;
                 try {
                     m = apiClass.getMethod(name);
                 } catch (NoSuchMethodException ignored) {
                     continue;
                 }
-                if (!java.lang.reflect.Modifier.isStatic(m.getModifiers())) continue;
+                if (!Modifier.isStatic(m.getModifiers())) continue;
                 m.setAccessible(true);
-                Object api = m.invoke(null);
-                if (api != null) return api;
+                FLOODGATE_API_GETTER = m;
+                return m;
             }
         } catch (Throwable ignored) {
+            // Floodgate 未安装
         }
         return null;
     }
