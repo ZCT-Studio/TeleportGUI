@@ -95,11 +95,34 @@ public final class Registry {
     }
 
     private static void registerFeatureCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        Home.register(dispatcher);
-        Warp.register(dispatcher);
-        Tpa.register(dispatcher);
-        TpPoints.register(dispatcher);
-        RandomTp.register(dispatcher);
+        // 每个模块的 register 都无条件调用 dispatcher.register；Brigadier 遇到同名节点会抛出
+        // IllegalArgumentException（"Command name ... is already defined"）。当反射移除逻辑不可用、
+        // 或注册流程被重复触发时，重复注册会让服务端起不来，所以先按组做一次幂等判断：
+        // 组内只要还有一个别名留在命令树上，就认为该组已注册，整组跳过。
+        for (Group group : GROUPS.values()) {
+            if (isGroupRegistered(dispatcher, group)) continue;
+            registerGroup(dispatcher, group.name());
+        }
+    }
+
+    private static boolean isGroupRegistered(CommandDispatcher<CommandSourceStack> dispatcher,
+                                             Group group) {
+        for (String literal : group.literals()) {
+            if (dispatcher.getRoot().getChild(literal) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void registerGroup(CommandDispatcher<CommandSourceStack> dispatcher, String name) {
+        switch (name) {
+            case ConfigKeys.COMMAND_HOME -> Home.register(dispatcher);
+            case ConfigKeys.COMMAND_WARP -> Warp.register(dispatcher);
+            case ConfigKeys.COMMAND_TPA -> Tpa.register(dispatcher);
+            case ConfigKeys.COMMAND_RANDOM_TP -> RandomTp.register(dispatcher);
+            default -> TpPoints.register(dispatcher);
+        }
     }
 
     private static void ensureGuiCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
