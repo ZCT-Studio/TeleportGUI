@@ -102,19 +102,6 @@ modSettings {
     )
 }
 
-fun inferReleaseType(version: String): String {
-    val v = version.lowercase()
-    return when {
-        "snapshot" in v || "alpha" in v -> "ALPHA"
-        "beta" in v -> "BETA"
-        else -> "STABLE"
-    }
-}
-
-val publishType: String = providers.environmentVariable("PUBLISH_TYPE")
-    .orElse(providers.provider { inferReleaseType(mod.version) })
-    .get()
-
 val releaseTag: String = providers.environmentVariable("PUBLISH_TAG")
     .orElse(providers.provider { "v${mod.version}" })
     .get()
@@ -135,22 +122,28 @@ val releaseChangelog: String = providers.environmentVariable("PUBLISH_CHANGELOG_
     .orElse("")
     .get()
     .ifBlank {
-        "完整更新日志请见 https://github.com/$githubRepository/blob/master/CHANGELOG.MD"
+        "完整更新日志请见 https://github.com/$githubRepository/blob/master/changelog.md"
     }
 
+// GitHub Release 只有一份（同一个 tag 不能建两个），固定由 fabric 子项目发布，
+// 并把 neoforge 的 jar 作为附加文件一起上传。
 val isPrimaryPublisher = mod.isFabric
 
 publishMods {
     version.set(releaseVersion)
-    type.set(
-        when (publishType.uppercase()) {
-            "ALPHA" -> ALPHA
-            "BETA" -> BETA
-            else -> STABLE
-        }
-    )
     changelog.set(releaseChangelog)
     displayName.set("${findProperty("mod.name") ?: "TeleportGUI"} ${releaseVersion}")
+
+    // 发布类型：优先用 CI 传入的 RELEASE_TYPE，其次由 stonecraft 按版本号推断。
+    providers.environmentVariable("RELEASE_TYPE").orNull?.let { raw ->
+        type.set(
+            when (raw.uppercase()) {
+                "ALPHA" -> ALPHA
+                "BETA" -> BETA
+                else -> STABLE
+            }
+        )
+    }
 
     if (isPrimaryPublisher) {
         github {
@@ -171,18 +164,12 @@ publishMods {
         }
     }
 
-    modrinth {
-        if (mod.isFabric) requires("fabric-api")
-        projectId.set(
-            (findProperty("mod.modrinth.project") ?: findProperty("mod.id") ?: "teleportgui").toString()
-        )
-        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+    // Modrinth 的 accessToken / projectId / minecraftVersions 由 stonecraft 的
+    // configurePublishing 从 MODRINTH_TOKEN 与 MODRINTH_ID 环境变量自动填充，
+    // 这里只补充平台依赖声明。
+    if (mod.isFabric) {
+        modrinth {
+            requires("fabric-api")
+        }
     }
-
-    // CurseForge
-    // require("fabric-api") 之类的依赖声明放在对应位置即可。
-    // curseforge {
-    //     if (mod.isFabric) requires("fabric-api")
-    //     accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
-    // }
 }
