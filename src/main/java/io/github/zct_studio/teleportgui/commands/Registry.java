@@ -23,6 +23,9 @@ public final class Registry {
     private static final Field ROOT_CHILDREN = findField("children");
     private static final Field ROOT_LITERALS = findField("literals");
 
+    /** 原版 {@code /reload} 的命令名，用于识别配置重载。 */
+    private static final String RELOAD_LITERAL = "reload";
+
     static {
         group(ConfigKeys.COMMAND_HOME, "home", "ghome");
         group(ConfigKeys.COMMAND_WARP, "warp", "gwarp");
@@ -81,17 +84,39 @@ public final class Registry {
         return null;
     }
 
+    /**
+     * 判断这次执行的是不是原版的 {@code /reload}。
+     * <p>
+     * 优先看解析结果里第一个节点是不是 reload（Brigadier 已把 {@code minecraft:reload}
+     * 归一化到同一个节点）。只有在没有解析出任何节点（例如命令不完整）时才退回到
+     * 文本匹配，并且用「命令名 + 空白/结尾」做严格边界，避免把 {@code reloadfoo}
+     * 之类的前缀相同的命令误判成 reload。
+     */
     public static boolean isReloadCommand(ParseResults<CommandSourceStack> results) {
         var nodes = results.getContext().getNodes();
         if (!nodes.isEmpty()) {
-            String name = nodes.getFirst().getNode().getName();
-            if ("reload".equals(name) || "minecraft:reload".equals(name)) return true;
+            return RELOAD_LITERAL.equals(nodes.getFirst().getNode().getName());
         }
-        String input = results.getReader().getString().trim();
-        return "reload".equals(input)
-                || input.startsWith("reload ")
-                || "minecraft:reload".equals(input)
-                || input.startsWith("minecraft:reload ");
+        return startsWithCommand(results.getReader().getString(), RELOAD_LITERAL);
+    }
+
+    /**
+     * 判断 {@code input}（可能带前导 {@code /}）是否以命令 {@code command} 开头，
+     * 且其后紧跟空白或字符串结尾。
+     */
+    private static boolean startsWithCommand(String input, String command) {
+        if (input == null) return false;
+        int start = 0;
+        while (start < input.length() && Character.isWhitespace(input.charAt(start))) {
+            start++;
+        }
+        if (start < input.length() && input.charAt(start) == '/') {
+            start++;
+        }
+        int end = start + command.length();
+        if (end > input.length()) return false;
+        if (!input.regionMatches(start, command, 0, command.length())) return false;
+        return end == input.length() || Character.isWhitespace(input.charAt(end));
     }
 
     private static void registerFeatureCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
