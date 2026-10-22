@@ -51,7 +51,6 @@ public final class GUI {
     private static final int NAV_NEXT = 8;
     private static final int TPA_PLAYERS = 0;
     private static final int TPA_REQUESTS = 1;
-
     private GUI() {
     }
 
@@ -292,9 +291,9 @@ public final class GUI {
         List<Component> lore = req == null
                 ? null
                 : List.of(Tr(sp, req.here
-                                 ? "gui.teleportgui.tpa.tpagui.here"
-                                 : "gui.teleportgui.tpa.tpagui.tocome")
-                .withStyle(Styles.INFO));
+                        ? "gui.teleportgui.tpa.tpagui.here"
+                        : "gui.teleportgui.tpa.tpagui.tocome")
+                        .withStyle(Styles.INFO));
         SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
         slots[0] = new SecondlyActions.Action(
                 stack(Items.BARRIER, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.deny"), lore),
