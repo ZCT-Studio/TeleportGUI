@@ -161,16 +161,8 @@ publishMods {
         }
     }
 
-    if (mod.isFabric) {
-        modrinth {
-            requires("fabric-api", "architectury-api")
-            optional("geyser", "floodgate")
-        }
-    }
-    if (mod.isNeoForge) {
-        modrinth {
-            requires("architectury-api")
-            optional("geyser", "floodgate")
-        }
+    modrinth {
+        requires("architectury-api")
+        optional("geyser", "floodgate")
     }
 }
