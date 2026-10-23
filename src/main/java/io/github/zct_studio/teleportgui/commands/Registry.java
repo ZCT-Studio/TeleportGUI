@@ -2,19 +2,17 @@ package io.github.zct_studio.teleportgui.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
-import com.mojang.brigadier.tree.CommandNode;
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.compat.brigadier.BrigadierAccess;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigKeys;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 命令注册与「运行期增删命令」的管理器。
@@ -43,8 +41,12 @@ import java.util.Map;
 public final class Registry {
 
     private static final LinkedHashMap<String, Group> GROUPS = new LinkedHashMap<>();
-    private static final Field ROOT_CHILDREN = findField("children");
-    private static final Field ROOT_LITERALS = findField("literals");
+
+    /**
+     * 命令树的内部访问器。所有与 Brigadier 内部结构强相关的代码都在
+     * {@code compat.brigadier} 包里，这里只依赖抽象的 {@link BrigadierAccess}。
+     */
+    private static final BrigadierAccess BRIGADIER = BrigadierAccess.create();
 
     private static final String RELOAD_LITERAL = "reload";
 
@@ -68,7 +70,7 @@ public final class Registry {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        if (ROOT_CHILDREN == null && hasManagedCommand(dispatcher)) {
+        if (!BRIGADIER.isAvailable() && hasManagedCommand(dispatcher)) {
             Constants.LOGGER.warn("Command tree access is unavailable; keeping the existing command tree");
             return;
         }
@@ -79,7 +81,7 @@ public final class Registry {
     }
 
     public static void rebuild(CommandDispatcher<CommandSourceStack> dispatcher) {
-        if (ROOT_CHILDREN == null) {
+        if (!BRIGADIER.isAvailable()) {
             Constants.LOGGER.warn("Command tree access is unavailable; skipping command tree rebuild");
             return;
         }
@@ -210,38 +212,14 @@ public final class Registry {
         }
     }
 
-    private static void removeLiteral(CommandDispatcher<CommandSourceStack> dispatcher, String literal) {
-        Object root = dispatcher.getRoot();
-        removeFromMap(ROOT_CHILDREN, root, literal);
-        // Literal nodes are also indexed in a separate map used for suggestions.
-        removeFromMap(ROOT_LITERALS, root, literal);
-    }
-
     /**
-     * 从指定字段（{@code children} 或 {@code literals}）对应的 map 中移除一个字面量。
+     * 从命令树上移除一个字面量子命令。
      * <p>
-     * 注意两个容易被忽略的点：
-     * <ul>
-     *   <li>{@code field} 为 null 说明反射不可用，此时直接跳过——调用方会走降级逻辑。</li>
-     *   <li>若字段拿到的 map 是<b>不可变</b>的，{@code map.remove} 会抛
-     *       {@link UnsupportedOperationException}，这里没有捕获，属于预期外的情况，
-     *       应该让它在启动阶段就暴露出来，而不是静默失败导致命令树状态错乱。</li>
-     * </ul>
-     *
-     * @param field   字段句柄，可能为 null
-     * @param root    命令树根节点
-     * @param literal 要移除的字面量
+     * 具体怎么摸到 Brigadier 的内部 map 由 {@link BrigadierAccess} 决定，
+     * 这个类不再直接操作反射，升级 Brigadier 时只需改 {@code compat.brigadier} 包。
      */
-    private static void removeFromMap(Field field, Object root, String literal) {
-        if (field == null) return;
-        try {
-            Object value = field.get(root);
-            if (value instanceof Map<?, ?> map) {
-                map.remove(literal);
-            }
-        } catch (IllegalAccessException e) {
-            Constants.LOGGER.error("Failed to remove command '{}' from the command tree", literal, e);
-        }
+    private static void removeLiteral(CommandDispatcher<CommandSourceStack> dispatcher, String literal) {
+        BRIGADIER.removeChild(dispatcher.getRoot(), literal);
     }
 
     private static void resyncCommandTree() {
@@ -249,18 +227,6 @@ public final class Registry {
         if (server == null) return;
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             server.getCommands().sendCommands(player);
-        }
-    }
-
-    private static Field findField(String name) {
-        try {
-            Field field = CommandNode.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (Exception e) {
-            Constants.LOGGER.error("Failed to access the Brigadier command tree field '{}'; "
-                    + "disabling commands at runtime will not work", name, e);
-            return null;
         }
     }
 
