@@ -1,17 +1,14 @@
 package io.github.zct_studio.teleportgui;
 
 import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.CommandPerformEvent;
-import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.event.events.common.EntityEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.PlayerEvent;
-import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.event.events.common.*;
 import io.github.zct_studio.teleportgui.commands.Registry;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.storage.RuntimeStore;
+import io.github.zct_studio.teleportgui.temporary.geyser_tpc.GeyserTPCMigrator;
+import io.github.zct_studio.teleportgui.utils.ClassUtils;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
@@ -41,8 +38,8 @@ public final class ServerMain {
     public static void init(String Loader) {
         Constants.LOGGER.info("Initializing {} v{}, on {}", Constants.MOD_NAME, Constants.VERSION, Loader);
 
-        boolean geyserLoaded = isClassPresent(Constants.CLASS_GEYSER_API);
-        boolean floodgateLoaded = isClassPresent(Constants.CLASS_FLOODGATE_API);
+        boolean geyserLoaded = ClassUtils.isClassPresent(Constants.CLASS_GEYSER_API);
+        boolean floodgateLoaded = ClassUtils.isClassPresent(Constants.CLASS_FLOODGATE_API);
         if (geyserLoaded && !floodgateLoaded) {
             Constants.LOGGER.warn("Geyser present but Floodgate missing — Bedrock forms unavailable");
         }
@@ -54,6 +51,7 @@ public final class ServerMain {
             ModSettingsLoader.load(dataDir.resolve("settings.yml"));
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
+            GeyserTPCMigrator.run(SAVE_DIR, Manager.STORAGE_FILE);
             boolean runtimePersistence = ModSettingsLoader.SETTINGS.runtimePersistence;
             RuntimeStore.setEnabled(runtimePersistence);
             long now = server.getTickCount();
@@ -121,14 +119,5 @@ public final class ServerMain {
                 Constants.LOGGER.error("Error closing storage", e);
             }
         });
-    }
-
-    private static boolean isClassPresent(String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 }
