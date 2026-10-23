@@ -275,8 +275,12 @@ public final class Tpa {
     /**
      * 接受一个 TPA 请求。调用方必须先完成权限校验（命令走 {@link #acceptChecked}，
      * GUI/表单同样只能通过 {@link #acceptChecked} 进入）。
+     * <p>
+     * 如果目标位置附近找不到安全落点，{@link SafetyGuard} 会改为等待玩家确认「强制传送」。
+     * 这种情况下请求<b>不会被提前删除</b>，而是把删除动作挂到确认回调上，
+     * 等玩家真的被传送过去之后才消耗掉，避免出现「请求没了但人也没传过去」的中间态。
      *
-     * @return 找到并处理了请求时返回 true
+     * @return 找到并处理了请求（含已进入等待确认状态）时返回 true
      */
     public static boolean accept(ServerPlayer from, ServerPlayer to) {
         long now = currentTick();
@@ -308,8 +312,11 @@ public final class Tpa {
         BlockPos destPos = TeleportUtils.getTeleportPos(destination);
         ServerLevel level = destination.level();
 
-        if (SafetyGuard.tryTeleport(toTeleport, level, destPos,
-                ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT)) {
+        // 强制传送成功后才消耗请求；直接传送成功则下面的 removeRequest 会立即执行。
+        boolean teleported = SafetyGuard.tryTeleport(toTeleport, level, destPos,
+                ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT, () -> removeRequest(req));
+
+        if (teleported) {
             from.sendSystemMessage(
                     Tr_i18n.tr("commands.teleportgui.tpa.accepted", from)
                             .withStyle(Styles.BODY),
@@ -318,9 +325,10 @@ public final class Tpa {
                     Tr_i18n.tr("commands.teleportgui.tpa.accepted", to)
                             .withStyle(Styles.SUCCESS),
                     true);
+            removeRequest(req);
         }
-
-        removeRequest(req);
+        // teleported == false 时玩家正在确认强制传送，请求保留在列表里，
+        // 由上面注册的回调在传送完成后删除。
         return true;
     }
 
