@@ -71,7 +71,6 @@ public class Command {
         changed |= ensureNode(home, ConfigKeys.HOME_DEFAULT, 0, 0);
         changed |= ensureNode(home, ConfigKeys.HOME_GUI, 0, 0);
 
-        // 带默认过期秒数的节点需同步登记到 GUI.EXPIRE_SECONDS_NODES，否则无法通过配置命令修改。
         changed |= ensureNode(tpa, ConfigKeys.TPA_REQUEST, 30, 0, false, -1,
                 DEFAULT_REQUEST_EXPIRE_SECONDS);
         changed |= ensureNode(tpa, ConfigKeys.TPA_REQUEST_HERE, 30, 0, false, -1,

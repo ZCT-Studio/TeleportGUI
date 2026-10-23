@@ -32,13 +32,6 @@ public final class GUI {
             ConfigKeys.FIELD_EXPIRE,
             ConfigKeys.FIELD_MAX_COUNT);
 
-    // 目前只有 tpa 的 request / requestHere 真正读取 expireSeconds（请求过期时间）。
-    // 其他节点虽然也有该字段，但没有任何业务逻辑使用它，因此暂不暴露为可配置项。
-    // 以后若有新业务启用 expireSeconds：
-    //   1. 在对应业务代码里通过 CommandLoader.getExpireSeconds(module, node) 读取；
-    //   2. 把该 module.node 加入下面的集合，/teleportgui_admin config 即可设置；
-    //   3. Command.fillDefaults() 中给该节点传入期望的默认秒数（0 = 永不过期）。
-    // 或许以后东西多了就是排除？不造不造，暂时咱就先这儿样咯 :)
     private static final Set<String> EXPIRE_SECONDS_NODES = Set.of(
             ConfigKeys.nodeKey(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST),
             ConfigKeys.nodeKey(ConfigKeys.MODULE_TPA, ConfigKeys.TPA_REQUEST_HERE)

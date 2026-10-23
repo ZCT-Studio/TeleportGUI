@@ -24,31 +24,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-/**
- * 基岩版（Bedrock）玩家使用的 Floodgate 表单界面。
- *
- * <h2>为什么全部用反射</h2>
- * Geyser / Floodgate / Cumulus 都是<b>可选</b>依赖。如果在字段或方法签名里直接引用它们的类型，
- * 没装这些插件的服务器在加载本类时就会抛 {@link NoClassDefFoundError}，整个模组起不来。
- * 因此这里所有 API 调用都通过「字符串类名 + 反射」完成，缺失时自然走到
- * {@link #fallback}，降级为聊天栏提示或普通箱子菜单。
- *
- * <h2>表单是怎么构建的</h2>
- * Cumulus 的惯用写法是
- * {@code CustomForm.builder().title(...).dropdown(...).validResultHandler(...).build()}。
- * 这里用 {@link #newBuilder} 拿到 builder，再用 {@link #call} 按「方法名 + 参数个数」匹配并调用，
- * 回调则通过 {@link #onValid} 注入一个 {@link Consumer} 代理来接收响应对象。
- *
- * <h2>响应下标极易出错</h2>
- * CustomForm 的响应按「表单上所有组件」的顺序编号，<b>label 也占一个下标</b>。
- * 因此每插入一个 label，后面的 dropdown / input 下标都要整体后移。
- * 调整任何表单的组件顺序时，务必同步检查对应回调里的下标常量。
- *
- * <h2>{@link #FORM_SEQ} 的作用</h2>
- * 异步回调里经常需要「关闭表单 → 执行动作 → 重新打开表单」。若此时玩家已经自己关了表单
- * 或者打开了别的界面，再重新打开就会打断玩家。用一个自增序号记录「表单被打开过几次」，
- * 只有序号没变才允许重新打开，避免竞态导致的界面闪烁。
- */
 @SuppressWarnings("unused")
 public final class Form {
     private static final String CUMULUS_CUSTOM = "org.geysermc.cumulus.form.CustomForm";
@@ -87,7 +62,6 @@ public final class Form {
                             text(player, "gui.teleportgui.universal.gui.rename"),
                             text(player, "gui.teleportgui.universal.gui.add")));
 
-            // CustomForm 的响应按“全部组件”的下标读取，label 也会占一个下标。
             final int entryIdx = def.isEmpty() ? 1 : 2;
             final int actionIdx = entryIdx + 1;
             onValid(b, response -> {
@@ -264,7 +238,6 @@ public final class Form {
             call(b, "input", text(player, "gui.teleportgui.rename.input"), "");
 
             onValid(b, response -> {
-                // 0 是“原名” label，输入框在 1。
                 String newName = stringValue(response, "getInput", 1).trim();
                 if (newName.isEmpty()) {
                     player.sendSystemMessage(
@@ -521,23 +494,6 @@ public final class Form {
         reopen(player, formSequence(player), opener);
     }
 
-    /**
-     * 在当前服务器 tick 的末尾重新打开一个表单。
-     * <p>
-     * 有意延迟到 {@code server.execute} 而不是立即打开：表单回调是在「表单刚刚关闭」时
-     * 触发的，此时立刻下发新表单，客户端有时会丢掉或卡住。
-     * <p>
-     * 打开前做两道检查：
-     * <ol>
-     *   <li>玩家仍然在线（下线后打开菜单会抛异常）。</li>
-     *   <li>表单序号没变——如果玩家在此期间已经关掉表单或自己开了别的界面，
-     *       序号会变化，此时不再打扰玩家。</li>
-     * </ol>
-     *
-     * @param player 目标玩家
-     * @param seq    发起本次刷新时记录的表单序号
-     * @param opener 真正负责打开表单的动作
-     */
     private static void reopen(ServerPlayer player, int seq, Runnable opener) {
         MinecraftServer server = ServerMain.SERVER;
         if (server == null) return;
@@ -573,19 +529,6 @@ public final class Form {
         return m.invoke(target, args);
     }
 
-    /**
-     * 按「方法名 + 参数个数」反射查找方法。
-     * <p>
-     * 不能直接 {@code getMethod(name, 具体类型...)}，因为各版本 Cumulus 的重载签名不同
-     * （比如 {@code dropdown} 有带默认值和不带默认值两种，参数类型也可能是 {@code List}
-     * 或其实现类）。这里退化为按名字和个数匹配，再用 {@link #accepts} 逐个检查可赋值性。
-     *
-     * @param type 目标类
-     * @param name 方法名
-     * @param args 计划传入的实参
-     * @return 第一个参数都能接受的方法
-     * @throws NoSuchMethodException 没有匹配的方法
-     */
     private static Method find(Class<?> type, String name, Object... args) throws NoSuchMethodException {
         for (Method m : type.getMethods()) {
             if (!m.getName().equals(name) || m.getParameterCount() != args.length) continue;
@@ -602,17 +545,6 @@ public final class Form {
         throw new NoSuchMethodException(name);
     }
 
-    /**
-     * 判断实参能否传给该形参类型。
-     * <p>
-     * 反射的 {@code Method.invoke} 要求装箱类型能自动解包到基本类型，
-     * 但用来「挑选方法」时 {@link Class#isInstance} 对基本类型恒为 false，
-     * 所以需要单独列出装箱映射。
-     *
-     * @param param 形参类型
-     * @param arg   实参
-     * @return 是否可以安全传入
-     */
     private static boolean accepts(Class<?> param, Object arg) {
         if (arg == null) return !param.isPrimitive();
         if (param.isInstance(arg)) return true;
@@ -624,19 +556,6 @@ public final class Form {
         return false;
     }
 
-    /**
-     * 给表单 builder 注册「有效提交」回调。
-     * <p>
-     * Cumulus 的 {@code validResultHandler} 接受的是一系列 {@link Consumer}（分别对应
-     * CustomForm / SimpleForm / ModalForm 的响应类型）。由于类型在编译期不可见，
-     * 这里用一个动态代理冒充 {@link Consumer}：任何 {@code accept} 调用都会把响应交给
-     * 外层传入的 {@code handler}。代理对象只在 {@code accept} 上做实际工作，
-     * 其余方法（{@code equals}/{@code hashCode} 等）返回 null 即可——它们不会被调用。
-     *
-     * @param builder 表单 builder
-     * @param handler 收到响应时执行的逻辑，参数是 Cumulus 的响应对象
-     * @throws Exception 反射调用失败
-     */
     private static void onValid(Object builder, Consumer<Object> handler) throws Exception {
         Object proxy = Proxy.newProxyInstance(
                 Form.class.getClassLoader(),
@@ -645,7 +564,6 @@ public final class Form {
                     if ("accept".equals(method.getName()) && args != null && args.length == 1) {
                         handler.accept(args[0]);
                     }
-                    //noinspection SuspiciousInvocationHandlerImplementation
                     return null;
                 });
         call(builder, "validResultHandler", proxy);

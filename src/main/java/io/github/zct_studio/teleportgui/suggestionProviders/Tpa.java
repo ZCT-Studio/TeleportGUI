@@ -17,7 +17,6 @@ public class Tpa implements SuggestionProvider<CommandSourceStack> {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
             var server = context.getSource().getServer();
-            //noinspection ConstantValue
             if (server == null) return Suggestions.empty();
 
             String filter = SuggestionUtils.filter(builder.getRemaining());

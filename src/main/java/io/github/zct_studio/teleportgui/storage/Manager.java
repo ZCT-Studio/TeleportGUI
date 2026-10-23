@@ -56,10 +56,6 @@ public final class Manager {
         }
     }
 
-    /**
-     * 把当前内存中的全部数据写成一份快照落盘。
-     * 这是一次整体写入，不会逐条调用 provider 的单项保存方法。
-     */
     public static void save() {
         if (INITIALIZING) return;
         if (DATA == null || provider == null) return;
@@ -112,10 +108,6 @@ public final class Manager {
         }
     }
 
-    /**
-     * 运行期的数据容器：负责增删查和写盘时机。
-     * 落盘结构由 {@link StorageSnapshot} 统一描述，这里不再重复声明字段模型。
-     */
     public static class StorageData {
         private final StorageSnapshot snapshot = new StorageSnapshot();
 

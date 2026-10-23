@@ -94,7 +94,6 @@ public class Json implements Provider {
 
     @Override
     public void close() {
-        // JSON 没有持久连接，无需关闭
     }
 
     private void write() {

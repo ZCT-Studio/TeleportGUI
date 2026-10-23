@@ -16,25 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 极简的多语言查找与占位符替换。
- *
- * <h2>为什么不直接用 Minecraft 的 {@code Component.translatable}</h2>
- * 本模组完全跑在服务端，而 {@code Component.translatable} 依赖客户端语言文件，
- * 服务端发出的提示需要按「每个玩家自己的客户端语言」渲染，否则所有人看到的都是英文。
- * 这里直接在服务端读取 lang JSON，按玩家客户端语言挑选文本，再生成已定型的 {@link Component}。
- *
- * <h2>占位符语法</h2>
- * 用 {@code %0%}、{@code %1%} 这样的<b>下标占位符</b>，而不是 {@code %s} 或 {@code {}}。
- * 这样替换多个参数时可以任意调整顺序，重复引用同一个参数也不需要额外处理。
- * <pre>
- *   "commands.teleportgui.tpa.sent": "已向 %0% 发送传送请求"
- * </pre>
- *
- * <h2>语言回退</h2>
- * 先查玩家语言，查不到再回退到 {@code en_us}；两者都没有时记录错误日志并原样返回 key，
- * 便于发现漏翻。
- */
 public final class Tr_i18n {
 
     private static final Pattern ARG_PATTERN = Pattern.compile("%(\\d+)%");
@@ -107,16 +88,6 @@ public final class Tr_i18n {
         }
     }
 
-    /**
-     * 按 {@code %N%} 把参数拼进文本。
-     * <p>
-     * 这里拼的是 {@link Component} 而不是字符串，这样占位符里传入的组件可以保留自己的样式
-     * （比如玩家名加粗、坐标可点击），而不会在替换过程中被降级成纯文本。
-     *
-     * @param translation 带占位符的原始文本
-     * @param args        按下标取用的组件参数，多余或缺失都不会报错
-     * @return 拼接后的组件
-     */
     private static MutableComponent substitute(String translation, MutableComponent[] args) {
         Matcher matcher = ARG_PATTERN.matcher(translation);
         MutableComponent component = Component.literal("");

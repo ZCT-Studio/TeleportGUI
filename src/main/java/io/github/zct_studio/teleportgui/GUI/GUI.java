@@ -145,26 +145,13 @@ public final class GUI {
     }
 
     private static int contentRowsFor(int count) {
-        //noinspection MathClampMigration
         return Math.min(MAX_CONTENT_ROWS, Math.max(1, (count + 8) / 9));
     }
 
     private static int rowsFor(int count) {
-        return contentRowsFor(count) + 1; // +1 导航行
+        return contentRowsFor(count) + 1;
     }
 
-    /**
-     * 计算总页数。
-     * <p>
-     * 没有新增按钮时就是普通的向上取整。有新增按钮时情况不同：第一页要空出一格，
-     * 所以它的容量是 {@code contentSize - 1}，剩下的条目才按整页 {@code contentSize} 分。
-     * 这个算法必须与 {@link PagedMenu#entryStart()} 保持一致，否则会出现
-     * 「算出来有第 3 页，但翻到第 3 页是空的」这类错位。
-     *
-     * @param count  条目总数
-     * @param hasAdd 第一页是否有新增按钮
-     * @return 至少为 1 的总页数
-     */
     private static int totalPagesFor(int count, boolean hasAdd) {
         int contentSize = contentRowsFor(count) * 9;
         if (!hasAdd) return Math.max(1, (count + contentSize - 1) / contentSize);
@@ -352,25 +339,6 @@ public final class GUI {
         sp.closeContainer();
     }
 
-    /**
-     * 带分页的箱子菜单基类。
-     *
-     * <h2>布局约定</h2>
-     * 菜单固定为「N 行内容 + 1 行导航」：
-     * <pre>
-     *   行 0 .. contentRows-1 : 内容区，每行 9 格，按 entryStart() .. entryStart()+pageCapacity() 取条目
-     *   行 contentRows        : 导航区，槽位见 NAV_* 常量
-     * </pre>
-     * 导航区从左到右依次是：说明书、扩展按钮（可选）、传送请求（可选）、
-     * 关闭、上一页、下一页。导航区与内容区靠 {@code contentRows * 9} 这个下标分界。
-     *
-     * <h2>为什么下标要算得这么复杂</h2>
-     * 有的子类（如家园、传送点）需要在第一页多放一个「新增」按钮，它会占用内容区的第 0 格，
-     * 于是第一页能放的条目就比其他页少一个，后续页的起始下标也要跟着差一位。
-     * {@link #slotBase()}、{@link #entryStart()}、{@link #pageCapacity()} 三个方法
-     * 分别回答「第一条从哪个格子画」「第一条是所有条目里的第几个」「这一页能放几条」，
-     * 三者必须配合使用，否则会画串页。
-     */
     private abstract static class PagedMenu extends ChestMenu {
 
         protected final ServerPlayer player;
@@ -387,7 +355,6 @@ public final class GUI {
             this.contentRows = rows - 1;
             this.contentSize = this.contentRows * 9;
             this.totalPages = totalPagesFor(entryCount, hasAdd());
-            //noinspection MathClampMigration
             this.page = Math.max(0, Math.min(page, this.totalPages - 1));
             this.slotNames = new String[rows * 9];
         }
@@ -404,115 +371,43 @@ public final class GUI {
 
         protected abstract String guideKey();
 
-        /**
-         * 处理「数字键 / 副手键」快捷操作。
-         *
-         * @param sp  点击的玩家
-         * @param id  被点击条目在 {@link #slotNames} 里登记的 id
-         * @return 是否已处理。返回 false 表示该菜单不支持快捷操作，点击会被忽略
-         */
         @SuppressWarnings("UnusedReturnValue")
         protected boolean onSwap(ServerPlayer sp, String id) {
             return false;
         }
 
-        /**
-         * 在导航区插入子类自定义的按钮。
-         *
-         * @param c    菜单容器
-         * @param base 导航区第一格的下标，即 {@code contentRows * 9}
-         */
         protected void fillExtraNav(SimpleContainer c, int base) {
         }
 
-        /**
-         * 导航区扩展按钮被点击时调用（对应 {@link #fillExtraNav} 放置的按钮）。
-         *
-         * @return 是否已处理
-         */
         @SuppressWarnings("UnusedReturnValue")
         protected boolean onExtraNav(ServerPlayer sp) {
             return false;
         }
 
-        /**
-         * 「传送请求」按钮被点击时调用。
-         * <p>
-         * 子类自行决定是切到请求列表、还是切回在线玩家列表。
-         *
-         * @return 是否已处理
-         */
         protected boolean onRequestsNav(ServerPlayer sp) {
             return false;
         }
 
-        /**
-         * 本菜单在第一页是否需要在第 0 格放一个「新增」按钮。
-         * <p>
-         * 返回 true 会连锁影响 {@link #slotBase()}、{@link #entryStart()}、
-         * {@link #pageCapacity()} 与 {@link #totalPagesFor}，详见类注释。
-         *
-         * @return true 表示需要
-         */
         protected boolean hasAdd() {
             return false;
         }
 
-        /**
-         * 「新增」按钮是否已达到数量上限。
-         *
-         * @return true 表示已达上限，通常会把按钮画成屏障并拒绝点击
-         */
         protected boolean addLimitReached() {
             return false;
         }
 
-        /**
-         * 「新增」按钮被点击时调用。
-         *
-         * @param sp   点击的玩家
-         * @param page 点击时所在的页
-         */
         protected void onAdd(ServerPlayer sp, int page) {
         }
 
-        /**
-         * 当前页第一条条目画在内容区的第几格（相对内容区起点）。
-         * <p>
-         * 只有「第一页 + 该菜单有新增按钮」时才需要把第 0 格让给新增按钮，
-         * 其余情况都从 0 开始画。
-         *
-         * @return 0 或 1
-         */
         protected final int slotBase() {
             return (hasAdd() && page == 0) ? 1 : 0;
         }
 
-        /**
-         * 当前页第一条条目在整个条目列表中的下标。
-         * <p>
-         * 分两种情况：
-         * <ul>
-         *   <li>没有新增按钮：简单的 {@code page * contentSize}。</li>
-         *   <li>有新增按钮：第一页独占地占据条目 0 .. contentSize-2（因为让出了一格给新增按钮），
-         *       第二页及以后从 {@code (contentSize - 1) + (page - 1) * contentSize} 开始，
-         *       也就是第一页少放的那一条之后接上整页整页的偏移。</li>
-         * </ul>
-         *
-         * @return 条目列表中的起始下标
-         */
         protected final int entryStart() {
             if (!hasAdd()) return page * contentSize;
             return page == 0 ? 0 : (contentSize - 1) + (page - 1) * contentSize;
         }
 
-        /**
-         * 当前页最多能放多少条条目。
-         * <p>
-         * 第一页有新增按钮时要空出一格，因此比内容区格子数少 1。
-         *
-         * @return 本页容量
-         */
         protected final int pageCapacity() {
             return (hasAdd() && page == 0) ? contentSize - 1 : contentSize;
         }
@@ -536,26 +431,6 @@ public final class GUI {
                     Tr(player, "gui.teleportgui.universal.gui.pgdn"), null));
         }
 
-        /**
-         * 统一处理所有点击事件的分发入口。
-         * <p>
-         * 防刷物品的思路：本菜单里的图标全部是「展示用」的，玩家不应该真的把物品拿走，
-         * 所以除了显式放行的分支外，其余一律不交给父类处理（父类会执行拾取逻辑）。
-         *
-         * <h2>三类输入</h2>
-         * <ul>
-         *   <li>{@link ContainerInput#SWAP}：数字键把物品换到快捷栏。
-         *       在 1.21+ 里 {@code button} 表示快捷栏位（{@code 40} 是副手）。
-         *       这里不执行任何交换，只把它当成「按快捷栏键」的快捷操作——例如用某个键触发重命名。
-         *       处理完必须调用 {@link #resyncInventory} 把玩家背包同步回去，否则客户端会看到
-         *       物品被拿走了。</li>
-         *   <li>落在导航区（{@code slotIndex >= contentRows * 9}）：按 {@code NAV_*} 偏移分发。</li>
-         *   <li>落在内容区：第一页第 0 格可能是新增按钮，其余按 {@link #slotNames} 找到条目 id
-         *       再交给子类的 {@link #onEntryClick}。</li>
-         * </ul>
-         *
-         * <p>超出本菜单大小的下标（例如点击玩家自己的背包）交还父类正常处理。
-         */
         @Override
         public void clicked(int slotIndex, int button, @NonNull ContainerInput input, @NonNull Player clicker) {
             if (!(clicker instanceof ServerPlayer sp)) {

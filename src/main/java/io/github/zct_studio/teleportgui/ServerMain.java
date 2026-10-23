@@ -107,8 +107,6 @@ public final class ServerMain {
         });
 
         PlayerEvent.PLAYER_QUIT.register(player -> {
-            // back 的上一位置和死亡点都是「本次在线期间」的数据，玩家退出后没有意义。
-            // 不清理的话这两个静态表会随着玩家进出无限增长。
             String uuid = player.getStringUUID();
             TeleportUtils.clearPreviousPos(uuid);
             DeathPoint.remove(uuid);

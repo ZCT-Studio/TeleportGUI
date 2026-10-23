@@ -34,15 +34,6 @@ import static net.minecraft.commands.Commands.argument;
 
 public final class Tpa {
 
-    /**
-     * 待处理的传送请求。
-     * <p>
-     * 所有读写都发生在服务端主线程（命令执行、容器点击、tick 回调），因此用普通
-     * ArrayList 即可。之前用的是 CopyOnWriteArrayList，但它的 remove 会复制整个底层数组，
-     * cleanup 里一边遍历一边删是 O(n²)，请求一多就明显变慢。
-     * <p>
-     * 注意：本字段不持有锁，请勿在异步线程访问。
-     */
     private static final List<TpaRequest> REQUESTS = new ArrayList<>();
 
     private Tpa() {
@@ -148,18 +139,11 @@ public final class Tpa {
         return 0;
     }
 
-    /**
-     * 接受请求前先校验权限，供命令、GUI 和表单共用，避免绕过 {@code tpa.accept} 节点。
-     * 返回 false 表示权限不足或没有待处理请求。
-     */
     public static boolean acceptChecked(ServerPlayer from, ServerPlayer to) {
         if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT)) return false;
         return accept(from, to);
     }
 
-    /**
-     * 拒绝请求前先校验权限，供命令、GUI 和表单共用，避免绕过 {@code tpa.deny} 节点。
-     */
     public static boolean denyChecked(ServerPlayer from, ServerPlayer to) {
         if (!CommandGuard.checkPermission(to, ConfigKeys.MODULE_TPA, ConfigKeys.TPA_DENY)) return false;
         return deny(from, to);
@@ -272,16 +256,6 @@ public final class Tpa {
         return true;
     }
 
-    /**
-     * 接受一个 TPA 请求。调用方必须先完成权限校验（命令走 {@link #acceptChecked}，
-     * GUI/表单同样只能通过 {@link #acceptChecked} 进入）。
-     * <p>
-     * 如果目标位置附近找不到安全落点，{@link SafetyGuard} 会改为等待玩家确认「强制传送」。
-     * 这种情况下请求<b>不会被提前删除</b>，而是把删除动作挂到确认回调上，
-     * 等玩家真的被传送过去之后才消耗掉，避免出现「请求没了但人也没传过去」的中间态。
-     *
-     * @return 找到并处理了请求（含已进入等待确认状态）时返回 true
-     */
     public static boolean accept(ServerPlayer from, ServerPlayer to) {
         long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()
@@ -312,7 +286,6 @@ public final class Tpa {
         BlockPos destPos = TeleportUtils.getTeleportPos(destination);
         ServerLevel level = destination.level();
 
-        // 强制传送成功后才消耗请求；直接传送成功则下面的 removeRequest 会立即执行。
         boolean teleported = SafetyGuard.tryTeleport(toTeleport, level, destPos,
                 ConfigKeys.MODULE_TPA, ConfigKeys.TPA_ACCEPT, () -> removeRequest(req));
 
@@ -327,16 +300,9 @@ public final class Tpa {
                     true);
             removeRequest(req);
         }
-        // teleported == false 时玩家正在确认强制传送，请求保留在列表里，
-        // 由上面注册的回调在传送完成后删除。
         return true;
     }
 
-    /**
-     * 拒绝一个 TPA 请求。调用方必须先完成权限校验（见 {@link #denyChecked}）。
-     *
-     * @return 找到并处理了请求时返回 true
-     */
     public static boolean deny(ServerPlayer from, ServerPlayer to) {
         long now = currentTick();
         Optional<TpaRequest> reqOpt = REQUESTS.stream()

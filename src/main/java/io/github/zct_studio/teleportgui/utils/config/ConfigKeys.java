@@ -69,9 +69,6 @@ public final class ConfigKeys {
             COMMAND_RANDOM_TP
     );
 
-    /**
-     * 拼接配置里使用的节点全名，形如 {@code tpa.request}。
-     */
     public static String nodeKey(String module, String node) {
         return module + "." + node;
     }

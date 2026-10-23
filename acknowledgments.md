@@ -10,6 +10,7 @@
 
 #### tingia-tilia
 - 语言文件
+- 文档编辑
 
 #### zichuan-az [(?)](https://github.com/zichuan-az)
 - 给我Token

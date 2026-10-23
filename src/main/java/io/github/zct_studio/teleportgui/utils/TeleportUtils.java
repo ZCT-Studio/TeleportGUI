@@ -32,27 +32,14 @@ public final class TeleportUtils {
             "block.minecraft.powder_snow", "block.minecraft.nether_portal"
     );
 
-    /**
-     * 玩家 UUID → 最近一次传送前的位置，供 {@code /back} 使用。
-     * <p>
-     * 只在服务端主线程访问；玩家退出时由 {@code ServerMain} 调用
-     * {@link #clearPreviousPos(String)} 清理，避免表无限增长。
-     */
     private static final Map<String, PreviousPos> PREV_POS = new HashMap<>();
 
     private static final String CLASS_GEYSER_API = Constants.CLASS_GEYSER_API;
     private static final String CLASS_FLOODGATE_API = Constants.CLASS_FLOODGATE_API;
     private static final String CLASS_CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
 
-    /** 安全落点搜索的最大半径（方块）。 */
     private static final int SAFE_SEARCH_RADIUS = 3;
 
-    /**
-     * Geyser / Floodgate 的反射句柄缓存。
-     * <p>
-     * 这两个依赖都是可选的，插件也可能在运行期被重载，因此只在解析成功后缓存；
-     * 调用失败时清空缓存，下次重新解析。
-     */
     private static volatile GeyserHandle GEYSER_HANDLE;
     private static volatile Method FLOODGATE_API_GETTER;
     private static volatile Object FLOODGATE_API_INSTANCE;
@@ -111,16 +98,11 @@ public final class TeleportUtils {
             Object connection = handle.connectionByUuid().invoke(api, player.getUUID());
             return connection != null;
         } catch (Exception e) {
-            // Geyser 被卸载或重载后旧句柄会失效，丢掉缓存让下次重新解析。
             GEYSER_HANDLE = null;
             return false;
         }
     }
 
-    /**
-     * Geyser 反射句柄。解析成功前为 null；解析成功后缓存，避免每次判断都做
-     * Class.forName + getMethod。Geyser 未安装时同样保持 null（只是重新判断一次加载状态）。
-     */
     private static GeyserHandle geyserHandle() {
         GeyserHandle cached = GEYSER_HANDLE;
         if (cached != null) return cached;
@@ -144,18 +126,12 @@ public final class TeleportUtils {
         return floodgateApi() != null;
     }
 
-    /**
-     * Cumulus（Floodgate 的表单库）是否可用。
-     * <p>
-     * 惰性判断并缓存成功结果：插件可能在模组初始化之后才加载，因此失败结果不做缓存。
-     */
     private static boolean cumulusAvailable() {
         if (CUMULUS_AVAILABLE) return true;
         try {
             Class.forName(CLASS_CUMULUS_FORM);
             CUMULUS_AVAILABLE = true;
         } catch (Throwable ignored) {
-            // 未安装 Floodgate
         }
         return CUMULUS_AVAILABLE;
     }
@@ -200,7 +176,6 @@ public final class TeleportUtils {
                 return m;
             }
         } catch (Throwable ignored) {
-            // Floodgate 未安装
         }
         return null;
     }
@@ -232,13 +207,6 @@ public final class TeleportUtils {
         world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
-    /**
-     * 在 {@code pos} 附近寻找一个可以站人的位置。
-     * <p>
-     * 以 {@code pos} 为中心，半径 1..3 逐层向外搜索，每层只枚举该立方体的「外壳」
-     * （六个面），不再像以前那样遍历整个立方体再用条件过滤掉内部点——内部点在更小的
-     * 半径里已经被检查过了，重复检查纯属浪费。
-     */
     public static Optional<BlockPos> findSafeBlock(BlockPos pos, ServerLevel world) {
         if (isSafe(pos, world)) return Optional.of(pos);
 
@@ -249,16 +217,11 @@ public final class TeleportUtils {
         return Optional.empty();
     }
 
-    /**
-     * 检查给定半径的立方体外壳；先查水平面（y = ±r 以外的上下两个平面），
-     * 再查竖直的四个侧面，这样更容易先命中「同一高度附近」的落点。
-     */
     private static Optional<BlockPos> searchShell(BlockPos center, ServerLevel world, int radius) {
         int cx = center.getX();
         int cy = center.getY();
         int cz = center.getZ();
 
-        // 上、下两个面
         for (int y : new int[]{-radius, radius}) {
             for (int z = -radius; z <= radius; z++) {
                 for (int x = -radius; x <= radius; x++) {
@@ -268,7 +231,6 @@ public final class TeleportUtils {
             }
         }
 
-        // 四个侧面：x = ±radius 与 z = ±radius，y 不再取端值（上面已经查过）
         for (int x : new int[]{-radius, radius}) {
             for (int z = -radius + 1; z <= radius - 1; z++) {
                 for (int y = -radius + 1; y <= radius - 1; y++) {

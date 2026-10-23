@@ -71,6 +71,12 @@ dependencies {
     } else if (loader == "neoforge") {
         implementation("dev.architectury:architectury-neoforge:$archVersion")
     }
+
+    // settings.yml 的解析。implementation 只用于编译与开发环境，
+    // include 才会把依赖打进发布用的 jar，避免玩家还需要额外装库。
+    val snakeYamlVersion = findProperty("snakeyaml_version") as String? ?: "2.3"
+    implementation("org.yaml:snakeyaml:$snakeYamlVersion")
+    include("org.yaml:snakeyaml:$snakeYamlVersion")
 }
 
 if (mod.isNeoforge) {

@@ -22,16 +22,6 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-/**
- * 「重命名家园 / 传送点」的界面。
- *
- * <p>整体设计与 {@link Create} 相同：借用 {@link AnvilMenu} 的输入框当作文本框，
- * 槽位 0 是占位图标兼输入源，槽位 1 是返回，槽位 2 是确认。
- * 区别在于输入框会预填旧名字，方便玩家在此基础上修改。
- *
- * <p>占位图标的材质带有预览含义：家园是「默认家园红色床品 / 普通白色床」，
- * 传送点是末影珍珠。
- */
 @SuppressWarnings("unused")
 public final class Rename extends AnvilMenu {
     private final ServerPlayer player;
@@ -74,13 +64,7 @@ public final class Rename extends AnvilMenu {
         player.openMenu(new Provider(player, oldName, warp, returnPage));
     }
 
-    /**
-     * 刷新结果槽里的提示文字。
-     * <p>
-     * 名字为空时提示「名字不能为空」，否则显示「将重命名为 xxx」并附上确认提示。
-     */
     private void refresh() {
-        //noinspection ConstantValue
         if (player == null || resultSlots == null) return;
         String shown = newName == null || newName.isBlank() ? null : newName.trim();
         MutableComponent label = shown == null
@@ -92,19 +76,9 @@ public final class Rename extends AnvilMenu {
                 List.of(hint.withStyle(Styles.WARNING))));
     }
 
-    /**
-     * 玩家在铁砧输入框里改动文字时由原版调用。
-     * <p>
-     * 先让父类完成它自己的重命名逻辑，再把新名字记下来并刷新提示。
-     * {@code name} 可能为 {@code null}（输入被清空），这里统一收敛成空串处理。
-     *
-     * @param name 重命名输入框里的新内容
-     * @return 父类是否接受了这次改名
-     */
     @Override
     public boolean setItemName(@NonNull String name) {
         boolean ok = super.setItemName(name);
-        //noinspection ConstantValue
         this.newName = name == null ? "" : name;
         refresh();
         return ok;
@@ -166,12 +140,6 @@ public final class Rename extends AnvilMenu {
         }
     }
 
-    /**
-     * 容器被关闭时触发。
-     * <p>
-     * {@code navigating} 为 true 说明玩家是通过「确认」/「返回」主动跳转的，不能再插手；
-     * 否则视为玩家按 ESC 关闭，把玩家带回原来的列表页。玩家已离线时直接跳过。
-     */
     @Override
     public void removed(@NonNull Player p) {
         super.removed(p);

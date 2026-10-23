@@ -20,13 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class CommandGuard {
-    /**
-     * 玩家 UUID → (命令 id → 冷却到期 tick)。
-     * <p>
-     * 只在服务端主线程访问（命令执行与 tick 回调），因此不需要并发容器。
-     * <p>
-     * 注意：本字段不持有锁，请勿在异步线程访问。
-     */
     private static final Map<UUID, Map<NodeKey, Long>> COOLDOWNS = new HashMap<>();
 
     private CommandGuard() {
@@ -152,9 +145,6 @@ public final class CommandGuard {
         return server == null ? 0L : server.getTickCount();
     }
 
-    /**
-     * 一条命令的配置节点标识，例如 {@code tpa.request} 拆成 module=tpa、node=request。
-     */
     private record NodeKey(String module, String node) {
     }
 }
