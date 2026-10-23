@@ -157,9 +157,8 @@ submit. Force-teleport confirmation uses a modal form. Without Floodgate, the mo
 
 ## Configuration
 
-Files are created under `<world directory>/teleportgui/`.
-
-`settings.yml` contains general mod settings:
+World data files are created under `<world directory>/teleportgui/`, while general mod settings live in
+`<game directory>/config/teleportgui/settings.yml` and apply to every world:
 
 ```yaml
 runtimePersistence: true
@@ -241,10 +240,10 @@ Common fields:
 
 ## Storage
 
-- `teleportgui/settings.yml` — mod settings.
-- `teleportgui/config.json` — command cooldowns, permissions, limits, and safety checks.
-- `teleportgui/storage.json` — homes, warps, and player preferences.
-- `teleportgui/runtime.json` — cooldowns and pending TPA requests (when `runtimePersistence` is enabled).
+- `config/teleportgui/settings.yml` — mod settings, shared by every world.
+- `<world>/teleportgui/config.json` — command cooldowns, permissions, limits, and safety checks.
+- `<world>/teleportgui/storage.json` — homes, warps, and player preferences.
+- `<world>/teleportgui/runtime.json` — cooldowns and pending TPA requests (when `runtimePersistence` is enabled).
 
 Homes, warps, Bedrock notification preferences, cooldowns, and pending TPA requests persist across restarts. Death
 points and back points do not.

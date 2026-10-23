@@ -48,7 +48,7 @@ public final class ServerMain {
             SERVER = server;
             SAVE_DIR = server.getWorldPath(LevelResource.ROOT);
             Path dataDir = SAVE_DIR.resolve(Constants.MOD_ID);
-            ModSettingsLoader.load(dataDir.resolve("settings.yml"));
+            ModSettingsLoader.load(SAVE_DIR);
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
             GeyserTPCMigrator.run(SAVE_DIR, Manager.STORAGE_FILE);

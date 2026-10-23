@@ -252,18 +252,21 @@ Java 版使用服务端箱子菜单，不需要安装客户端模组。
 
 ## <a id="configuration"></a>配置
 
-所有文件位于 `<世界目录>/teleportgui/`。
+存档相关的数据文件位于 `<世界目录>/teleportgui/`，模组设置则位于 `<游戏目录>/config/teleportgui/`（对所有存档生效）。
 
 ### `settings.yml`
+
+位于 `<游戏目录>/config/teleportgui/settings.yml`，**不随存档变化**，所有世界共用同一份。
 
 ```yaml
 runtimePersistence: true
 ```
 
-> `runtimePersistence` 默认为 `true`，冷却与待处理 TPA 请求会写入 `teleportgui/runtime.json`；设为 `false`
+> `runtimePersistence` 默认为 `true`，冷却与待处理 TPA 请求会写入 `<世界目录>/teleportgui/runtime.json`；设为 `false`
 > 后完全不读取、不写入该文件，冷却与 TPA 请求只保存在内存中，服务器重启后清空。  
-> 旧版本中的 `logLevel`、`autoMigrate`、`storage` / `storage.sqlite` 配置已移除并被忽略；TeleportGUI 始终使用
-`teleportgui/storage.json`，原 `storage.db` 不会自动迁移。
+> 旧版本中该项曾放在存档目录内，升级后会自动复制到新位置（旧文件保留）。  
+> 更早版本的 `logLevel`、`autoMigrate`、`storage` / `storage.sqlite` 配置已移除并被忽略；TeleportGUI 始终使用
+> `teleportgui/storage.json`，原 `storage.db` 不会自动迁移。
 
 ### `config.json`
 
@@ -374,18 +377,20 @@ runtimePersistence: true
 
 ## <a id="storage"></a>数据存储
 
-| 路径                         | 内容                                          |
-|----------------------------|---------------------------------------------|
-| `teleportgui/settings.yml` | 模组设置                                        |
-| `teleportgui/config.json`  | 命令冷却、权限、数量上限、安全检测                           |
-| `teleportgui/storage.json` | 家园、传送点、玩家偏好等数据                              |
-| `teleportgui/runtime.json` | 冷却与待处理的 TPA 请求（`runtimePersistence=true` 时） |
+模组设置存放在游戏目录的 `config/` 下，其余文件都在存档目录内：
+
+| 路径                                    | 内容                                          |
+|---------------------------------------|---------------------------------------------|
+| `config/teleportgui/settings.yml`     | 模组设置（全局，所有存档共用）                              |
+| `<世界>/teleportgui/config.json`        | 命令冷却、权限、数量上限、安全检测                           |
+| `<世界>/teleportgui/storage.json`       | 家园、传送点、玩家偏好等数据                              |
+| `<世界>/teleportgui/runtime.json`       | 冷却与待处理的 TPA 请求（`runtimePersistence=true` 时） |
 
 需要注意的运行期数据：
 
 - **冷却**与**待处理的 TPA 请求**会写入 `runtime.json`，服务器重启后保留。
 - **死亡点**与**返回点**保存在内存中，服务器重启后会清空。
-- 升级或备份前，请先备份整个 `teleportgui/` 目录。
+- 备份时请同时备份 `config/teleportgui/` 与各存档下的 `teleportgui/` 目录。
 
 ## <a id="build"></a>从源码构建
 

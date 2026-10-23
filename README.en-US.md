@@ -265,18 +265,23 @@ With Geyser and Floodgate installed, Bedrock players use Cumulus forms:
 
 ## <a id="configuration"></a>Configuration
 
-All files are stored under `<world directory>/teleportgui/`.
+World-related data files live under `<world directory>/teleportgui/`, while mod settings live under
+`<game directory>/config/teleportgui/` and apply to every world.
 
 ### `settings.yml`
+
+Located at `<game directory>/config/teleportgui/settings.yml`. It is **not** stored per world, so all worlds share one copy.
 
 ```yaml
 runtimePersistence: true
 ```
 
-> `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to `teleportgui/runtime.json`.
-> When set to `false`, the file is never read or written, and cooldowns/TPA requests exist only in memory and are cleared
-> on restart.  
-> The old `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored.
+> `runtimePersistence` defaults to `true`: cooldowns and pending TPA requests are written to
+> `<world directory>/teleportgui/runtime.json`. When set to `false`, the file is never read or written, and
+> cooldowns/TPA requests exist only in memory and are cleared on restart.  
+> Older versions kept this file inside the world folder; on upgrade it is copied to the new location automatically and the
+> old file is left in place.  
+> The even older `logLevel`, `autoMigrate`, and `storage` / `storage.sqlite` settings have been removed and are ignored.
 > TeleportGUI always uses `teleportgui/storage.json`, and an existing `storage.db` is not migrated automatically.
 
 ### `config.json`
@@ -389,18 +394,18 @@ Common fields:
 
 ## <a id="storage"></a>Storage
 
-| Path                       | Contents                                                                  |
-|----------------------------|---------------------------------------------------------------------------|
-| `teleportgui/settings.yml` | Mod settings                                                              |
-| `teleportgui/config.json`  | Command cooldowns, permissions, limits, and safety checks                 |
-| `teleportgui/storage.json` | Homes, warps, player preferences, and other data                          |
-| `teleportgui/runtime.json` | Cooldowns and pending TPA requests (when `runtimePersistence` is enabled) |
+| Path                                | Contents                                                                  |
+|-------------------------------------|---------------------------------------------------------------------------|
+| `config/teleportgui/settings.yml`   | Mod settings (global, shared by every world)                              |
+| `<world>/teleportgui/config.json`   | Command cooldowns, permissions, limits, and safety checks                 |
+| `<world>/teleportgui/storage.json`  | Homes, warps, player preferences, and other data                          |
+| `<world>/teleportgui/runtime.json`  | Cooldowns and pending TPA requests (when `runtimePersistence` is enabled) |
 
 Runtime data:
 
 - **Cooldowns** and **pending TPA requests** are saved to `runtime.json` and survive restarts.
 - **Death points** and **back points** are kept in memory and are cleared when the server restarts.
-- Back up the whole `teleportgui/` directory before upgrading.
+- Back up both `config/teleportgui/` and each world's `teleportgui/` directory before upgrading.
 
 ## <a id="build"></a>Building from Source
 
