@@ -8,6 +8,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 原子写入工具。
@@ -19,6 +20,7 @@ import java.nio.file.StandardCopyOption;
 public final class AtomicFiles {
 
     private static final String TEMP_SUFFIX = ".tmp";
+    private static final AtomicLong SEQUENCE = new AtomicLong();
 
     private AtomicFiles() {
     }
@@ -43,7 +45,7 @@ public final class AtomicFiles {
             Files.createDirectories(parent);
         }
 
-        Path temp = target.resolveSibling(target.getFileName() + TEMP_SUFFIX);
+        Path temp = target.resolveSibling(target.getFileName() + "." + uniqueSuffix() + TEMP_SUFFIX);
         try {
             Files.write(temp, content);
             moveIntoPlace(temp, target);
@@ -51,6 +53,18 @@ public final class AtomicFiles {
             deleteQuietly(temp);
             throw e;
         }
+    }
+
+    /**
+     * 生成当前线程唯一的一段临时文件后缀。
+     * <p>
+     * 临时文件名不能固定成 {@code storage.json.tmp}：如果同时有两处写入（例如将来有人
+     * 在异步线程调用 save），它们会抢同一个临时文件，可能出现一方把另一方写了一半的内容
+     * 挪到正式位置上。加上线程 id 与自增序列即可保证同进程内不会撞名。
+     */
+    private static String uniqueSuffix() {
+        return Long.toHexString(Thread.currentThread().threadId())
+                + "-" + SEQUENCE.getAndIncrement();
     }
 
     private static void moveIntoPlace(Path temp, Path target) throws IOException {
