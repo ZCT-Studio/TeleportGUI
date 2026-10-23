@@ -7,6 +7,8 @@
 
 ## [未发布]
 
+## [1.1.0-beta.1] - 2026-10-23
+
 ### 新增
 
 - `settings.yml` 迁移到模组级目录 `<游戏目录>/config/teleportgui/settings.yml`，所有存档共用一份设置。旧版存放在世界目录内的 `settings.yml` 会在升级时自动复制到新位置，旧文件保留。
