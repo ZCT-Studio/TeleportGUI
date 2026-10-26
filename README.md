@@ -404,14 +404,14 @@ cd TeleportGUI
 ./gradlew :<minecraft_version>-fabric:build
 
 # NeoForge
-./gradlew :<minecraft_version>.3-neoforge:build
+./gradlew :<minecraft_version>-neoforge:build
 ```
 
 Windows 下使用 `gradlew.bat`。构建产物位于：
 
 ```text
 versions/<minecraft_version>-fabric/build/libs/TeleportGUI-fabric-<版本>.jar
-versions/26.<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<版本>.jar
+versions/<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<版本>.jar
 ```
 
 项目使用 Stonecutter 管理多加载器源码，并使用 Stonecraft 生成加载器元数据。
