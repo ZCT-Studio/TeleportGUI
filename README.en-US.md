@@ -416,17 +416,17 @@ git clone https://github.com/ZCT-Studio/TeleportGUI.git
 cd TeleportGUI
 
 # Fabric
-./gradlew :26.3-fabric:build
+./gradlew :<minecraft_version>-fabric:build
 
 # NeoForge
-./gradlew :26.3-neoforge:build
+./gradlew :<minecraft_version>-neoforge:build
 ```
 
 On Windows, use `gradlew.bat`. Build outputs:
 
 ```text
-versions/26.3-fabric/build/libs/TeleportGUI-fabric-<version>.jar
-versions/26.3-neoforge/build/libs/TeleportGUI-neoforge-<version>.jar
+versions/<minecraft_version>-fabric/build/libs/TeleportGUI-fabric-<minecraft_version>.jar
+versions/<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<minecraft_version>.jar
 ```
 
 The project uses Stonecutter for multi-loader sources and Stonecraft for loader metadata.
