@@ -401,17 +401,17 @@ git clone https://github.com/ZCT-Studio/TeleportGUI.git
 cd TeleportGUI
 
 # Fabric
-./gradlew :<minecraft_version>-fabric:build
+./gradlew :<我的世界版本>-fabric:build
 
 # NeoForge
-./gradlew :<minecraft_version>-neoforge:build
+./gradlew :<我的世界版本>-neoforge:build
 ```
 
 Windows 下使用 `gradlew.bat`。构建产物位于：
 
 ```text
-versions/<minecraft_version>-fabric/build/libs/TeleportGUI-fabric-<版本>.jar
-versions/<minecraft_version>-neoforge/build/libs/TeleportGUI-neoforge-<版本>.jar
+versions/<我的世界版本>-fabric/build/libs/TeleportGUI-fabric-<我的世界版本>.jar
+versions/<我的世界版本>-neoforge/build/libs/TeleportGUI-neoforge-<我的世界版本>.jar
 ```
 
 项目使用 Stonecutter 管理多加载器源码，并使用 Stonecraft 生成加载器元数据。
