@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="orig_res/banner.jpg" alt="TeleportGUI — Teleportation Mod with GUI for Java and Bedrock players" width="100%">
+  <img src="orig_res/banner-lgbtq+_friendly.jpg" alt="TeleportGUI — Teleportation Mod with GUI for Java and Bedrock players" width="100%">
 </p>
 
 <p align="center">
@@ -20,6 +20,8 @@
   <a href="Modrinth.md">Modrinth描述</a> ·
   <a href="CHANGELOG.md">更新日志</a>
 </p>
+
+> 🏳️‍🌈🏳️‍⚧️ `TeleportGUI`模组项目是LGBTQ+友好的
 
 ## 目录
 

@@ -1,5 +1,11 @@
 # TeleportGUI
 
+<p align="center">
+  <img src="https://github.com/ZCT-Studio/TeleportGUI/blob/master/orig_res/banner-lgbtq+_friendly.jpg?raw=true" alt="TeleportGUI — Teleportation Mod with GUI for Java and Bedrock players" width="100%">
+</p>
+
+> The 🏳️‍🌈🏳️‍⚧️ The `TeleportGUI` mod project is LGBTQ+ friendly
+
 TeleportGUI is a server-side teleportation mod for Minecraft 26.3+ that gives Java and Bedrock players a proper
 graphical interface for homes, global warps, and player teleport requests (TPA). It also adds death-point, spawn-point,
 and return-point teleports, with configurable safety checks and permissions.
