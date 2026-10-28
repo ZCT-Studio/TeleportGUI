@@ -1,5 +1,3 @@
-# TeleportGUI
-
 <p align="center">
   <img src="https://github.com/ZCT-Studio/TeleportGUI/blob/master/orig_res/banner-lgbtq+_friendly.jpg?raw=true" alt="TeleportGUI — Teleportation Mod with GUI for Java and Bedrock players" width="100%">
 </p>
