@@ -90,6 +90,11 @@ public final class TeleportUtils {
     }
 
     public static boolean isBedrockPlayer(ServerPlayer player) {
+        if (isGeyserPlayer(player)) return true;
+        return hasFloodgate() && isFloodgatePlayer(player);
+    }
+
+    public static boolean isGeyserPlayer(ServerPlayer player) {
         GeyserHandle handle = geyserHandle();
         if (handle == null) return false;
         try {
@@ -103,7 +108,19 @@ public final class TeleportUtils {
         }
     }
 
-    private static GeyserHandle geyserHandle() {
+    public static boolean isFloodgatePlayer(ServerPlayer player) {
+        try {
+            Object api = floodgateApi();
+            if (api == null) return false;
+            Method m = api.getClass().getMethod("getPlayer", UUID.class);
+            m.setAccessible(true);
+            return m.invoke(api, player.getUUID()) != null;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public static GeyserHandle geyserHandle() {
         GeyserHandle cached = GEYSER_HANDLE;
         if (cached != null) return cached;
         try {
@@ -118,7 +135,13 @@ public final class TeleportUtils {
         }
     }
 
-    private record GeyserHandle(Method api, Method connectionByUuid) {
+    public record GeyserHandle(
+            Method api,
+            Method connectionByUuid
+    ) {}
+
+    public static boolean hasGeyser() {
+        return geyserHandle() != null;
     }
 
     public static boolean hasFloodgate() {

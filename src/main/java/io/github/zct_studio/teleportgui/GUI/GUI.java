@@ -55,7 +55,7 @@ public final class GUI {
     }
 
     private static boolean bedrockHopper(ServerPlayer player) {
-        return TeleportUtils.isBedrockPlayer(player) && !TeleportUtils.hasFloodgate();
+        return TeleportUtils.isGeyserPlayer(player) && !TeleportUtils.hasFloodgate();
     }
 
     private static boolean bedrockForm(ServerPlayer player) {

@@ -42,3 +42,10 @@ type = "optional"
 versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.${id}]]
+modId = "floodgate"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"

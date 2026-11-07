@@ -594,17 +594,51 @@ public final class Form {
 
     private static void send(ServerPlayer player, Object form) {
         try {
+            if (TeleportUtils.hasGeyser() && TeleportUtils.isGeyserPlayer(player)) {
+                if (sendViaGeyser(player, form)) {
+                    FORM_SEQ.merge(player.getUUID(), 1, Integer::sum);
+                    return;
+                }
+            }
+            if (TeleportUtils.hasFloodgate() && TeleportUtils.isFloodgatePlayer(player)) {
+                if (sendViaFloodgate(player, form)) {
+                    FORM_SEQ.merge(player.getUUID(), 1, Integer::sum);
+                    return;
+                }
+            }
+            throw new IllegalStateException("No available form sender (Geyser/Floodgate)");
+        } catch (Throwable t) {
+            fallback(player, t);
+        }
+    }
+
+    private static boolean sendViaGeyser(ServerPlayer player, Object form) {
+        try {
+            TeleportUtils.GeyserHandle handle = TeleportUtils.geyserHandle();
+            if (handle == null) return false;
+            Object api = handle.api().invoke(null);
+            if (api == null) return false;
+            Object connection = handle.connectionByUuid().invoke(api, player.getUUID());
+            if (connection == null) return false;
+            Method sendForm = connection.getClass().getMethod("sendForm", Class.forName(CUMULUS_FORM));
+            sendForm.setAccessible(true);
+            Object result = sendForm.invoke(connection, form);
+            return !Boolean.FALSE.equals(result);
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean sendViaFloodgate(ServerPlayer player, Object form) {
+        try {
             Object api = TeleportUtils.floodgateApi();
-            if (api == null) throw new IllegalStateException("Floodgate API not available");
+            if (api == null) return false;
             Class<?> apiClass = Class.forName(FLOODGATE_API);
             Method m = apiClass.getMethod("sendForm", UUID.class, Class.forName(CUMULUS_FORM));
             m.setAccessible(true);
-            if (Boolean.FALSE.equals(m.invoke(api, player.getUUID(), form))) {
-                throw new IllegalStateException("Floodgate refused to send the form");
-            }
-            FORM_SEQ.merge(player.getUUID(), 1, Integer::sum);
-        } catch (Throwable t) {
-            fallback(player, t);
+            return !Boolean.FALSE.equals(m.invoke(api, player.getUUID(), form));
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
