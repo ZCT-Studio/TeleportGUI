@@ -17,21 +17,28 @@ ${description}
 
 [[dependencies.${id}]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "${maven_mc_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${id}]]
 modId = "neoforge"
-mandatory = true
+type = "required"
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${id}]]
 modId = "architectury"
-mandatory = true
+type = "required"
 versionRange = "[${architectury_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${id}]]
+modId = "geyser_neoforge"
+type = "optional"
+versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"

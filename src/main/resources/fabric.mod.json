@@ -24,7 +24,6 @@
     "minecraft": "${semver_mc_version_range}"
   },
   "suggests": {
-    "geyser": "*",
-    "floodgate": "*"
+    "geyser-fabric": "*",
   }
 }
