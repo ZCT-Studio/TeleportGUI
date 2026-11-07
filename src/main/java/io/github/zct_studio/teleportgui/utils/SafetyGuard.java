@@ -86,14 +86,8 @@ public final class SafetyGuard {
     }
 
     private static void prompt(ServerPlayer player) {
-        if (TeleportUtils.isBedrockPlayer(player)) {
-            if (TeleportUtils.hasFloodgate()) {
-                Form.openSafetyConfirm(
-                        player, () -> forcePending(player));
-            } else {
-                GUI.openSafetyConfirm(
-                        player, () -> forcePending(player));
-            }
+        if (TeleportUtils.canSendForm(player)) {
+            Form.openSafetyConfirm(player, () -> forcePending(player));
             return;
         }
         player.sendSystemMessage(

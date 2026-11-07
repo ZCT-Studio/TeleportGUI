@@ -92,6 +92,10 @@ public final class TeleportUtils {
     public static boolean isBedrockPlayer(ServerPlayer player) {
         if (isGeyserPlayer(player)) return true;
         return hasFloodgate() && isFloodgatePlayer(player);
+    } // 如果是基岩版玩家就一定能发表单，因为Geyser和Floodgate总有一个能发，但是缺一就不可能判断基岩版玩家，所以等同于判断能不能发表单
+
+    public static boolean canSendForm(ServerPlayer player) {
+        return isBedrockPlayer(player);
     }
 
     public static boolean isGeyserPlayer(ServerPlayer player) {

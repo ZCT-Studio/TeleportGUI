@@ -8,7 +8,6 @@ import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
 import io.github.zct_studio.teleportgui.gui.menu.anvil.Create;
 import io.github.zct_studio.teleportgui.gui.menu.anvil.Rename;
-import io.github.zct_studio.teleportgui.gui.menu.hopper.SecondlyActions;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
@@ -54,24 +53,16 @@ public final class GUI {
     private GUI() {
     }
 
-    private static boolean bedrockHopper(ServerPlayer player) {
-        return TeleportUtils.isGeyserPlayer(player) && !TeleportUtils.hasFloodgate();
-    }
-
-    private static boolean bedrockForm(ServerPlayer player) {
-        return TeleportUtils.isBedrockPlayer(player) && TeleportUtils.hasFloodgate();
-    }
-
     public static void openHome(ServerPlayer player) {
         openHome(player, 0);
     }
 
     public static void openHome(ServerPlayer player, int page) {
-        if (bedrockForm(player)) {
+        if (TeleportUtils.canSendForm(player)) {
             Form.openHomeForm(player);
             return;
         }
-        player.openMenu(new HomeMenuProvider(player, page, bedrockHopper(player)));
+        player.openMenu(new HomeMenuProvider(player, page));
     }
 
     public static void openWarp(ServerPlayer player) {
@@ -79,11 +70,11 @@ public final class GUI {
     }
 
     public static void openWarp(ServerPlayer player, int page) {
-        if (bedrockForm(player)) {
+        if (TeleportUtils.canSendForm(player)) {
             Form.openWarpForm(player);
             return;
         }
-        player.openMenu(new WarpMenuProvider(player, page, bedrockHopper(player)));
+        player.openMenu(new WarpMenuProvider(player, page));
     }
 
     public static void openTpa(ServerPlayer player) {
@@ -95,11 +86,11 @@ public final class GUI {
     }
 
     public static void openTpa(ServerPlayer player, int page, int mode) {
-        if (bedrockForm(player)) {
+        if (TeleportUtils.canSendForm(player)) {
             Form.openTpaForm(player);
             return;
         }
-        player.openMenu(new TpaMenuProvider(player, page, mode, bedrockHopper(player)));
+        player.openMenu(new TpaMenuProvider(player, page, mode));
     }
 
     public static MutableComponent Tr(ServerPlayer player, String key, String... args) {
@@ -198,145 +189,6 @@ public final class GUI {
         return server.getPlayerList().getPlayers().stream()
                 .filter(p -> !p.getUUID().equals(player.getUUID()))
                 .toList();
-    }
-
-    static void openHomeActions(ServerPlayer sp, String home, int page) {
-        SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
-        slots[0] = new SecondlyActions.Action(
-                stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
-                () -> openHome(sp, page));
-        slots[1] = new SecondlyActions.Action(
-                stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.universal.gui.tp"), null),
-                () -> {
-                    Home.goHome(sp, home);
-                    sp.closeContainer();
-                });
-        slots[2] = new SecondlyActions.Action(
-                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.del"), null),
-                () -> {
-                    Home.deleteHome(sp, home);
-                    openHome(sp, page);
-                });
-        slots[3] = new SecondlyActions.Action(
-                stack(Items.NETHER_STAR, Tr(sp, "gui.teleportgui.home.homeactiongui.defaulthome"), null),
-                () -> {
-                    Home.setDefaultHome(sp, home);
-                    openHome(sp, page);
-                });
-        slots[4] = new SecondlyActions.Action(
-                stack(Items.NAME_TAG, Tr(sp, "gui.teleportgui.universal.gui.rename"), null),
-                () -> Rename.open(sp, home, false, page));
-        SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.home.homegui.title"), slots, () -> openHome(sp, page));
-    }
-
-    static void openWarpActions(ServerPlayer sp, String warp, int page) {
-        boolean canDelete = CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL);
-        boolean canRename = CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_RENAME);
-        SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
-        slots[0] = new SecondlyActions.Action(
-                stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
-                () -> openWarp(sp, page));
-        slots[1] = new SecondlyActions.Action(
-                stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.universal.gui.tp"), null),
-                () -> {
-                    Warp.goToWarp(sp, warp);
-                    sp.closeContainer();
-                });
-        if (canDelete) {
-            slots[2] = new SecondlyActions.Action(
-                    stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.del"), null),
-                    () -> {
-                        Warp.deleteWarp(sp, warp);
-                        openWarp(sp, page);
-                    });
-        }
-        if (canRename) {
-            slots[3] = new SecondlyActions.Action(
-                    stack(Items.NAME_TAG, Tr(sp, "gui.teleportgui.universal.gui.rename"), null),
-                    () -> Rename.open(sp, warp, true, page));
-        }
-        SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.warp.warpgui.title"), slots, () -> openWarp(sp, page));
-    }
-
-    static void openTpaPlayerActions(ServerPlayer sp, String targetName, int page, int mode) {
-        SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
-        slots[0] = new SecondlyActions.Action(
-                stack(Items.ENDER_PEARL, Tr(sp, "gui.teleportgui.tpa.tpagui.typeTpa"), null),
-                () -> {
-                    Tpa.requestByName(sp, targetName, false);
-                    sp.closeContainer();
-                });
-        slots[2] = new SecondlyActions.Action(
-                stack(Items.FEATHER, Tr(sp, "gui.teleportgui.universal.gui.back"), null),
-                () -> openTpa(sp, page, mode));
-        slots[4] = new SecondlyActions.Action(
-                stack(Items.ENDER_EYE, Tr(sp, "gui.teleportgui.tpa.tpagui.typeHere"), null),
-                () -> {
-                    Tpa.requestByName(sp, targetName, true);
-                    sp.closeContainer();
-                });
-        SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.tpa.tpagui.title"), slots,
-                () -> openTpa(sp, page, mode));
-    }
-
-    public static void openTpaRequestActions(ServerPlayer sp, String fromUuid) {
-        openTpaRequestActions(sp, fromUuid, false);
-    }
-
-    public static void openTpaRequestActions(ServerPlayer sp, String fromUuid, boolean autoOpened) {
-        ServerPlayer from = Tpa.resolveOnline(fromUuid);
-        String senderId = from == null ? fromUuid : from.getStringUUID();
-        Tpa.TpaRequest req = Tpa.findRequest(senderId, sp.getStringUUID());
-        List<Component> lore = req == null
-                ? null
-                : List.of(Tr(sp, req.here
-                        ? "gui.teleportgui.tpa.tpagui.here"
-                        : "gui.teleportgui.tpa.tpagui.tocome")
-                        .withStyle(Styles.INFO));
-        SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
-        slots[0] = new SecondlyActions.Action(
-                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.deny"), lore),
-                () -> denyRequest(sp, fromUuid));
-        slots[2] = new SecondlyActions.Action(
-                stack(Items.FEATHER,
-                        autoOpened
-                                ? Tr(sp, "gui.teleportgui.universal.gui.close")
-                                : Tr(sp, "gui.teleportgui.universal.gui.back"),
-                        null),
-                autoOpened ? sp::closeContainer : () -> openTpa(sp, 0, TPA_REQUESTS));
-        slots[4] = new SecondlyActions.Action(
-                stack(Items.EMERALD, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.accept"), lore),
-                () -> acceptRequest(sp, fromUuid));
-        SecondlyActions.open(sp, Tr(sp, "gui.teleportgui.tpa.tpareqdialog.title"), slots,
-                autoOpened ? null : () -> openTpa(sp, 0, TPA_REQUESTS));
-    }
-
-    public static void openSafetyConfirm(ServerPlayer sp, Runnable onForce) {
-        SecondlyActions.Action[] slots = new SecondlyActions.Action[5];
-        slots[0] = new SecondlyActions.Action(
-                stack(Items.BARRIER, Tr(sp, "gui.teleportgui.universal.gui.cancel"), null),
-                sp::closeContainer);
-        slots[4] = new SecondlyActions.Action(
-                stack(Items.ENDER_PEARL, Tr(sp, "commands.teleportgui.common.forceTeleport"), null),
-                () -> {
-                    onForce.run();
-                    sp.closeContainer();
-                });
-        SecondlyActions.open(sp, Tr(sp, "commands.teleportgui.common.noSafeLocation"), slots, null);
-    }
-
-    private static void acceptRequest(ServerPlayer sp, String fromUuid) {
-        ServerPlayer from = Tpa.resolveOnline(fromUuid);
-        if (from != null) Tpa.acceptChecked(from, sp);
-        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
-        sp.closeContainer();
-    }
-
-    private static void denyRequest(ServerPlayer sp, String fromUuid) {
-        ServerPlayer from = Tpa.resolveOnline(fromUuid);
-        if (from != null) Tpa.denyChecked(from, sp);
-        else sp.sendSystemMessage(Tr(sp, "commands.teleportgui.tpa.notFound").withStyle(Styles.ERROR), true);
-        sp.closeContainer();
     }
 
     private abstract static class PagedMenu extends ChestMenu {
@@ -506,12 +358,10 @@ public final class GUI {
     public static class HomeMenuProvider implements MenuProvider {
         private final ServerPlayer player;
         private final int page;
-        private final boolean hopper;
 
-        public HomeMenuProvider(ServerPlayer player, int page, boolean hopper) {
+        public HomeMenuProvider(ServerPlayer player, int page) {
             this.player = player;
             this.page = page;
-            this.hopper = hopper;
         }
 
         @Override
@@ -526,21 +376,19 @@ public final class GUI {
             Optional<PlayerData> opt = Manager.getPlayer(player.getStringUUID());
             List<NamedLoc> homes = opt.map(PlayerData::getHomes).orElseGet(List::of);
             String def = opt.map(PlayerData::getDefaultHome).orElse("");
-            return new HomeMenu(windowId, inv, player, homes, def, page, hopper);
+            return new HomeMenu(windowId, inv, player, homes, def, page);
         }
     }
 
     public static class HomeMenu extends PagedMenu {
         private final List<NamedLoc> homes;
         private final String def;
-        private final boolean hopper;
 
         HomeMenu(int windowId, Inventory inv, ServerPlayer player, List<NamedLoc> homes, String def,
-                 int page, boolean hopper) {
+                 int page) {
             super(menuTypeFor(homes.size()), windowId, inv, rowsFor(homes.size()), homes.size(), player, page);
             this.homes = homes;
             this.def = def;
-            this.hopper = hopper;
             build();
         }
 
@@ -606,10 +454,6 @@ public final class GUI {
 
         @Override
         protected void onEntryClick(ServerPlayer sp, String id, int button, ContainerInput input) {
-            if (hopper) {
-                if (button == 0) openHomeActions(sp, id, page);
-                return;
-            }
             if (input == ContainerInput.QUICK_MOVE) {
                 Home.deleteHome(sp, id);
                 reopen(sp, page);
@@ -649,12 +493,10 @@ public final class GUI {
     public static class WarpMenuProvider implements MenuProvider {
         private final ServerPlayer player;
         private final int page;
-        private final boolean hopper;
 
-        public WarpMenuProvider(ServerPlayer player, int page, boolean hopper) {
+        public WarpMenuProvider(ServerPlayer player, int page) {
             this.player = player;
             this.page = page;
-            this.hopper = hopper;
         }
 
         @Override
@@ -665,19 +507,17 @@ public final class GUI {
 
         @Override
         public AbstractContainerMenu createMenu(int windowId, @NonNull Inventory inv, @NonNull Player p) {
-            return new WarpMenu(windowId, inv, player, Manager.getWarps(), page, hopper);
+            return new WarpMenu(windowId, inv, player, Manager.getWarps(), page);
         }
     }
 
     public static class WarpMenu extends PagedMenu {
         private final List<NamedLoc> warps;
-        private final boolean hopper;
 
         WarpMenu(int windowId, Inventory inv, ServerPlayer player, List<NamedLoc> warps,
-                 int page, boolean hopper) {
+                 int page) {
             super(menuTypeFor(warps.size()), windowId, inv, rowsFor(warps.size()), warps.size(), player, page);
             this.warps = warps;
-            this.hopper = hopper;
             build();
         }
 
@@ -746,10 +586,6 @@ public final class GUI {
 
         @Override
         protected void onEntryClick(ServerPlayer sp, String id, int button, ContainerInput input) {
-            if (hopper) {
-                if (button == 0) openWarpActions(sp, id, page);
-                return;
-            }
             if (input == ContainerInput.QUICK_MOVE) {
                 if (CommandGuard.hasPermission(sp, ConfigKeys.MODULE_WARP, ConfigKeys.WARP_DEL)) {
                     Warp.deleteWarp(sp, id);
@@ -801,13 +637,11 @@ public final class GUI {
         private final ServerPlayer player;
         private final int page;
         private final int mode;
-        private final boolean hopper;
 
-        public TpaMenuProvider(ServerPlayer player, int page, int mode, boolean hopper) {
+        public TpaMenuProvider(ServerPlayer player, int page, int mode) {
             this.player = player;
             this.page = page;
             this.mode = mode;
-            this.hopper = hopper;
         }
 
         @Override
@@ -820,21 +654,19 @@ public final class GUI {
 
         @Override
         public AbstractContainerMenu createMenu(int windowId, @NonNull Inventory inv, @NonNull Player p) {
-            return new TpaMenu(windowId, inv, player, page, mode, hopper);
+            return new TpaMenu(windowId, inv, player, page, mode);
         }
     }
 
     public static class TpaMenu extends PagedMenu {
         private final int mode;
-        private final boolean hopper;
         private final List<Tpa.TpaRequest> requests;
         private final List<ServerPlayer> others;
 
-        TpaMenu(int windowId, Inventory inv, ServerPlayer player, int page, int mode, boolean hopper) {
+        TpaMenu(int windowId, Inventory inv, ServerPlayer player, int page, int mode) {
             super(menuTypeFor(entryCount(player, mode)), windowId, inv,
                     rowsFor(entryCount(player, mode)), entryCount(player, mode), player, page);
             this.mode = mode;
-            this.hopper = hopper;
             this.requests = Tpa.getRequestsFor(player.getStringUUID());
             this.others = onlineOthers(player);
             build();
@@ -967,10 +799,6 @@ public final class GUI {
         @Override
         protected void onEntryClick(ServerPlayer sp, String id, int button, ContainerInput input) {
             if (mode == TPA_REQUESTS) {
-                if (hopper) {
-                    if (button == 0) openTpaRequestActions(sp, id);
-                    return;
-                }
                 ServerPlayer from = Tpa.resolveOnline(id);
                 if (from == null) {
                     sp.sendSystemMessage(
@@ -983,10 +811,6 @@ public final class GUI {
                     Tpa.denyChecked(from, sp);
                     sp.closeContainer();
                 }
-                return;
-            }
-            if (hopper) {
-                if (button == 0) openTpaPlayerActions(sp, id, page, mode);
                 return;
             }
             if (button == 0) {

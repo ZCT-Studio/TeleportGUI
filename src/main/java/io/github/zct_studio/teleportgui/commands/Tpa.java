@@ -229,11 +229,7 @@ public final class Tpa {
             to.sendSystemMessage(bedrockMsg, false);
 
             if (autoPop) {
-                if (TeleportUtils.hasFloodgate()) {
-                    Form.openTpaRequestDialog(to, from.getStringUUID(), 0, true);
-                } else {
-                    GUI.openTpaRequestActions(to, from.getStringUUID(), true);
-                }
+                Form.openTpaRequestDialog(to, from.getStringUUID(), 0, true);
             }
         } else {
             to.sendSystemMessage(
