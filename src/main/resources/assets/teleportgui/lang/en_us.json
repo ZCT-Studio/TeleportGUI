@@ -97,7 +97,7 @@
   "gui.teleportgui.universal.gui.pgup": "[Page Up]",
   "gui.teleportgui.universal.gui.pgdn": "[Page Down]",
   "gui.teleportgui.universal.gui.titlePage": "%0% - (%1%/%2%)",
-  "gui.teleportgui.universal.gui.formError": "Failed to send the Bedrock form. Make sure Floodgate is installed.",
+  "gui.teleportgui.universal.gui.formError": "Failed to send the Bedrock form.",
   "gui.teleportgui.universal.gui.tp": "[Teleport]",
   "gui.teleportgui.universal.gui.del": "[Delete]",
   "gui.teleportgui.universal.gui.rename": "[Rename]",

@@ -97,7 +97,7 @@
   "gui.teleportgui.universal.gui.pgup": "【上一頁】",
   "gui.teleportgui.universal.gui.pgdn": "【下一頁】",
   "gui.teleportgui.universal.gui.titlePage": "%0% - (%1%/%2%)",
-  "gui.teleportgui.universal.gui.formError": "基岩版表單發送失敗，請確認伺服器已安裝 Floodgate。",
+  "gui.teleportgui.universal.gui.formError": "基岩版表單發送失敗。",
   "gui.teleportgui.universal.gui.tp": "【傳送】",
   "gui.teleportgui.universal.gui.del": "【刪除】",
   "gui.teleportgui.universal.gui.rename": "【重新命名】",

@@ -25,6 +25,7 @@ public final class Tr_i18n {
     private Tr_i18n() {
     }
 
+    @SuppressWarnings("LoggingSimilarMessage")
     public static MutableComponent translate(String key, ServerPlayer player, MutableComponent... args) {
         String translation = lookup(key, player);
         if (translation == null) {
@@ -38,6 +39,7 @@ public final class Tr_i18n {
         return translate(key, player, args);
     }
 
+    @SuppressWarnings("LoggingSimilarMessage")
     public static String raw(String key, ServerPlayer player) {
         String translation = lookup(key, player);
         if (translation == null) {
