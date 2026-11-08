@@ -6,7 +6,7 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 
-public final class ClientKeys {
+public final class ClientMain {
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
             Identifier.fromNamespaceAndPath("teleportgui", "shortcuts"));
     private static final KeyMapping[] KEYS = {
@@ -19,7 +19,7 @@ public final class ClientKeys {
     };
     private static final String[] COMMANDS = {"gtpa", "gtpa req", "ghome", "gwarp", "back", "tpdeathpoint"};
 
-    private ClientKeys() {}
+    private ClientMain() {}
 
     private static KeyMapping key(String name, int key) {
         return new KeyMapping("key.teleportgui." + name, key, CATEGORY);
