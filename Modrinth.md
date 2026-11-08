@@ -94,7 +94,7 @@ be changed in `config.json`; the level 4 requirements noted below are always enf
 | `/tpworldspawn`, `/tpws` | Teleport to the world spawn                                 | 0          |
 | `/tpspawnpoint`, `/tpsp` | Teleport to your personal spawn                             | 0          |
 | `/tpforce`               | Confirm a pending unsafe teleport                           | Inherited  |
-| `/randomtp`, `/rtp`      | Teleport to a random safe location in the current dimension | 0          |
+| `/randomtp`, `/rtp`      | Teleport to a random safe location in the current dimension | 2          |
 
 > Shortcut permission levels can be changed under `teleport.back`, `teleport.deathPoint`, `teleport.worldSpawn`, and
 `teleport.spawnPoint` in `config.json`. `/tpforce` has no separate permission and is only used when a command's safety

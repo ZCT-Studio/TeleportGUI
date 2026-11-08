@@ -81,7 +81,7 @@ public class Command {
         changed |= ensureNode(teleport, ConfigKeys.TP_WORLD_SPAWN, 0, 0, true);
         changed |= ensureNode(teleport, ConfigKeys.TP_BACK, 0, 0, true);
         changed |= ensureNode(teleport, ConfigKeys.TP_SPAWN_POINT, 0, 0, false);
-        changed |= ensureNode(teleport, ConfigKeys.TP_RANDOM, 60, 0, true);
+        changed |= ensureNode(teleport, ConfigKeys.TP_RANDOM, 60, 2, true);
 
         CommandNode random = teleport.get(ConfigKeys.TP_RANDOM);
         if (random.minDistance == null) {
