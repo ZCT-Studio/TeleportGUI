@@ -1,4 +1,5 @@
 import gg.meza.stonecraft.mod
+import me.modmuss50.mpp.ReleaseType
 
 plugins {
     id("gg.meza.stonecraft")
@@ -142,8 +143,10 @@ publishMods {
     providers.environmentVariable("RELEASE_TYPE").orNull?.let { raw ->
         type.set(
             when (raw.uppercase()) {
+                "SNAPSHOT" -> ALPHA
                 "ALPHA" -> ALPHA
                 "BETA" -> BETA
+                "RC" -> BETA
                 else -> STABLE
             }
         )
