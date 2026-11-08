@@ -82,14 +82,14 @@ public final class GUI {
     }
 
     public static void openTpaRequests(ServerPlayer player) {
-        if (Tpa.getRequestsFor(player.getStringUUID()).isEmpty()) {
-            player.sendSystemMessage(Tr_i18n.tr("gui.teleportgui.tpa.tpagui.empty", player), true);
-            return;
-        }
         openTpa(player, 0, TPA_REQUESTS);
     }
 
     public static void openTpa(ServerPlayer player, int page, int mode) {
+        if (mode == TPA_REQUESTS && Tpa.getRequestsFor(player.getStringUUID()).isEmpty()) {
+            player.sendSystemMessage(Tr_i18n.tr("gui.teleportgui.tpa.tpagui.empty", player), true);
+            return;
+        }
         if (TeleportUtils.canSendForm(player)) {
             if (mode == TPA_REQUESTS) {
                 Form.openTpaRequestsForm(player, page);

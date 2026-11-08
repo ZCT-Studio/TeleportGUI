@@ -304,6 +304,10 @@ public final class Form {
 
     public static void openTpaRequestsForm(ServerPlayer player, int page) {
         List<Tpa.TpaRequest> requests = Tpa.getRequestsFor(player.getStringUUID());
+        if (requests.isEmpty()) {
+            player.sendSystemMessage(Tr_i18n.tr("gui.teleportgui.tpa.tpagui.empty", player), true);
+            return;
+        }
         int perPage = 45;
         int totalPages = Math.max(1, (requests.size() + perPage - 1) / perPage);
         @SuppressWarnings("MathClampMigration") int p = Math.max(0, Math.min(page, totalPages - 1));
