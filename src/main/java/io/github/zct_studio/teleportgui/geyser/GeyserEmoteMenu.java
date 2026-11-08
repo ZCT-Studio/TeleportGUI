@@ -82,6 +82,10 @@ public final class GeyserEmoteMenu {
                         Tr_i18n.tr("gui.teleportgui.be.emoteGUI.home", player).getString());
                 builderClass.getMethod("button", String.class).invoke(builder,
                         Tr_i18n.tr("gui.teleportgui.be.emoteGUI.warp", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.back", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.deathLocation", player).getString());
                 builderClass.getMethod("button", String.class).invoke(builder, toggleText);
 
                 Object form = builderClass.getMethod("build").invoke(builder);
@@ -105,7 +109,9 @@ public final class GeyserEmoteMenu {
                 case 1 -> GUI.openTpaRequests(player);
                 case 2 -> GUI.openHome(player);
                 case 3 -> GUI.openWarp(player);
-                case 4 -> toggleEmoteGUI(player);
+                case 4 -> Form.openEmoteTeleportConfirm(player, false);
+                case 5 -> Form.openEmoteTeleportConfirm(player, true);
+                case 6 -> toggleEmoteGUI(player);
                 default -> {}
             }
         } catch (Throwable e) {

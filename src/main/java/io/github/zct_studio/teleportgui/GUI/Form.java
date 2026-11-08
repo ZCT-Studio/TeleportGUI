@@ -452,6 +452,28 @@ public final class Form {
         }
     }
 
+    public static void openEmoteTeleportConfirm(ServerPlayer player, boolean deathLocation) {
+        try {
+            Object b = newBuilder(CUMULUS_MODAL);
+            call(b, "title", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.deathLocation" : "gui.teleportgui.be.emoteGUI.back"));
+            call(b, "content", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.confirmDeathLocation" : "gui.teleportgui.be.emoteGUI.confirmBack"));
+            call(b, "button1", text(player, "gui.teleportgui.be.emoteGUI.confirm"));
+            call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
+            onValid(b, response -> {
+                if (intValue(response, "getClickedButtonId") != 0) return;
+                var server = ServerMain.SERVER;
+                if (server != null) server.execute(() -> {
+                    if (server.getPlayerList().getPlayer(player.getUUID()) == player) {
+                        server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), deathLocation ? "tpdeathpoint" : "back");
+                    }
+                });
+            });
+            send(player, build(b));
+        } catch (Throwable t) {
+            fallback(player, t);
+        }
+    }
+
     public static void openSafetyConfirm(ServerPlayer player, Runnable onForce) {
         try {
             Object b = newBuilder(CUMULUS_MODAL);
