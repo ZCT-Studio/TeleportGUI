@@ -170,11 +170,6 @@ publishMods {
 
     modrinth {
         requires("architectury-api")
-        if (mod.isFabric) {
-            optional("geyser-fabric")
-        }
-        if (mod.isNeoforge) {
-            optional("geyser_neoforge")
-        }
+        optional("geyser", "floodgate")
     }
 }
