@@ -461,7 +461,7 @@ public final class Form {
             Object b = newBuilder(CUMULUS_MODAL);
             call(b, "title", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.deathLocation" : "gui.teleportgui.be.emoteGUI.back"));
             call(b, "content", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.confirmDeathLocation" : "gui.teleportgui.be.emoteGUI.confirmBack"));
-            call(b, "button1", text(player, "gui.teleportgui.be.emoteGUI.confirm"));
+            call(b, "button1", text(player, "gui.teleportgui.universal.gui.confirm"));
             call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
             onValid(b, response -> {
                 if (intValue(response, "getClickedButtonId") != 0) return;
