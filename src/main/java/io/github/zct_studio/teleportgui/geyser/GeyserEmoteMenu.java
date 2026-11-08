@@ -64,10 +64,9 @@ public final class GeyserEmoteMenu {
 
                 builderClass.getMethod("validResultHandler", consumerClass).invoke(builder, responseHandler);
 
-                String onText = Tr_i18n.tr("gui.teleportgui.be.emoteGUI.on", player).getString();
-                String offText = Tr_i18n.tr("gui.teleportgui.be.emoteGUI.off", player).getString();
-                String currentState = data.isEmoteGUIEnabled() ? onText : offText;
-                String toggleText = data.isEmoteGUIEnabled() ? offText : onText;
+                String onText = Tr_i18n.raw("gui.teleportgui.be.emoteGUI.on", player);
+                String offText = Tr_i18n.raw("gui.teleportgui.be.emoteGUI.off", player);
+                String toggleText = data.isEmoteGUIEnabled() ? onText : offText;
 
                 builderClass.getMethod("title", String.class).invoke(builder,
                         Tr_i18n.tr("gui.teleportgui.be.emoteGUI.title", player).getString());
