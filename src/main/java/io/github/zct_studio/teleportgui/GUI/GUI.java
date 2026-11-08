@@ -87,7 +87,11 @@ public final class GUI {
 
     public static void openTpa(ServerPlayer player, int page, int mode) {
         if (TeleportUtils.canSendForm(player)) {
-            Form.openTpaForm(player);
+            if (mode == TPA_REQUESTS) {
+                Form.openTpaRequestsForm(player, page);
+            } else {
+                Form.openTpaForm(player);
+            }
             return;
         }
         player.openMenu(new TpaMenuProvider(player, page, mode));
