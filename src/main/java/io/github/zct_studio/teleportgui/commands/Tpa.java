@@ -98,7 +98,10 @@ public final class Tpa {
                     ServerPlayer player = ctx.getSource().getPlayerOrException();
                     GUI.openTpa(player);
                     return 0;
-                }));
+                }).then(Commands.literal("req").executes(ctx -> {
+                    GUI.openTpaRequests(ctx.getSource().getPlayerOrException());
+                    return 0;
+                })));
     }
 
     public static List<TpaRequest> getRequestsFor(String recipientUuid) {

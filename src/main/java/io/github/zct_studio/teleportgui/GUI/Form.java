@@ -271,8 +271,10 @@ public final class Form {
             call(b, "content", text(player, "gui.teleportgui.be.tpaSummary"));
 
             List<Runnable> actions = new ArrayList<>();
-            call(b, "button", text(player, "gui.teleportgui.be.viewRequests"));
-            actions.add(() -> reopen(player, () -> openTpaRequestsForm(player, 0)));
+            int requestCount = Tpa.getRequestsFor(player.getStringUUID()).size();
+            call(b, "button", text(player, "gui.teleportgui.be.viewRequests")
+                    + (requestCount > 0 ? " (" + requestCount + ")" : ""));
+            actions.add(() -> reopen(player, () -> GUI.openTpaRequests(player)));
             call(b, "button", text(player, "gui.teleportgui.tpa.tpagui.new"));
             actions.add(() -> reopen(player, () -> openTpaRequestForm(player)));
             call(b, "button", text(player, allowed

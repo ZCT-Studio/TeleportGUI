@@ -3,6 +3,7 @@ package io.github.zct_studio.teleportgui.geyser;
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
 import io.github.zct_studio.teleportgui.Tr_i18n;
+import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
@@ -73,8 +74,10 @@ public final class GeyserEmoteMenu {
 
                 builderClass.getMethod("button", String.class).invoke(builder,
                         Tr_i18n.tr("gui.teleportgui.be.emoteGUI.tpa", player).getString());
+                int requestCount = Tpa.getRequestsFor(player.getStringUUID()).size();
                 builderClass.getMethod("button", String.class).invoke(builder,
-                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.tpaRequests", player).getString());
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.tpaRequests", player).getString()
+                                + (requestCount > 0 ? " (" + requestCount + ")" : ""));
                 builderClass.getMethod("button", String.class).invoke(builder,
                         Tr_i18n.tr("gui.teleportgui.be.emoteGUI.home", player).getString());
                 builderClass.getMethod("button", String.class).invoke(builder,

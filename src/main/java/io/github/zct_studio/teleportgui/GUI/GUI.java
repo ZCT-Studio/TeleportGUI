@@ -82,6 +82,10 @@ public final class GUI {
     }
 
     public static void openTpaRequests(ServerPlayer player) {
+        if (Tpa.getRequestsFor(player.getStringUUID()).isEmpty()) {
+            player.sendSystemMessage(Tr_i18n.tr("gui.teleportgui.tpa.tpagui.empty", player), true);
+            return;
+        }
         openTpa(player, 0, TPA_REQUESTS);
     }
 
