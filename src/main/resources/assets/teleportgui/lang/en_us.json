@@ -1,4 +1,11 @@
 {
+  "key.category.teleportgui.shortcuts": "TeleportGUI",
+  "key.teleportgui.tpa": "TPA menu",
+  "key.teleportgui.tpaRequest": "TPA requests",
+  "key.teleportgui.home": "Homes",
+  "key.teleportgui.warp": "Warps",
+  "key.teleportgui.back": "Back",
+  "key.teleportgui.deathLocation": "Death location",
   "commands.teleportgui.common.invalidName": "Names cannot be empty or contain quote characters.",
   "commands.teleportgui.common.noLocation": "You don't have a death location.",
   "commands.teleportgui.common.worldNotFound": "World not found: %0%. Available: %1%",

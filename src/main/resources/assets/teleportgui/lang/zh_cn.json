@@ -1,4 +1,11 @@
 {
+  "key.category.teleportgui.shortcuts": "TeleportGUI",
+  "key.teleportgui.tpa": "TPA 菜单",
+  "key.teleportgui.tpaRequest": "TPA 请求",
+  "key.teleportgui.home": "家",
+  "key.teleportgui.warp": "传送点",
+  "key.teleportgui.back": "返回上次位置",
+  "key.teleportgui.deathLocation": "死亡点",
   "commands.teleportgui.common.invalidName": "名字不能为空，也不能包含引号哦。",
   "commands.teleportgui.common.noLocation": "呜呜，还没有记录你的死亡地点呢。",
   "commands.teleportgui.common.worldNotFound": "找不到世界「%0%」啦！可用世界：%1%",
