@@ -71,7 +71,6 @@ dependencies {
         implementation("dev.architectury:architectury-neoforge:$archVersion")
     }
 
-    // Optional API, supplied by Geyser at runtime.
     val geyserApiVersion = findProperty("geyser_api_version") as String
     compileOnly("org.geysermc.geyser:api:$geyserApiVersion")
 
@@ -171,6 +170,11 @@ publishMods {
 
     modrinth {
         requires("architectury-api")
-        optional("geyser", "floodgate")
+        if (mod.isFabric) {
+            optional("geyser-fabric")
+        }
+        if (mod.isNeoforge) {
+            optional("geyser_neoforge")
+        }
     }
 }
