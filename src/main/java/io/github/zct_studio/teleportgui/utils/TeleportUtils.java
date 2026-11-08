@@ -2,6 +2,7 @@ package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.geyser.GeyserApiBridge;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 import net.minecraft.core.BlockPos;
@@ -36,13 +37,11 @@ public final class TeleportUtils {
 
     private static final Map<String, PreviousPos> PREV_POS = new HashMap<>();
 
-    private static final String CLASS_GEYSER_API = Constants.CLASS_GEYSER_API;
     private static final String CLASS_FLOODGATE_API = Constants.CLASS_FLOODGATE_API;
     private static final String CLASS_CUMULUS_FORM = "org.geysermc.cumulus.form.Form";
 
     private static final int SAFE_SEARCH_RADIUS = 3;
 
-    private static volatile GeyserHandle GEYSER_HANDLE;
     private static volatile Method FLOODGATE_API_GETTER;
     private static volatile Object FLOODGATE_API_INSTANCE;
     private static volatile boolean CUMULUS_AVAILABLE;
@@ -101,15 +100,10 @@ public final class TeleportUtils {
     }
 
     public static boolean isGeyserPlayer(ServerPlayer player) {
-        GeyserHandle handle = geyserHandle();
-        if (handle == null) return false;
+        if (!hasGeyser()) return false;
         try {
-            Object api = handle.api().invoke(null);
-            if (api == null) return false;
-            Object connection = handle.connectionByUuid().invoke(api, player.getUUID());
-            return connection != null;
-        } catch (Exception e) {
-            GEYSER_HANDLE = null;
+            return GeyserApiBridge.isGeyserPlayer(player.getUUID());
+        } catch (Throwable e) {
             return false;
         }
     }
@@ -132,28 +126,12 @@ public final class TeleportUtils {
                 .orElse(true);
     }
 
-    public static GeyserHandle geyserHandle() {
-        GeyserHandle cached = GEYSER_HANDLE;
-        if (cached != null) return cached;
-        try {
-            Class<?> apiClass = Class.forName(CLASS_GEYSER_API);
-            GeyserHandle handle = new GeyserHandle(
-                    apiClass.getMethod("api"),
-                    apiClass.getMethod("connectionByUuid", UUID.class));
-            GEYSER_HANDLE = handle;
-            return handle;
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
-    public record GeyserHandle(
-            Method api,
-            Method connectionByUuid
-    ) {}
-
     public static boolean hasGeyser() {
-        return geyserHandle() != null;
+        try {
+            return ClassUtils.isClassPresent(Constants.CLASS_GEYSER_API);
+        } catch (LinkageError e) {
+            return false;
+        }
     }
 
     public static boolean hasFloodgate() {

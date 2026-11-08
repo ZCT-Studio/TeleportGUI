@@ -618,16 +618,8 @@ public final class Form {
 
     public static boolean sendViaGeyser(ServerPlayer player, Object form) {
         try {
-            TeleportUtils.GeyserHandle handle = TeleportUtils.geyserHandle();
-            if (handle == null) return false;
-            Object api = handle.api().invoke(null);
-            if (api == null) return false;
-            Object connection = handle.connectionByUuid().invoke(api, player.getUUID());
-            if (connection == null) return false;
-            Method sendForm = connection.getClass().getMethod("sendForm", Class.forName(CUMULUS_FORM));
-            sendForm.setAccessible(true);
-            Object result = sendForm.invoke(connection, form);
-            return !Boolean.FALSE.equals(result);
+            if (!TeleportUtils.hasGeyser()) return false;
+            return io.github.zct_studio.teleportgui.geyser.GeyserApiBridge.sendForm(player.getUUID(), form);
         } catch (Throwable ignored) {
             return false;
         }

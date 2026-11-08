@@ -5,6 +5,7 @@ import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.geysermc.geyser.api.event.EventBus;
 import org.geysermc.geyser.api.event.EventRegistrar;
 import org.geysermc.geyser.api.event.bedrock.ClientEmoteEvent;
+import org.geysermc.cumulus.form.Form;
 
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 
@@ -60,6 +61,18 @@ public final class GeyserApiBridge {
 
     public static boolean isInitialized() {
         return INSTANCE != null;
+    }
+
+    public static boolean isGeyserPlayer(UUID uuid) {
+        GeyserApi api = GeyserApi.api();
+        return api != null && api.connectionByUuid(uuid) != null;
+    }
+
+    public static boolean sendForm(UUID uuid, Object form) {
+        GeyserApi api = GeyserApi.api();
+        if (api == null || !(form instanceof Form cumulusForm)) return false;
+        GeyserConnection connection = api.connectionByUuid(uuid);
+        return connection != null && connection.sendForm(cumulusForm);
     }
 
     public static void reset() {

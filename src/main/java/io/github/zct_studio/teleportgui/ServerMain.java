@@ -66,7 +66,7 @@ public final class ServerMain {
             }
             Registry.rebuild(server.getCommands().getDispatcher());
 
-            // 初始化 Geyser API 桥接（可选依赖）
+            // 初始化 Geyser API 桥接
             initGeyserBridge();
         });
 
@@ -122,14 +122,10 @@ public final class ServerMain {
             } catch (Exception e) {
                 Constants.LOGGER.error("Error closing storage", e);
             }
-            GeyserApiBridge.reset();
+            if (TeleportUtils.hasGeyser()) GeyserApiBridge.reset();
         });
     }
 
-    /**
-     * 初始化 Geyser API 桥接。
-     * 在 SERVER_STARTED 事件中调用，确保服务端已就绪。
-     */
     public static void initGeyserBridge() {
         if (!TeleportUtils.hasGeyser()) return;
 
@@ -139,23 +135,17 @@ public final class ServerMain {
             return;
         }
 
-        // 设置访问器
         GeyserApiBridge.setServerInstance(getServerInstance());
 
-        // 更新配置
         var settings = ModSettingsLoader.SETTINGS;
         bridge.updateConfig(settings.emoteTriggerUuids);
 
-        // 注册监听器
         bridge.registerEmoteListener();
 
         Constants.LOGGER.info("Geyser emote bridge initialized (trigger: {})",
                 settings.emoteTriggerUuids.size());
     }
 
-    /**
-     * 获取服务端实例。
-     */
     private static MinecraftServer getServerInstance() {
         return SERVER;
     }
