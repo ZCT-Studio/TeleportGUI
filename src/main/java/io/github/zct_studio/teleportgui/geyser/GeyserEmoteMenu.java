@@ -2,6 +2,7 @@ package io.github.zct_studio.teleportgui.geyser;
 
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.Form;
 import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.storage.Manager;
@@ -47,36 +48,41 @@ public final class GeyserEmoteMenu {
                 Object builder = simpleFormClass.getMethod("builder").invoke(null);
                 Class<?> builderClass = builder.getClass();
 
-                builderClass.getMethod("title", String.class).invoke(builder, "快捷菜单");
-
-                builderClass.getMethod("content", String.class).invoke(builder,
-                        "选择要打开的功能：\n表情触发菜单: " + (data.isEmoteGUIEnabled() ? "开启" : "关闭"));
-
-                builderClass.getMethod("button", String.class).invoke(builder, "TPA 传送请求");
-                builderClass.getMethod("button", String.class).invoke(builder, "TPA 请求列表");
-                builderClass.getMethod("button", String.class).invoke(builder, "Home 家园");
-                builderClass.getMethod("button", String.class).invoke(builder, "Warp 公共传送点");
-                builderClass.getMethod("button", String.class).invoke(builder,
-                        "表情触发菜单: " + (data.isEmoteGUIEnabled() ? "关闭" : "开启"));
-
-                Object form = builderClass.getMethod("build").invoke(builder);
-
                 Class<?> consumerClass = Class.forName("java.util.function.Consumer");
                 Object responseHandler = Proxy.newProxyInstance(
                         GeyserEmoteMenu.class.getClassLoader(),
                         new Class<?>[]{consumerClass},
                         (proxy, method, args) -> {
                             if ("accept".equals(method.getName()) && args != null && args.length == 1) {
-                                // 表单响应在 Geyser 线程中触发，必须切回主线程
                                 server.execute(() -> {
                                     if (server.getPlayerList().getPlayer(uuid) != player) return;
                                     handleResponse(player, args[0]);
                                 });
                             }
-                            return null; // 先不管
+                            return null;
                         });
 
-                builderClass.getMethod("validResultHandler", consumerClass).invoke(builder, responseHandler/*有警告，能跑就行*/);
+                builderClass.getMethod("validResultHandler", consumerClass).invoke(builder, responseHandler);
+
+                String onText = Tr_i18n.tr("gui.teleportgui.be.emoteGUI.on", player).getString();
+                String offText = Tr_i18n.tr("gui.teleportgui.be.emoteGUI.off", player).getString();
+                String currentState = data.isEmoteGUIEnabled() ? onText : offText;
+                String toggleText = data.isEmoteGUIEnabled() ? offText : onText;
+
+                builderClass.getMethod("title", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.title", player).getString());
+
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.tpa", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.tpaRequests", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.home", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder,
+                        Tr_i18n.tr("gui.teleportgui.be.emoteGUI.warp", player).getString());
+                builderClass.getMethod("button", String.class).invoke(builder, toggleText);
+
+                Object form = builderClass.getMethod("build").invoke(builder);
 
                 Form.sendViaGeyser(player, form);
 
