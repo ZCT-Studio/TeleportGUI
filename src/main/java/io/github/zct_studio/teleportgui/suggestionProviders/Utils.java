@@ -2,9 +2,9 @@ package io.github.zct_studio.teleportgui.suggestionProviders;
 
 import java.util.Locale;
 
-public final class SuggestionUtils {
+public final class Utils {
 
-    private SuggestionUtils() {
+    private Utils() {
     }
 
     public static String filter(String remaining) {

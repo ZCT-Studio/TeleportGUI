@@ -3,7 +3,6 @@ package io.github.zct_studio.teleportgui.utils;
 import io.github.zct_studio.teleportgui.Styles;
 import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.gui.Form;
-import io.github.zct_studio.teleportgui.gui.GUI;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -17,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public final class SafetyGuard {
 
     private static final Map<String, Pending> PENDING = new HashMap<>();

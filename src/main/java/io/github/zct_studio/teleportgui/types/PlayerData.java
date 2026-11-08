@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@SuppressWarnings("unused")
 public class PlayerData {
 
     private final String uuid;
     private final List<NamedLoc> homes = new ArrayList<>();
     private String defaultHome = "";
-    private Boolean notificationGui;
+    private Boolean notifGUI;
     private Boolean allowRequest = Boolean.TRUE;
+    private Boolean emoteGUIEnabled = Boolean.TRUE;
 
     public PlayerData(String uuid) {
         this.uuid = uuid;
@@ -34,14 +34,14 @@ public class PlayerData {
         Manager.save();
     }
 
-    public boolean isNotificationGuiEnabled() {
-        return notificationGui == null
+    public boolean isNotifGUIEnabled() {
+        return notifGUI == null
                 ? CommandLoader.isNotifGuiDefaultEnabled()
-                : notificationGui;
+                : notifGUI;
     }
 
-    public void setNotificationGuiEnabled(boolean enabled) {
-        this.notificationGui = enabled;
+    public void setNotifGUIEnabled(boolean enabled) {
+        this.notifGUI = enabled;
         Manager.save();
     }
 
@@ -51,6 +51,15 @@ public class PlayerData {
 
     public void setRequestAllowed(boolean allowed) {
         this.allowRequest = allowed;
+        Manager.save();
+    }
+
+    public boolean isEmoteGUIEnabled() {
+        return emoteGUIEnabled == null || emoteGUIEnabled;
+    }
+
+    public void setEmoteGUIEnabled(boolean enabled) {
+        this.emoteGUIEnabled = enabled;
         Manager.save();
     }
 

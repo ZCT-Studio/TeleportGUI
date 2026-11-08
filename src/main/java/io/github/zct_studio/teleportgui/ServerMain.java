@@ -7,13 +7,14 @@ import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.storage.DeathPoint;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.storage.RuntimeStore;
-import io.github.zct_studio.teleportgui.temporary.geyser_tpc.GeyserTPCMigrator;
+import io.github.zct_studio.teleportgui.temporary.geyser_tpc.GeyserTPC_Migrator;
 import io.github.zct_studio.teleportgui.utils.ClassUtils;
 import io.github.zct_studio.teleportgui.utils.CommandGuard;
 import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
 import io.github.zct_studio.teleportgui.utils.config.ModSettingsLoader;
+import io.github.zct_studio.teleportgui.geyser.GeyserApiBridge;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +52,7 @@ public final class ServerMain {
             ModSettingsLoader.load(SAVE_DIR);
             CommandLoader.load(dataDir.resolve("config.json"));
             Manager.init(SAVE_DIR);
-            GeyserTPCMigrator.run(SAVE_DIR, Manager.STORAGE_FILE);
+            GeyserTPC_Migrator.run(SAVE_DIR, Manager.STORAGE_FILE);
             boolean runtimePersistence = ModSettingsLoader.SETTINGS.runtimePersistence;
             RuntimeStore.setEnabled(runtimePersistence);
             long now = server.getTickCount();
@@ -64,6 +65,9 @@ public final class ServerMain {
                 Tpa.loadPersisted(List.of(), now);
             }
             Registry.rebuild(server.getCommands().getDispatcher());
+
+            // 初始化 Geyser API 桥接（可选依赖）
+            initGeyserBridge();
         });
 
         CommandRegistrationEvent.EVENT.register((dispatcher, ra, env) ->
@@ -118,6 +122,41 @@ public final class ServerMain {
             } catch (Exception e) {
                 Constants.LOGGER.error("Error closing storage", e);
             }
+            GeyserApiBridge.reset();
         });
+    }
+
+    /**
+     * 初始化 Geyser API 桥接。
+     * 在 SERVER_STARTED 事件中调用，确保服务端已就绪。
+     */
+    public static void initGeyserBridge() {
+        if (!TeleportUtils.hasGeyser()) return;
+
+        GeyserApiBridge bridge = GeyserApiBridge.tryInit();
+        if (bridge == null) {
+            Constants.LOGGER.debug("Geyser API not available, skipping emote bridge init");
+            return;
+        }
+
+        // 设置访问器
+        GeyserApiBridge.setServerInstance(getServerInstance());
+
+        // 更新配置
+        var settings = ModSettingsLoader.SETTINGS;
+        bridge.updateConfig(settings.emoteTriggerUuids);
+
+        // 注册监听器
+        bridge.registerEmoteListener();
+
+        Constants.LOGGER.info("Geyser emote bridge initialized (trigger: {})",
+                settings.emoteTriggerUuids.size());
+    }
+
+    /**
+     * 获取服务端实例。
+     */
+    private static MinecraftServer getServerInstance() {
+        return SERVER;
     }
 }

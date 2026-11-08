@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
     maven("https://repo.opencollab.dev/main/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
+    maven { url = uri(rootProject.file("libs")) }
 }
 
 val authors = providers.gradleProperty("mod.authors")
@@ -72,8 +73,18 @@ dependencies {
         implementation("dev.architectury:architectury-neoforge:$archVersion")
     }
 
-    // settings.yml 的解析。implementation 只用于编译与开发环境，
-    // include 才会把依赖打进发布用的 jar，避免玩家还需要额外装库。
+    // Geyser API - compileOnly (optional dependency, not bundled)
+    // Using local JARs extracted from Geyser mod to avoid external repository issues
+    val geyserApiVersion = findProperty("geyser_api_version") as String? ?: "2.0.0"
+    compileOnly(files(
+        rootProject.file("libs/geyser-api-$geyserApiVersion.jar"),
+        rootProject.file("libs/geyser-api-base-$geyserApiVersion.jar"),
+        rootProject.file("libs/geyser-base-api-1.0.3.jar"),
+        rootProject.file("libs/geyser-events-1.1.jar"),
+        rootProject.file("libs/cumulus-1.1.2.jar")
+    ))
+
+
     val snakeYamlVersion = findProperty("snakeyaml_version") as String? ?: "2.3"
     implementation("org.yaml:snakeyaml:$snakeYamlVersion")
     include("org.yaml:snakeyaml:$snakeYamlVersion")

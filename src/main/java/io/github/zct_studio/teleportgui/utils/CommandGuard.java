@@ -84,6 +84,7 @@ public final class CommandGuard {
         if (cooldownSec <= 0) return;
 
         long expiresAt = tick() + cooldownSec * 20L;
+        //noinspection unused
         COOLDOWNS.computeIfAbsent(player.getUUID(), key -> new HashMap<>())
                 .put(new NodeKey(module, node), expiresAt);
         RuntimeStore.markDirty();
@@ -133,6 +134,7 @@ public final class CommandGuard {
 
             try {
                 UUID uuid = UUID.fromString(entry.uuid);
+                //noinspection unused
                 COOLDOWNS.computeIfAbsent(uuid, key -> new HashMap<>())
                         .put(new NodeKey(entry.module, entry.node), now + entry.remainingTicks);
             } catch (IllegalArgumentException ignored) {

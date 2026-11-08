@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static net.minecraft.world.level.Level.OVERWORLD;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class TpPoints {
 
     private TpPoints() {

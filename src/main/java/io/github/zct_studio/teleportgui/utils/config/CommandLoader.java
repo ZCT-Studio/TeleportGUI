@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 
-@SuppressWarnings("SameParameterValue")
 public final class CommandLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static Command CONFIG = new Command();
@@ -92,11 +91,11 @@ public final class CommandLoader {
     }
 
     public static boolean isNotifGuiDefaultEnabled() {
-        return CONFIG.notifGuiDefault == null || CONFIG.notifGuiDefault;
+        return CONFIG.notifGUIDefault == null || CONFIG.notifGUIDefault;
     }
 
     public static void setNotifGuiDefault(boolean enabled) {
-        CONFIG.notifGuiDefault = enabled;
+        CONFIG.notifGUIDefault = enabled;
     }
 
     public static boolean isSafetyCheckEnabled(String module, String node) {
@@ -136,7 +135,7 @@ public final class CommandLoader {
     }
 
 
-    private static Boolean resolveBool(String module, String node, String field) {
+    private static Boolean resolveBool(String module, String node, @SuppressWarnings("SameParameterValue") String field) {
         Boolean v = extractBool(getNodeIfPresent(module, node), field);
         if (v != null) return v;
         return CONFIG.defaults == null ? null : extractBool(CONFIG.defaults, field);
@@ -170,6 +169,7 @@ public final class CommandLoader {
         };
     }
 
+    @SuppressWarnings("unused")
     public static CommandNode nodeIfPresent(String module, String node) {
         return getNodeIfPresent(module, node);
     }

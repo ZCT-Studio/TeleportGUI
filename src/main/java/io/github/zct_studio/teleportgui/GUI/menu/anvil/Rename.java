@@ -22,13 +22,13 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Rename extends AnvilMenu {
     private final ServerPlayer player;
     private final String oldName;
     private final boolean warp;
     private final int returnPage;
-    private String newName = "";
+    private String newName;
     private boolean navigating;
 
     private Rename(int windowId, Inventory inv, ServerPlayer player, String oldName,
@@ -65,6 +65,7 @@ public final class Rename extends AnvilMenu {
     }
 
     private void refresh() {
+        //noinspection ConstantValue
         if (player == null || resultSlots == null) return;
         String shown = newName == null || newName.isBlank() ? null : newName.trim();
         MutableComponent label = shown == null
@@ -79,6 +80,7 @@ public final class Rename extends AnvilMenu {
     @Override
     public boolean setItemName(@NonNull String name) {
         boolean ok = super.setItemName(name);
+        //noinspection ConstantValue
         this.newName = name == null ? "" : name;
         refresh();
         return ok;

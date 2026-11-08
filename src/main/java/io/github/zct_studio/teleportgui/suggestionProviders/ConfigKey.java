@@ -14,9 +14,9 @@ public class ConfigKey implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context,
                                                          SuggestionsBuilder builder) {
-        String filter = SuggestionUtils.filter(builder.getRemaining());
+        String filter = Utils.filter(builder.getRemaining());
         for (String key : GUI.configKeys()) {
-            if (SuggestionUtils.matches(key, filter)) {
+            if (Utils.matches(key, filter)) {
                 builder.suggest(key);
             }
         }

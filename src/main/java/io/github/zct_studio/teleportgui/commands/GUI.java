@@ -10,6 +10,7 @@ import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.suggestionProviders.CommandGroup;
 import io.github.zct_studio.teleportgui.suggestionProviders.ConfigKey;
 import io.github.zct_studio.teleportgui.types.PlayerData;
+import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class GUI {
 
     private static final List<String> NODE_FIELDS = List.of(
@@ -42,11 +44,12 @@ public final class GUI {
     private GUI() {
     }
 
+    @SuppressWarnings("unused")
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         registerPlayer(dispatcher);
         registerAdmin(dispatcher);
         registerBe(dispatcher);
-    }
+    } // 这玩意干啥用到来着，留着吧
 
     public static void registerPlayer(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(ConfigKeys.TG_PLAYER)
@@ -89,9 +92,18 @@ public final class GUI {
     public static void registerBe(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(ConfigKeys.TG_BE_ROOT)
                 .then(Commands.literal(ConfigKeys.TG_NOTIF_GUI)
-                        .executes(context -> cmdGetNotificationGui(context.getSource()))
+                        .executes(context -> cmdGetNotifGUI(context.getSource()))
                         .then(Commands.argument("value", BoolArgumentType.bool())
-                                .executes(context -> cmdNotificationGui(context.getSource(),
+                                .executes(context -> cmdNotifGUI(context.getSource(),
+                                        BoolArgumentType.getBool(context, "value")))))
+                .then(Commands.literal(ConfigKeys.TG_EMOTE_GUI)
+                        .requires(source -> {
+                            if (!(source.getEntity() instanceof ServerPlayer player)) return false;
+                            return TeleportUtils.isBedrockPlayer(player);
+                        })
+                        .executes(context -> cmdGetEmoteGUI(context.getSource()))
+                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                .executes(context -> cmdEmoteGUI(context.getSource(),
                                         BoolArgumentType.getBool(context, "value"))))));
     }
 
@@ -103,7 +115,7 @@ public final class GUI {
                 .orElse(true);
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.allowRequest.get", player,
-                                Component.literal(allowed ? "true" : "false"))
+                                Component.literal(Boolean.toString(allowed)))
                         .withStyle(Styles.SUCCESS),
                 false);
         return 0;
@@ -125,34 +137,66 @@ public final class GUI {
         return 0;
     }
 
-    private static int cmdNotificationGui(CommandSourceStack source, boolean enabled)
+    private static int cmdNotifGUI(CommandSourceStack source, boolean enabled)
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         PlayerData data = Manager.getPlayer(player.getStringUUID())
                 .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
-        data.setNotificationGuiEnabled(enabled);
+        data.setNotifGUIEnabled(enabled);
 
         player.sendSystemMessage(
                 Tr_i18n.tr(enabled
-                                        ? "commands.teleportgui.teleportgui.notificationGui.on"
-                                        : "commands.teleportgui.teleportgui.notificationGui.off",
+                                        ? "commands.teleportgui.teleportgui.notifGUI.on"
+                                        : "commands.teleportgui.teleportgui.notifGUI.off",
                                 player)
                         .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
                 false);
         return 0;
     }
 
-    private static int cmdGetNotificationGui(CommandSourceStack source)
+    private static int cmdGetNotifGUI(CommandSourceStack source)
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         boolean enabled = Manager.getPlayer(player.getStringUUID())
-                .map(PlayerData::isNotificationGuiEnabled)
+                .map(PlayerData::isNotifGUIEnabled)
                 .orElse(CommandLoader.isNotifGuiDefaultEnabled());
 
         player.sendSystemMessage(
-                Tr_i18n.tr("commands.teleportgui.teleportgui.notificationGui.get", player,
-                                Component.literal(enabled ? "true" : "false"))
+                Tr_i18n.tr("commands.teleportgui.teleportgui.notifGUI.get", player,
+                                Component.literal(Boolean.toString(enabled)))
                         .withStyle(Styles.SUCCESS),
+                false);
+        return 0;
+    }
+
+    private static int cmdGetEmoteGUI(CommandSourceStack source)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        PlayerData data = Manager.getPlayer(player.getStringUUID())
+                .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+        boolean enabled = data.isEmoteGUIEnabled();
+
+        player.sendSystemMessage(
+                Tr_i18n.tr("commands.teleportgui.teleportgui.emoteGUI.get", player,
+                                Component.literal(Boolean.toString(enabled)))
+                        .withStyle(Styles.SUCCESS),
+                false);
+        return 0;
+    }
+
+    private static int cmdEmoteGUI(CommandSourceStack source, boolean enabled)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        PlayerData data = Manager.getPlayer(player.getStringUUID())
+                .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
+        data.setEmoteGUIEnabled(enabled);
+
+        player.sendSystemMessage(
+                Tr_i18n.tr(enabled
+                                ? "commands.teleportgui.teleportgui.emoteGUI.on"
+                                : "commands.teleportgui.teleportgui.emoteGUI.off",
+                        player)
+                        .withStyle(enabled ? Styles.SUCCESS : Styles.WARNING),
                 false);
         return 0;
     }
@@ -206,7 +250,7 @@ public final class GUI {
 
         CommandLoader.save();
         String shownValue = ConfigKeys.KEY_NOTIF_GUI_DEFAULT.equals(key)
-                ? (parsed == 1 ? "true" : "false")
+                ? (Boolean.toString(parsed == 1))
                 : String.valueOf(parsed);
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.config.set", player,
@@ -247,7 +291,7 @@ public final class GUI {
         player.sendSystemMessage(
                 Tr_i18n.tr("commands.teleportgui.teleportgui.command.get", player,
                                 Component.literal(group),
-                                Component.literal(enabled ? "true" : "false"))
+                                Component.literal(Boolean.toString(enabled)))
                         .withStyle(Styles.SUCCESS),
                 false);
         return 0;
@@ -343,6 +387,7 @@ public final class GUI {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean isExpireSecondsNode(String module, String node) {
         return EXPIRE_SECONDS_NODES.contains(module + "." + node);
     }

@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Form {
     private static final String CUMULUS_CUSTOM = "org.geysermc.cumulus.form.CustomForm";
     private static final String CUMULUS_SIMPLE = "org.geysermc.cumulus.form.SimpleForm";
@@ -168,6 +168,7 @@ public final class Form {
             call(b, "title", title);
             call(b, "content", empty);
             call(b, "button", text(player, "gui.teleportgui.universal.gui.add"));
+            //noinspection unused
             onValid(b, response -> reopen(player, () -> openCreateForm(player, warp)));
             send(player, build(b));
         } catch (Throwable t) {
@@ -263,7 +264,7 @@ public final class Form {
         PlayerData data = Manager.getPlayer(player.getStringUUID())
                 .orElseGet(() -> Manager.addPlayer(player.getStringUUID()));
         boolean allowed = data.isRequestAllowed();
-        boolean notifEnabled = data.isNotificationGuiEnabled();
+        boolean notifEnabled = data.isNotifGUIEnabled();
         try {
             Object b = newBuilder(CUMULUS_SIMPLE);
             call(b, "title", text(player, "gui.teleportgui.tpa.tpagui.title"));
@@ -282,10 +283,10 @@ public final class Form {
                 reopen(player, () -> openTpaForm(player));
             });
             call(b, "button", text(player, notifEnabled
-                    ? "gui.teleportgui.be.notifGuiOn"
-                    : "gui.teleportgui.be.notifGuiOff"));
+                    ? "gui.teleportgui.be.notifGUI.on"
+                    : "gui.teleportgui.be.notifGUI.off"));
             actions.add(() -> {
-                data.setNotificationGuiEnabled(!notifEnabled);
+                data.setNotifGUIEnabled(!notifEnabled);
                 reopen(player, () -> openTpaForm(player));
             });
 
@@ -351,6 +352,7 @@ public final class Form {
         }
     }
 
+    @SuppressWarnings("unused")
     public static void openTpaRequestDialog(ServerPlayer player, String fromUuid, int page) {
         openTpaRequestDialog(player, fromUuid, page, false);
     }
@@ -471,6 +473,7 @@ public final class Form {
             call(b, "title", title);
             call(b, "content", content);
             call(b, "button", text(player, "gui.teleportgui.universal.gui.close"));
+            //noinspection unused
             onValid(b, response -> {
             });
             send(player, build(b));
@@ -557,6 +560,7 @@ public final class Form {
     }
 
     private static void onValid(Object builder, Consumer<Object> handler) throws Exception {
+        //noinspection unused
         Object proxy = Proxy.newProxyInstance(
                 Form.class.getClassLoader(),
                 new Class<?>[]{Consumer.class},
@@ -564,7 +568,7 @@ public final class Form {
                     if ("accept".equals(method.getName()) && args != null && args.length == 1) {
                         handler.accept(args[0]);
                     }
-                    return null;
+                    return null; // 不管那么多
                 });
         call(builder, "validResultHandler", proxy);
     }
@@ -612,7 +616,7 @@ public final class Form {
         }
     }
 
-    private static boolean sendViaGeyser(ServerPlayer player, Object form) {
+    public static boolean sendViaGeyser(ServerPlayer player, Object form) {
         try {
             TeleportUtils.GeyserHandle handle = TeleportUtils.geyserHandle();
             if (handle == null) return false;

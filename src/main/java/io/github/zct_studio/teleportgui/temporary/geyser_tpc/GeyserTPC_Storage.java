@@ -20,9 +20,9 @@ import java.util.List;
  *   Homes               -&gt;       homes
  *   位置的 world         -&gt;       位置的 worldId
  * </pre>
- * 老模组没有 {@code notificationGui} / {@code allowRequest}，迁移后沿用新结构的默认值。
+ * 老模组没有 {@code notifGUI} / {@code allowRequest}，迁移后沿用新结构的默认值。
  */
-final class GeyserTPCStorage {
+final class GeyserTPC_Storage {
 
     /** 全局传送点列表。老文件的键是 {@code Warps}。 */
     List<GeyserTpcLocation> Warps = new ArrayList<>();

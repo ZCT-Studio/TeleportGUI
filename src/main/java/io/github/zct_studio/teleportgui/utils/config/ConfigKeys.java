@@ -2,6 +2,7 @@ package io.github.zct_studio.teleportgui.utils.config;
 
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 public final class ConfigKeys {
     @SuppressWarnings("unused")
     public static final String MODULE_TELEPORTGUI = "teleportgui";
@@ -14,7 +15,8 @@ public final class ConfigKeys {
     public static final String TG_BE_ROOT = "teleportgui_be";
     public static final String TG_ALLOW_REQUEST = "allow_request";
     public static final String TG_NOTIF_GUI = "notif_gui";
-    public static final String KEY_NOTIF_GUI_DEFAULT = "notifGuiDefault";
+    public static final String TG_EMOTE_GUI = "emote_gui";
+    public static final String KEY_NOTIF_GUI_DEFAULT = "notifGUIDefault";
     public static final String TG_CONFIG = "config";
     public static final String TG_COMMAND = "command";
     public static final String TG_RELOAD = "reload";

@@ -2,6 +2,8 @@ package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
+import io.github.zct_studio.teleportgui.storage.Manager;
+import io.github.zct_studio.teleportgui.types.PlayerData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,7 +25,7 @@ import java.util.stream.StreamSupport;
 
 import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("SpellCheckingInspection")
 public final class TeleportUtils {
 
     private static final Set<String> UNSAFE_NON_COLLIDABLE_BLOCKS = Set.of(
@@ -122,6 +124,12 @@ public final class TeleportUtils {
         } catch (Throwable ignored) {
             return false;
         }
+    }
+
+    public static boolean getPlayerEmoteGUIEnabled(ServerPlayer player) {
+        return Manager.getPlayer(player.getStringUUID())
+                .map(PlayerData::isEmoteGUIEnabled)
+                .orElse(true);
     }
 
     public static GeyserHandle geyserHandle() {

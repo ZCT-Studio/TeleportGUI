@@ -42,14 +42,14 @@ import java.util.List;
  * 迁移在 {@code Manager.init} 完成之后执行，此时可以安全地调用 {@link Manager#save()}。
  * 迁移结束后立即落盘一次，保证下次启动时新存档非空，从而不会重复迁移。
  */
-public final class GeyserTPCMigrator {
+public final class GeyserTPC_Migrator {
 
     private static final String LEGACY_FOLDER = "GeyserTPC";
     private static final String STORAGE_FILE = "storage.json";
 
     private static final Gson GSON = new GsonBuilder().create();
 
-    private GeyserTPCMigrator() {
+    private GeyserTPC_Migrator() {
     }
 
     /**
@@ -71,7 +71,7 @@ public final class GeyserTPCMigrator {
             String json = Files.readString(legacyFile, StandardCharsets.UTF_8);
             if (json.isBlank()) return;
 
-            GeyserTPCStorage legacy = GSON.fromJson(json, GeyserTPCStorage.class);
+            GeyserTPC_Storage legacy = GSON.fromJson(json, GeyserTPC_Storage.class);
             if (legacy == null) return;
 
             StorageSnapshot snapshot = convert(legacy);
@@ -131,10 +131,10 @@ public final class GeyserTPCMigrator {
      * @param legacy 老存档
      * @return 新结构快照
      */
-    private static StorageSnapshot convert(GeyserTPCStorage legacy) {
+    private static StorageSnapshot convert(GeyserTPC_Storage legacy) {
         List<NamedLoc> warps = new ArrayList<>();
         if (legacy.Warps != null) {
-            for (GeyserTPCStorage.GeyserTpcLocation loc : legacy.Warps) {
+            for (GeyserTPC_Storage.GeyserTpcLocation loc : legacy.Warps) {
                 NamedLoc warp = toNamedLoc(loc);
                 if (warp != null) warps.add(warp);
             }
@@ -142,7 +142,7 @@ public final class GeyserTPCMigrator {
 
         List<PlayerData> players = new ArrayList<>();
         if (legacy.Players != null) {
-            for (GeyserTPCStorage.GeyserTpcPlayer old : legacy.Players) {
+            for (GeyserTPC_Storage.GeyserTpcPlayer old : legacy.Players) {
                 PlayerData player = toPlayerData(old);
                 if (player != null) players.add(player);
             }
@@ -156,7 +156,7 @@ public final class GeyserTPCMigrator {
      * @param loc 老位置点
      * @return 转换结果，无效时返回 null
      */
-    private static NamedLoc toNamedLoc(GeyserTPCStorage.GeyserTpcLocation loc) {
+    private static NamedLoc toNamedLoc(GeyserTPC_Storage.GeyserTpcLocation loc) {
         if (loc == null || loc.name == null || loc.name.isBlank() || loc.world == null) return null;
         return new NamedLoc(loc.name, new BlockPos(loc.x, loc.y, loc.z), loc.world);
     }
@@ -171,12 +171,12 @@ public final class GeyserTPCMigrator {
      * @param old 老玩家数据
      * @return 转换结果，缺少 UUID 时返回 null
      */
-    private static PlayerData toPlayerData(GeyserTPCStorage.GeyserTpcPlayer old) {
+    private static PlayerData toPlayerData(GeyserTPC_Storage.GeyserTpcPlayer old) {
         if (old == null || old.UUID == null || old.UUID.isBlank()) return null;
 
         PlayerData player = new PlayerData(old.UUID);
         if (old.Homes != null) {
-            for (GeyserTPCStorage.GeyserTpcLocation loc : old.Homes) {
+            for (GeyserTPC_Storage.GeyserTpcLocation loc : old.Homes) {
                 NamedLoc home = toNamedLoc(loc);
                 if (home != null) player.addHome(home);
             }

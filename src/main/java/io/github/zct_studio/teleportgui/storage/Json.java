@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public class Json implements Provider {
     private static final String STORAGE_FILE_NAME = "storage.json";
 

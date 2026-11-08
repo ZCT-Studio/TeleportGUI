@@ -2,14 +2,13 @@ package io.github.zct_studio.teleportgui.utils.config;
 
 import java.util.LinkedHashMap;
 
-@SuppressWarnings("SameParameterValue")
 public class Command {
     public static final int CURRENT_CONFIG_VERSION = 2;
     public static final int DEFAULT_REQUEST_EXPIRE_SECONDS = 120;
 
     public int configVersion = CURRENT_CONFIG_VERSION;
     public CommandNode defaults = new CommandNode();
-    public Boolean notifGuiDefault = Boolean.TRUE;
+    public Boolean notifGUIDefault = Boolean.TRUE;
 
     public LinkedHashMap<String, Boolean> commands = new LinkedHashMap<>();
 
@@ -46,8 +45,8 @@ public class Command {
             commands = new LinkedHashMap<>();
             changed = true;
         }
-        if (notifGuiDefault == null) {
-            notifGuiDefault = Boolean.TRUE;
+        if (notifGUIDefault == null) {
+            notifGUIDefault = Boolean.TRUE;
             changed = true;
         }
         for (String command : ConfigKeys.ALL_COMMANDS) {
@@ -103,7 +102,7 @@ public class Command {
     }
 
     private boolean ensureNode(LinkedHashMap<String, CommandNode> map, String key,
-                               int defaultCooldown, int defaultPermLevel, boolean defaultSafety) {
+                               int defaultCooldown, @SuppressWarnings("SameParameterValue") int defaultPermLevel, boolean defaultSafety) {
         return ensureNode(map, key, defaultCooldown, defaultPermLevel, defaultSafety, -1);
     }
 

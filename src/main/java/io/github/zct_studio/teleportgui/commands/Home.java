@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static net.minecraft.commands.Commands.argument;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Home {
     private Home() {
     }

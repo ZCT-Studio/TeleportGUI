@@ -15,9 +15,9 @@ public class Warp implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
-            String filter = SuggestionUtils.filter(builder.getRemaining());
+            String filter = Utils.filter(builder.getRemaining());
             Manager.getWarps().forEach(w -> {
-                if (SuggestionUtils.matches(w.getName(), filter)) {
+                if (Utils.matches(w.getName(), filter)) {
                     builder.suggest(CommandUtils.quote(w.getName()));
                 }
             });

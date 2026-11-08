@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Registry {
 
     private static final LinkedHashMap<String, Group> GROUPS = new LinkedHashMap<>();
@@ -69,6 +69,7 @@ public final class Registry {
         return List.copyOf(GROUPS.keySet());
     }
 
+    @SuppressWarnings("unused")
     public static boolean isKnownGroup(String name) {
         return groupNameOf(name) != null;
     }
@@ -89,7 +90,7 @@ public final class Registry {
         return startsWithCommand(results.getReader().getString(), RELOAD_LITERAL);
     }
 
-    private static boolean startsWithCommand(String input, String command) {
+    private static boolean startsWithCommand(String input, @SuppressWarnings("SameParameterValue") String command) {
         if (input == null) return false;
         int start = 0;
         while (start < input.length() && Character.isWhitespace(input.charAt(start))) {

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 public final class ModSettingsLoader {
@@ -20,34 +21,27 @@ public final class ModSettingsLoader {
     private static final String DEFAULT_YAML = """
             # TeleportGUI 模组设置
             #
-            # 本文件对所有存档生效，位于 config/teleportgui/settings.yml
-            #
             # runtimePersistence: 是否把冷却与待处理的传送请求写入 runtime.json，
             # 使它们在服务器重启后依然保留。设为 false 则只保存在内存中。
             runtimePersistence: true
+            #
+            # emoteTriggerUuids: 基岩版表情触发设置的 UUID 列表（Geyser 专用）。
+            # 配置的表情将同时：
+            #   1. 触发快捷菜单表单（TPA/请求/Home/Warp）
+            #   2. 取消 Geyser 默认行为（如副手切换）
+            # 设为空列表 [] 则禁用此功能。
+            # 默认："Over There!" 表情 UUID
+            emoteTriggerUuids:
+              - "ce5c0300-7f03-455d-aaf1-352e4927b54d"
             """;
 
     private ModSettingsLoader() {
     }
 
-    /**
-     * 模组级配置目录：{@code <config>/teleportgui}。
-     *
-     * @return 配置目录路径
-     */
     public static Path configFolder() {
         return ConfigDir.get().resolve(Constants.MOD_ID);
     }
 
-    /**
-     * 加载 settings.yml。
-     * <p>
-     * 文件位于模组级配置目录，对所有存档生效。若旧版本遗留的
-     * {@code <世界目录>/teleportgui/settings.yml} 存在且新位置还没有文件，
-     * 会先把它复制过来，避免升级后设置被重置。
-     *
-     * @param saveDir 世界根目录，仅用于查找旧位置的设置文件；传 null 表示跳过迁移
-     */
     public static void load(Path saveDir) {
         Path folder = configFolder();
         Path settingsFile = folder.resolve(FILE_NAME);
@@ -82,12 +76,6 @@ public final class ModSettingsLoader {
         }
     }
 
-    /**
-     * 查找旧版本存放在世界目录里的设置文件。
-     *
-     * @param saveDir 世界根目录
-     * @return 旧文件路径；不存在时返回 null
-     */
     private static Path legacyFile(Path saveDir) {
         if (saveDir == null) return null;
         Path legacy = saveDir.resolve(Constants.MOD_ID).resolve(FILE_NAME);
@@ -100,6 +88,14 @@ public final class ModSettingsLoader {
 
         if (root.get("runtimePersistence") instanceof Boolean value) {
             settings.runtimePersistence = value;
+        }
+
+        Object emoteUuids = root.get("emoteTriggerUuids");
+        if (emoteUuids instanceof List<?> list) {
+            settings.emoteTriggerUuids = list.stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .toList();
         }
         return settings;
     }

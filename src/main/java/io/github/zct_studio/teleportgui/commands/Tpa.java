@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import static net.minecraft.commands.Commands.argument;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Tpa {
 
     private static final List<TpaRequest> REQUESTS = new ArrayList<>();
@@ -215,7 +216,7 @@ public final class Tpa {
         if (TeleportUtils.isBedrockPlayer(to)) {
             boolean autoPop = Manager
                     .getPlayer(to.getStringUUID())
-                    .map(PlayerData::isNotificationGuiEnabled)
+                    .map(PlayerData::isNotifGUIEnabled)
                     .orElse(CommandLoader.isNotifGuiDefaultEnabled());
 
             MutableComponent bedrockMsg = Component.empty()

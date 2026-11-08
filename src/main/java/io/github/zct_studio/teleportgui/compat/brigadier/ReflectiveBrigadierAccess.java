@@ -7,6 +7,7 @@ import io.github.zct_studio.teleportgui.Constants;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class ReflectiveBrigadierAccess implements BrigadierAccess {
 
     private static final String FIELD_CHILDREN = "children";
@@ -36,8 +37,13 @@ public final class ReflectiveBrigadierAccess implements BrigadierAccess {
     public boolean removeChild(RootCommandNode<?> root, String literal) {
         if (root == null || literal == null || !isAvailable()) return false;
 
-        boolean removed = removeFrom(CHILDREN, root, literal);
-        removed |= removeFrom(LITERALS, root, literal);
+        boolean removed = false;
+        if (CHILDREN != null) {
+            removed = removeFrom(CHILDREN, root, literal);
+        }
+        if (LITERALS != null) {
+            removed |= removeFrom(LITERALS, root, literal);
+        }
         return removed;
     }
 

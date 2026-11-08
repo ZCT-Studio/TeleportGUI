@@ -14,9 +14,9 @@ public class CommandGroup implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context,
                                                          SuggestionsBuilder builder) {
-        String filter = SuggestionUtils.filter(builder.getRemaining());
+        String filter = Utils.filter(builder.getRemaining());
         for (String name : Registry.groupNames()) {
-            if (SuggestionUtils.matches(name, filter)) {
+            if (Utils.matches(name, filter)) {
                 builder.suggest(name);
             }
         }

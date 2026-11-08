@@ -30,6 +30,7 @@ import java.util.Optional;
 
 import static net.minecraft.commands.Commands.argument;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Warp {
 
     private Warp() {

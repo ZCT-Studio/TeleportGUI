@@ -18,11 +18,11 @@ public class Home implements SuggestionProvider<CommandSourceStack> {
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
-            String filter = SuggestionUtils.filter(builder.getRemaining());
+            String filter = Utils.filter(builder.getRemaining());
             Manager.getPlayer(player.getStringUUID())
                     .map(PlayerData::getHomes)
                     .ifPresent(homes -> homes.forEach(h -> {
-                        if (SuggestionUtils.matches(h.getName(), filter)) {
+                        if (Utils.matches(h.getName(), filter)) {
                             builder.suggest(CommandUtils.quote(h.getName()));
                         }
                     }));

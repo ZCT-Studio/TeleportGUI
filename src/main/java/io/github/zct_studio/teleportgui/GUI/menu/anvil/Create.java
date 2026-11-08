@@ -22,7 +22,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class Create extends AnvilMenu {
     private final ServerPlayer player;
     private final boolean warp;
@@ -62,6 +62,7 @@ public final class Create extends AnvilMenu {
     }
 
     private void refresh() {
+        //noinspection ConstantValue
         if (player == null || resultSlots == null) return;
         String shown = newName == null || newName.isBlank() ? null : newName.trim();
         MutableComponent label = shown == null
@@ -76,6 +77,7 @@ public final class Create extends AnvilMenu {
     @Override
     public boolean setItemName(@NonNull String name) {
         boolean ok = super.setItemName(name);
+        //noinspection ConstantValue
         this.newName = name == null ? "" : name;
         refresh();
         return ok;

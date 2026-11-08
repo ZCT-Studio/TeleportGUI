@@ -34,8 +34,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public final class RandomTp {
-
     private static final int LOADED_ATTEMPTS = 12;
     private static final int CHUNK_LOAD_ATTEMPTS = 4;
     private static final int NETHER_SCAN_DEPTH = 48;
@@ -186,14 +186,12 @@ public final class RandomTp {
         }
     }
 
-    private static int[] sample(ServerPlayer player, ServerLevel world, int minDistance,
-                                int maxDistance, RandomSource random) {
+    private static int[] sample(ServerPlayer player, ServerLevel world, int min,
+                                int max, RandomSource random) {
         for (int attempt = 0; attempt < 8; attempt++) {
             double angle = random.nextDouble() * Math.PI * 2.0D;
-            double min = minDistance;
-            double max = maxDistance;
-            double distance = Math.sqrt(min * min
-                    + random.nextDouble() * (max * max - min * min));
+            double distance = Math.sqrt((double) min * (double) min
+                    + random.nextDouble() * ((double) max * (double) max - (double) min * (double) min));
             int x = (int) Math.floor(player.getX() + Math.cos(angle) * distance);
             int z = (int) Math.floor(player.getZ() + Math.sin(angle) * distance);
             if (world.getWorldBorder().isWithinBounds(x, z)) {

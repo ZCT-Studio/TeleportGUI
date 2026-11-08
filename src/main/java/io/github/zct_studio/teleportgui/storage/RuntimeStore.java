@@ -48,6 +48,7 @@ public final class RuntimeStore {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean isEnabled() {
         return enabled;
     }

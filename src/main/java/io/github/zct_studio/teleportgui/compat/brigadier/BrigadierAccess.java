@@ -1,18 +1,18 @@
 package io.github.zct_studio.teleportgui.compat.brigadier;
 
-import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import io.github.zct_studio.teleportgui.Constants;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-
+@SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
 public interface BrigadierAccess {
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isAvailable();
 
+    @SuppressWarnings("UnusedReturnValue")
     boolean removeChild(RootCommandNode<?> root, String literal);
 
+    @SuppressWarnings("unused")
     static BrigadierAccess noop() {
         return new BrigadierAccess() {
             @Override

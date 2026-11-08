@@ -14,7 +14,16 @@ public final class ConfigReloader {
         if (CommandLoader.CONFIG_FILE == null) return false;
         CommandLoader.load(CommandLoader.CONFIG_FILE);
         rebuildCommandTree();
+        reloadGeyserBridgeConfig();
         return true;
+    }
+
+    public static void reloadGeyserBridgeConfig() {
+        if (ServerMain.SERVER == null) return;
+        ServerMain.SERVER.execute(() -> {
+            io.github.zct_studio.teleportgui.utils.config.ModSettingsLoader.load(ServerMain.SAVE_DIR);
+            ServerMain.SERVER.execute(ServerMain::initGeyserBridge);
+        });
     }
 
     public static void reloadCommandTree() {

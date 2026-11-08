@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-@SuppressWarnings("unused")
 public class DeathPoint {
 
     private final BlockPos pos;
@@ -23,6 +22,7 @@ public class DeathPoint {
         return pos;
     }
 
+    @SuppressWarnings("unused")
     public String getWorldId() {
         return worldId;
     }

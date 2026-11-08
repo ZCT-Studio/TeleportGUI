@@ -136,7 +136,7 @@ public final class GUI {
     }
 
     private static int contentRowsFor(int count) {
-        return Math.min(MAX_CONTENT_ROWS, Math.max(1, (count + 8) / 9));
+        return Math.clamp((count + 8) / 9, 1, MAX_CONTENT_ROWS);
     }
 
     private static int rowsFor(int count) {
@@ -207,7 +207,7 @@ public final class GUI {
             this.contentRows = rows - 1;
             this.contentSize = this.contentRows * 9;
             this.totalPages = totalPagesFor(entryCount, hasAdd());
-            this.page = Math.max(0, Math.min(page, this.totalPages - 1));
+            this.page = Math.clamp(page, 0, this.totalPages - 1);
             this.slotNames = new String[rows * 9];
         }
 
@@ -236,6 +236,7 @@ public final class GUI {
             return false;
         }
 
+        @SuppressWarnings("UnusedReturnValue")
         protected boolean onRequestsNav(ServerPlayer sp) {
             return false;
         }

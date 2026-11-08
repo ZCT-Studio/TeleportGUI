@@ -19,12 +19,12 @@ public class Tpa implements SuggestionProvider<CommandSourceStack> {
             var server = context.getSource().getServer();
             if (server == null) return Suggestions.empty();
 
-            String filter = SuggestionUtils.filter(builder.getRemaining());
+            String filter = Utils.filter(builder.getRemaining());
             for (io.github.zct_studio.teleportgui.commands.Tpa.TpaRequest req : io.github.zct_studio.teleportgui.commands.Tpa.getRequestsFor(player.getStringUUID())) {
                 var fromPlayer = server.getPlayerList().getPlayer(UUID.fromString(req.fromUuid));
                 if (fromPlayer != null) {
                     String name = fromPlayer.getName().getString();
-                    if (SuggestionUtils.matches(name, filter)) {
+                    if (Utils.matches(name, filter)) {
                         builder.suggest(name);
                     }
                 }
