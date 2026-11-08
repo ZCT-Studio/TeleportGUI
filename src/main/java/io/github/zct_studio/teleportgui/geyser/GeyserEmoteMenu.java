@@ -109,8 +109,8 @@ public final class GeyserEmoteMenu {
                 case 1 -> GUI.openTpaRequests(player);
                 case 2 -> GUI.openHome(player);
                 case 3 -> GUI.openWarp(player);
-                case 4 -> Form.openEmoteTeleportConfirm(player, false);
-                case 5 -> Form.openEmoteTeleportConfirm(player, true);
+                case 4 -> Form.openEmoteBackConfirm(player);
+                case 5 -> Form.openEmoteTpDeathLocationConfirm(player);
                 case 6 -> toggleEmoteGUI(player);
                 default -> {}
             }

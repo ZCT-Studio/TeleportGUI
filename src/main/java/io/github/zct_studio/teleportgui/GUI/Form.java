@@ -456,11 +456,11 @@ public final class Form {
         }
     }
 
-    public static void openEmoteTeleportConfirm(ServerPlayer player, boolean deathLocation) {
+    public static void openEmoteBackConfirm(ServerPlayer player) {
         try {
             Object b = newBuilder(CUMULUS_MODAL);
-            call(b, "title", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.deathLocation" : "gui.teleportgui.be.emoteGUI.back"));
-            call(b, "content", text(player, deathLocation ? "gui.teleportgui.be.emoteGUI.confirmDeathLocation" : "gui.teleportgui.be.emoteGUI.confirmBack"));
+            call(b, "title", text(player, "gui.teleportgui.be.emoteGUI.back"));
+            call(b, "content", text(player, "gui.teleportgui.be.emoteGUI.confirmBack"));
             call(b, "button1", text(player, "gui.teleportgui.universal.gui.confirm"));
             call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
             onValid(b, response -> {
@@ -468,7 +468,7 @@ public final class Form {
                 var server = ServerMain.SERVER;
                 if (server != null) server.execute(() -> {
                     if (server.getPlayerList().getPlayer(player.getUUID()) == player) {
-                        server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), deathLocation ? "tpdeathpoint" : "back");
+                        server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), "back");
                     }
                 });
             });
@@ -476,6 +476,32 @@ public final class Form {
         } catch (Throwable t) {
             fallback(player, t);
         }
+    }
+
+    public static void openEmoteTpDeathLocationConfirm(ServerPlayer player) {
+        try {
+            Object b = newBuilder(CUMULUS_MODAL);
+            call(b, "title", text(player, "gui.teleportgui.be.emoteGUI.deathLocation"));
+            call(b, "content", text(player, "gui.teleportgui.be.emoteGUI.confirmDeathLocation"));
+            call(b, "button1", text(player, "gui.teleportgui.universal.gui.confirm"));
+            call(b, "button2", text(player, "gui.teleportgui.universal.gui.cancel"));
+            onValid(b, response -> {
+                if (intValue(response, "getClickedButtonId") != 0) return;
+                var server = ServerMain.SERVER;
+                if (server != null) server.execute(() -> {
+                    if (server.getPlayerList().getPlayer(player.getUUID()) == player) {
+                        server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), "tpdeathpoint");
+                    }
+                });
+            });
+            send(player, build(b));
+        } catch (Throwable t) {
+            fallback(player, t);
+        }
+    }
+
+    public static void openEmoteTeleportConfirm(ServerPlayer player, boolean deathLocation) {
+
     }
 
     public static void openSafetyConfirm(ServerPlayer player, Runnable onForce) {
