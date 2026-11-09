@@ -6,9 +6,6 @@ on:
     tags:
       - 'v*'
 
-env:
-  MODRINTH_PROJECT: ${{ vars.MODRINTH_ID }}
-
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -116,7 +113,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          MODRINTH_ID: ${{ env.MODRINTH_PROJECT }}
+          MODRINTH_ID: ${{ vars.MODRINTH_ID }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
           CURSEFORGE_SLUG: ${{ vars.CURSEFORGE_SLUG }}
