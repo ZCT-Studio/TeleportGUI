@@ -1,4 +1,9 @@
-package io.github.zct_studio.teleportgui.geyser;
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
+package io.github.zct_studio.teleportgui.compat.geyser;
 
 import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;

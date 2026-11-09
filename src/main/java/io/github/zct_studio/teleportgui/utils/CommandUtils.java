@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Styles;

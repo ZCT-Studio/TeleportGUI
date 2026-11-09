@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Constants;
@@ -12,12 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class CommandGuard {
     private static final Map<UUID, Map<NodeKey, Long>> COOLDOWNS = new HashMap<>();

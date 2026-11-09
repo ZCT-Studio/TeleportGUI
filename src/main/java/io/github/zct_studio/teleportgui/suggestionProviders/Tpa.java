@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.suggestionProviders;
 
 import com.mojang.brigadier.context.CommandContext;
@@ -17,6 +22,7 @@ public class Tpa implements SuggestionProvider<CommandSourceStack> {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
             var server = context.getSource().getServer();
+            //noinspection ConstantValue
             if (server == null) return Suggestions.empty();
 
             String filter = Utils.filter(builder.getRemaining());

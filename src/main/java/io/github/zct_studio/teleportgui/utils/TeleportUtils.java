@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.utils;
 
 import io.github.zct_studio.teleportgui.Constants;
 import io.github.zct_studio.teleportgui.ServerMain;
-import io.github.zct_studio.teleportgui.geyser.GeyserApiBridge;
+import io.github.zct_studio.teleportgui.compat.geyser.GeyserApiBridge;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.PlayerData;
 import net.minecraft.core.BlockPos;

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.gui;
 
 import io.github.zct_studio.teleportgui.ServerMain;
@@ -50,6 +55,7 @@ public final class GUI {
     private static final int NAV_NEXT = 8;
     private static final int TPA_PLAYERS = 0;
     private static final int TPA_REQUESTS = 1;
+
     private GUI() {
     }
 

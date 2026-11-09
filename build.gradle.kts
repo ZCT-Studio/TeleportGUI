@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
+@file:Suppress("PropertyName", "LocalVariableName", "SpellCheckingInspection")
+
 import gg.meza.stonecraft.mod
 
 plugins {
@@ -75,7 +82,9 @@ dependencies {
     compileOnly("org.geysermc.geyser:api:$geyserApiVersion")
 
     val snakeYamlVersion = findProperty("snakeyaml_version") as String? ?: "2.3"
+    @Suppress("AvoidDuplicateDependencies")
     implementation("org.yaml:snakeyaml:$snakeYamlVersion")
+    @Suppress("AvoidDuplicateDependencies")
     include("org.yaml:snakeyaml:$snakeYamlVersion")
 }
 
@@ -136,7 +145,7 @@ val isPrimaryPublisher = mod.isFabric
 publishMods {
     version.set(releaseVersion)
     changelog.set(releaseChangelog)
-    displayName.set("${findProperty("mod.name") ?: "TeleportGUI"} ${releaseVersion}")
+    displayName.set("${findProperty("mod.name") ?: "TeleportGUI"} $releaseVersion")
 
     providers.environmentVariable("RELEASE_TYPE").orNull?.let { raw ->
         type.set(

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui;
 
 import dev.architectury.event.EventResult;
@@ -14,7 +19,7 @@ import io.github.zct_studio.teleportgui.utils.TeleportUtils;
 import io.github.zct_studio.teleportgui.utils.config.CommandLoader;
 import io.github.zct_studio.teleportgui.utils.config.ConfigReloader;
 import io.github.zct_studio.teleportgui.utils.config.ModSettingsLoader;
-import io.github.zct_studio.teleportgui.geyser.GeyserApiBridge;
+import io.github.zct_studio.teleportgui.compat.geyser.GeyserApiBridge;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;

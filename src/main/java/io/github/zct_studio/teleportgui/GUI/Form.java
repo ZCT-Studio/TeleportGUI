@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.gui;
 
 import io.github.zct_studio.teleportgui.Constants;
@@ -7,6 +12,7 @@ import io.github.zct_studio.teleportgui.Tr_i18n;
 import io.github.zct_studio.teleportgui.commands.Home;
 import io.github.zct_studio.teleportgui.commands.Tpa;
 import io.github.zct_studio.teleportgui.commands.Warp;
+import io.github.zct_studio.teleportgui.compat.geyser.GeyserApiBridge;
 import io.github.zct_studio.teleportgui.storage.Manager;
 import io.github.zct_studio.teleportgui.types.NamedLoc;
 import io.github.zct_studio.teleportgui.types.PlayerData;
@@ -673,7 +679,7 @@ public final class Form {
     public static boolean sendViaGeyser(ServerPlayer player, Object form) {
         try {
             if (!TeleportUtils.hasGeyser()) return false;
-            return io.github.zct_studio.teleportgui.geyser.GeyserApiBridge.sendForm(player.getUUID(), form);
+            return GeyserApiBridge.sendForm(player.getUUID(), form);
         } catch (Throwable ignored) {
             return false;
         }

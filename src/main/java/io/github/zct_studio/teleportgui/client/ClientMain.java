@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,7 +24,8 @@ public final class ClientMain {
     };
     private static final String[] COMMANDS = {"gtpa", "gtpa req", "ghome", "gwarp", "back", "tpdeathpoint"};
 
-    private ClientMain() {}
+    private ClientMain() {
+    }
 
     private static KeyMapping key(String name, int key) {
         return new KeyMapping("key.teleportgui." + name, key, CATEGORY);

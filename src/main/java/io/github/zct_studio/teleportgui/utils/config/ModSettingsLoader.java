@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.utils.config;
 
 import io.github.zct_studio.teleportgui.Constants;
@@ -14,10 +19,7 @@ import java.util.Map;
 
 public final class ModSettingsLoader {
 
-    public static ModSettings SETTINGS = new ModSettings();
-
     private static final String FILE_NAME = "settings.yml";
-
     private static final String DEFAULT_YAML = """
             # TeleportGUI 模组设置
             #
@@ -34,6 +36,7 @@ public final class ModSettingsLoader {
             emoteTriggerUuids:
               - "ce5c0300-7f03-455d-aaf1-352e4927b54d"
             """;
+    public static ModSettings SETTINGS = new ModSettings();
 
     private ModSettingsLoader() {
     }

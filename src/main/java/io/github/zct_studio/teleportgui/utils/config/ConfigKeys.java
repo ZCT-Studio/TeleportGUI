@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 ZCT Studio
+ * SPDX-License-Identifier: MIT
+ */
+
 package io.github.zct_studio.teleportgui.utils.config;
 
 import java.util.List;
@@ -71,10 +76,10 @@ public final class ConfigKeys {
             COMMAND_RANDOM_TP
     );
 
-    public static String nodeKey(String module, String node) {
-        return module + "." + node;
+    private ConfigKeys() {
     }
 
-    private ConfigKeys() {
+    public static String nodeKey(String module, String node) {
+        return module + "." + node;
     }
 }
