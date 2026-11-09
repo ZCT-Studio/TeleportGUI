@@ -6,6 +6,7 @@
 @file:Suppress("PropertyName", "LocalVariableName", "SpellCheckingInspection")
 
 import gg.meza.stonecraft.mod
+import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 
 plugins {
     id("gg.meza.stonecraft")
@@ -179,6 +180,7 @@ publishMods {
     }
 
     modrinth {
+        environment.set(ModrinthEnvironment.SERVER_ONLY_CLIENT_OPTIONAL)
         requires("architectury-api")
         optional("geyser", "floodgate")
     }
