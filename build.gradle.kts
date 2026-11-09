@@ -185,9 +185,7 @@ publishMods {
 
     curseforge {
         server.set(true)
+        client.set(true)
         requires("architectury-api")
-        if (mod.isFabric) {
-            requires("fabric-api")
-        }
     }
 }
