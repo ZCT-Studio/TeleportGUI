@@ -101,4 +101,4 @@ Back up both the global configuration and each world's teleportgui directory. De
 
 ## Links
 
-[Source and documentation](https://github.com/ZCT-Studio/TeleportGUI) · [Report an issue](https://github.com/ZCT-Studio/TeleportGUI/issues) · [Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/main/CHANGELOG.md) · [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/main/LICENSE)
+[Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/main/CHANGELOG.md)

@@ -98,4 +98,4 @@ TeleportGUI 是支持 Fabric 和 NeoForge 的服务端传送模组，提供家�
 
 ## Links
 
-[Source and documentation](https://github.com/ZCT-Studio/TeleportGUI) · [Report an issue](https://github.com/ZCT-Studio/TeleportGUI/issues) · [Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/main/CHANGELOG.md) · [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/main/LICENSE)
+[Report an issue](https://github.com/ZCT-Studio/TeleportGUI/issues) · [Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/main/CHANGELOG.md) · [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/main/LICENSE)
