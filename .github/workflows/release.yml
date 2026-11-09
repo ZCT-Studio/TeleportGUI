@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 env:
-  MODRINTH_PROJECT: ${{ vars.MODRINTH_ID || '5tC6IJAL' }}
+  MODRINTH_PROJECT: ${{ vars.MODRINTH_ID }}
 
 concurrency:
   group: release-${{ github.ref }}
