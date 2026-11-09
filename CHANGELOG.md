@@ -19,6 +19,8 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 
 ## [Unreleased / 未发布]
 
+## [1.1.0-beta.3] - 2026-11-8
+
 ### Fixed / 修复
 
 - Fixes the issue where Bedrock edition commands are still usable in Java(Fixes [#3])
