@@ -91,16 +91,16 @@ public final class GUI {
 
     public static void registerBe(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(ConfigKeys.TG_BE_ROOT)
+                .requires(source -> {
+                    if (!(source.getEntity() instanceof ServerPlayer player)) return false;
+                    return TeleportUtils.isBedrockPlayer(player);
+                })
                 .then(Commands.literal(ConfigKeys.TG_NOTIF_GUI)
                         .executes(context -> cmdGetNotifGUI(context.getSource()))
                         .then(Commands.argument("value", BoolArgumentType.bool())
                                 .executes(context -> cmdNotifGUI(context.getSource(),
                                         BoolArgumentType.getBool(context, "value")))))
                 .then(Commands.literal(ConfigKeys.TG_EMOTE_GUI)
-                        .requires(source -> {
-                            if (!(source.getEntity() instanceof ServerPlayer player)) return false;
-                            return TeleportUtils.isBedrockPlayer(player);
-                        })
                         .executes(context -> cmdGetEmoteGUI(context.getSource()))
                         .then(Commands.argument("value", BoolArgumentType.bool())
                                 .executes(context -> cmdEmoteGUI(context.getSource(),
