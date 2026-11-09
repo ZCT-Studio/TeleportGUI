@@ -252,10 +252,6 @@ Common fields:
 Homes, warps, Bedrock notification preferences, cooldowns, and pending TPA requests persist across restarts. Death
 points and back points do not.
 
-## TODO
-
-- [TODO in GitHub](https://github.com/ZCT-Studio/TeleportGUI/blob/master/TODO.md)
-
 ## License
 
 TeleportGUI is licensed under the [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/master/LICENSE).

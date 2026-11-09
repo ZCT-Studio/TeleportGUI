@@ -36,7 +36,6 @@
 - [数据存储](#storage)
 - [从源码构建](#build)
 - [鸣谢](#credits)
-- [TODO](#todo)
 - [许可证](#license)
 
 ## <a id="introduction"></a>简介
@@ -421,10 +420,6 @@ versions/<我的世界版本>-neoforge/build/libs/TeleportGUI-neoforge-<我的�
 ## <a id="credits"></a>鸣谢
 
 感谢所有为这个项目提供帮助的人。
-
-## <a id="todo"></a>TODO
-
-- [TODO](TODO.md)
 
 ## <a id="license"></a>许可证
 
