@@ -1,5 +1,4 @@
 import gg.meza.stonecraft.mod
-import me.modmuss50.mpp.ReleaseType
 
 plugins {
     id("gg.meza.stonecraft")
@@ -74,7 +73,6 @@ dependencies {
 
     val geyserApiVersion = findProperty("geyser_api_version") as String
     compileOnly("org.geysermc.geyser:api:$geyserApiVersion")
-
 
     val snakeYamlVersion = findProperty("snakeyaml_version") as String? ?: "2.3"
     implementation("org.yaml:snakeyaml:$snakeYamlVersion")
