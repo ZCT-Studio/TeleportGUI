@@ -2,7 +2,7 @@ name: Sync CurseForge description
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths: [CurseForge.md]
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: main
       - name: Update CurseForge description
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}

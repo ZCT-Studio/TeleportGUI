@@ -138,7 +138,7 @@ val releaseChangelog: String = providers.environmentVariable("PUBLISH_CHANGELOG_
     .orElse("")
     .get()
     .ifBlank {
-        "完整更新日志请见 https://github.com/$githubRepository/blob/master/CHANGELOG.md"
+        "完整更新日志请见 https://github.com/$githubRepository/blob/main/CHANGELOG.md"
     }
 
 val isPrimaryPublisher = mod.isFabric
@@ -163,7 +163,7 @@ publishMods {
     if (isPrimaryPublisher) {
         github {
             repository.set(githubRepository)
-            commitish.set(providers.environmentVariable("GITHUB_REF_NAME").orElse("master"))
+            commitish.set(providers.environmentVariable("GITHUB_REF_NAME").orElse("main"))
             tagName.set(releaseTag)
             accessToken.set(providers.environmentVariable("GITHUB_TOKEN")
                 .orElse(providers.environmentVariable("GH_TOKEN")))

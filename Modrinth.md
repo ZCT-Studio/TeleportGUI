@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/ZCT-Studio/TeleportGUI/master/orig_res/banner-lgbtq%2B_friendly.jpg" alt="TeleportGUI" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/ZCT-Studio/TeleportGUI/main/orig_res/banner-lgbtq%2B_friendly.jpg" alt="TeleportGUI" width="100%"></p>
 
 <details>
 <summary>简体中文</summary>
@@ -101,4 +101,4 @@ Back up both the global configuration and each world's teleportgui directory. De
 
 ## Links
 
-[Source and documentation](https://github.com/ZCT-Studio/TeleportGUI) · [Report an issue](https://github.com/ZCT-Studio/TeleportGUI/issues) · [Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/master/CHANGELOG.md) · [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/master/LICENSE)
+[Source and documentation](https://github.com/ZCT-Studio/TeleportGUI) · [Report an issue](https://github.com/ZCT-Studio/TeleportGUI/issues) · [Changelog](https://github.com/ZCT-Studio/TeleportGUI/blob/main/CHANGELOG.md) · [MIT License](https://github.com/ZCT-Studio/TeleportGUI/blob/main/LICENSE)
