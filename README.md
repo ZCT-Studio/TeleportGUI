@@ -420,7 +420,7 @@ versions/<我的世界版本>-neoforge/build/libs/TeleportGUI-neoforge-<我的�
 
 ## <a id="credits"></a>鸣谢
 
-感谢所有为这个项目提供帮助的人，完整名单见 [Acknowledgments](ACKNOWLEDGMENTS.md)。
+感谢所有为这个项目提供帮助的人。
 
 ## <a id="todo"></a>TODO
 
