@@ -182,4 +182,12 @@ publishMods {
         requires("architectury-api")
         optional("geyser", "floodgate")
     }
+
+    curseforge {
+        server.set(true)
+        requires("architectury-api")
+        if (mod.isFabric) {
+            requires("fabric-api")
+        }
+    }
 }

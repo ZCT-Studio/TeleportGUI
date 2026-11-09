@@ -110,23 +110,34 @@ jobs:
           echo "PUBLISH_CHANGELOG_FILE=$OUT" >> "$GITHUB_ENV"
           cat "$OUT"
 
-      - name: Publish to GitHub and Modrinth
+      - name: Publish to GitHub, Modrinth, and CurseForge
         id: publish
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           MODRINTH_ID: ${{ env.MODRINTH_PROJECT }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
+          CURSEFORGE_SLUG: ${{ vars.CURSEFORGE_SLUG }}
           PUBLISH_VERSION: ${{ needs.prepare.outputs.version }}
           RELEASE_TYPE: ${{ needs.prepare.outputs.publish_type }}
           PUBLISH_TAG: ${{ needs.prepare.outputs.tag }}
           DO_PUBLISH: 'true'
         run: |
           set -euo pipefail
+          for name in CURSEFORGE_TOKEN CURSEFORGE_ID CURSEFORGE_SLUG; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is not configured."
+              exit 1
+            fi
+          done
           ./gradlew \
             :26.3-fabric:publishGithub \
             :26.3-fabric:publishModrinth \
             :26.3-neoforge:publishModrinth \
+            :26.3-fabric:publishCurseforge \
+            :26.3-neoforge:publishCurseforge \
             --continue \
             --stacktrace
 

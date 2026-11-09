@@ -1,0 +1,36 @@
+name: Sync Modrinth description
+
+on:
+  push:
+    branches: [master]
+    paths: [Modrinth.md]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-modrinth-description
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Update Modrinth description
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_ID: ${{ vars.MODRINTH_ID || '5tC6IJAL' }}
+        run: |
+          set -euo pipefail
+          : "${MODRINTH_TOKEN:?MODRINTH_TOKEN secret is required}"
+          jq -n --rawfile body Modrinth.md '{body: $body}' > "$RUNNER_TEMP/modrinth.json"
+          curl --fail-with-body --silent --show-error --request PATCH \
+            --header "Authorization: $MODRINTH_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --header "User-Agent: $GITHUB_REPOSITORY description-sync" \
+            --data-binary "@$RUNNER_TEMP/modrinth.json" \
+            "https://api.modrinth.com/v2/project/$MODRINTH_ID"

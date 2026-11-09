@@ -1,0 +1,38 @@
+name: Sync CurseForge description
+
+on:
+  push:
+    branches: [master]
+    paths: [CurseForge.md]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-curseforge-description
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Update CurseForge description
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
+        run: |
+          set -euo pipefail
+          : "${CURSEFORGE_TOKEN:?CURSEFORGE_TOKEN secret is required}"
+          : "${CURSEFORGE_ID:?CURSEFORGE_ID variable is required}"
+          [[ "$CURSEFORGE_ID" =~ ^[0-9]+$ ]] || { echo '::error::CURSEFORGE_ID must be numeric.'; exit 1; }
+          jq -n --rawfile description CurseForge.md \
+            '{description: $description, descriptionType: "markdown"}' > "$RUNNER_TEMP/curseforge.json"
+          # This author endpoint is used by community tooling but is not documented in the upload API.
+          curl --fail-with-body --silent --show-error --request POST \
+            --header "X-Api-Token: $CURSEFORGE_TOKEN" \
+            --form "metadata=<$RUNNER_TEMP/curseforge.json" \
+            "https://minecraft.curseforge.com/api/projects/$CURSEFORGE_ID/update-project"
