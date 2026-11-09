@@ -47,7 +47,7 @@ jobs:
           LOWER="$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')"
           if [[ "$LOWER" == *snapshot* || "$LOWER" == *alpha* ]]; then
             TYPE="ALPHA"
-          elif [[ "$LOWER" == *beta* ]]; then
+          elif [[ "$LOWER" == *beta* || "$LOWER" == *rc* ]]; then
             TYPE="BETA"
           else
             TYPE="STABLE"
