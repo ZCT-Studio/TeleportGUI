@@ -23,7 +23,7 @@ public final class ReflectiveBrigadierAccess implements BrigadierAccess {
             return field;
         } catch (NoSuchFieldException | RuntimeException e) {
             Constants.LOGGER.warn(
-                    "Brigadier 的 CommandNode 中找不到字段 '{}'，运行期启用/禁用命令将不可用", name, e);
+                    "Field '{}' not found in Brigadier's CommandNode; runtime command enable/disable unavailable", name, e);
             return null;
         }
     }
@@ -54,7 +54,7 @@ public final class ReflectiveBrigadierAccess implements BrigadierAccess {
                 return map.remove(literal) != null;
             }
         } catch (IllegalAccessException e) {
-            Constants.LOGGER.error("移除命令 '{}' 失败", literal, e);
+            Constants.LOGGER.error("Failed to remove command '{}'", literal, e);
         }
         return false;
     }

@@ -31,9 +31,9 @@ public interface BrigadierAccess {
         BrigadierAccess access = new ReflectiveBrigadierAccess();
         if (!access.isAvailable()) {
             Constants.LOGGER.error(
-                    "无法访问 Brigadier 命令树内部结构；运行期启用/禁用命令将不会生效，"
-                            + "修改配置后需要重启服务器。请检查 {} 中的字段名是否仍与当前 "
-                            + "Brigadier 版本匹配。",
+                    "Unable to access Brigadier command tree internals; runtime command "
+                            + "enable/disable will not work, server restart required after config changes. "
+                            + "Please verify field names in {} still match the current Brigadier version.",
                     ReflectiveBrigadierAccess.class.getSimpleName());
         }
         return access;
