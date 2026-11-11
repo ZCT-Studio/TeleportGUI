@@ -19,6 +19,11 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 
 ## [Unreleased / 未发布]
 
+### Changed / 更改
+
+- Improved English and Chinese in-game text and punctuation.
+<br> 优化英文和中文游戏内文本及标点。
+
 ## [1.1.0-beta.3] - 2026-11-8
 
 ### Fixed / 修复
@@ -33,7 +38,7 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 ### Added / 新增
 
 - Added bilingual changelog (will sync to Modrinth)
-<br>新增双语言更新日志（将同步到Modrinth）
+<br> 新增双语言更新日志（将同步到Modrinth）
 
 ## [1.1.0-beta.2] - 2026-11-8
 
