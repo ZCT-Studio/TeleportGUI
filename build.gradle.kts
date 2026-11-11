@@ -138,7 +138,7 @@ val releaseChangelog: String = providers.environmentVariable("PUBLISH_CHANGELOG_
     .orElse("")
     .get()
     .ifBlank {
-        "完整更新日志请见 https://github.com/$githubRepository/blob/main/CHANGELOG.md"
+        "Full changelog / 完整更新日志:\nhttps://github.com/$githubRepository/blob/main/CHANGELOG.md"
     }
 
 val isPrimaryPublisher = mod.isFabric

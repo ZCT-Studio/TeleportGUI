@@ -98,16 +98,16 @@ jobs:
           ' CHANGELOG.md > "$OUT" || true
 
           if [ ! -s "$OUT" ]; then
-            printf '_本次发布未在 CHANGELOG.md 中找到对应条目。_\n' > "$OUT"
+            printf '_No changelog for this release_\n\n_本次发布未找到更新日志_\n' > "$OUT"
           fi
 
-          printf '\n---\n\n完整更新日志：[CHANGELOG.md](%s/%s/blob/%s/CHANGELOG.md)\n' \
+          printf '\n---\n\nFull changelog / 完整更新日志:\n\n[CHANGELOG.md](%s/%s/blob/%s/CHANGELOG.md)\n' \
             "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_REF_NAME" >> "$OUT"
 
           echo "PUBLISH_CHANGELOG_FILE=$OUT" >> "$GITHUB_ENV"
           cat "$OUT"
 
-      - name: Publish to GitHub, Modrinth, and CurseForge
+      - name: Publish
         id: publish
         continue-on-error: true
         env:
