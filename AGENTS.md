@@ -191,7 +191,8 @@ The [`CHANGELOG.md`](CHANGELOG.md) file follows a bilingual format based on [Kee
 
 ### Format Requirements
 
-- Use bilingual section headings, such as `Added / 新增` and `Fixed / 修复`.
+- Use bilingual section headings in this order, omitting sections with no entries: `Added / 新增`, `Changed / 变更`, `Deprecated / 弃用`, `Removed / 移除`, `Fixed / 修复`, `Security / 安全`.
+- Place user-visible performance improvements under `Changed / 变更`.
 - Preserve the existing version heading structure.
 - Each changelog entry must contain exactly two language lines: English first, Simplified Chinese second.
 - Separate the languages using `<br>` at the beginning of the second line.

@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
@@ -55,11 +56,14 @@ public final class Tr_i18n {
     }
 
     public static String text(String key, ServerPlayer player, String... args) {
-        String translation = raw(key, player);
-        for (int i = 0; i < args.length; i++) {
-            translation = translation.replace("%" + i + "%", args[i] == null ? "" : args[i]);
+        Matcher matcher = ARG_PATTERN.matcher(raw(key, player));
+        StringBuilder result = new StringBuilder();
+        while (matcher.find()) {
+            int index = argumentIndex(matcher, args.length);
+            String replacement = index >= 0 && args[index] != null ? args[index] : matcher.group();
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
         }
-        return translation;
+        return matcher.appendTail(result).toString();
     }
 
     private static String lookup(String key, ServerPlayer player) {
@@ -83,14 +87,20 @@ public final class Tr_i18n {
 
             JsonElement json = JsonParser.parseReader(
                     new InputStreamReader(stream, StandardCharsets.UTF_8));
-            if (!json.isJsonObject()) return Map.of();
+            if (!json.isJsonObject()) {
+                throw new IllegalArgumentException("Expected a JSON object");
+            }
 
             Map<String, String> translations = new HashMap<>();
             for (var entry : json.getAsJsonObject().entrySet()) {
+                if (!entry.getValue().isJsonPrimitive() || !entry.getValue().getAsJsonPrimitive().isString()) {
+                    throw new IllegalArgumentException("Translation value is not a string: " + entry.getKey());
+                }
                 translations.put(entry.getKey(), entry.getValue().getAsString());
             }
             return Map.copyOf(translations);
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException e) {
+            Constants.LOGGER.error("Failed to load language file {} for {}", path, language, e);
             return Map.of();
         }
     }
@@ -102,14 +112,25 @@ public final class Tr_i18n {
 
         while (matcher.find()) {
             component.append(Component.literal(translation.substring(lastIndex, matcher.start())));
-            int index = Integer.parseInt(matcher.group(1));
-            if (index >= 0 && index < args.length && args[index] != null) {
+            int index = argumentIndex(matcher, args.length);
+            if (index >= 0 && args[index] != null) {
                 component.append(args[index]);
+            } else {
+                component.append(Component.literal(matcher.group()));
             }
             lastIndex = matcher.end();
         }
         component.append(translation.substring(lastIndex));
 
         return component;
+    }
+
+    private static int argumentIndex(Matcher matcher, int argumentCount) {
+        try {
+            int index = Integer.parseInt(matcher.group(1));
+            return index < argumentCount ? index : -1;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

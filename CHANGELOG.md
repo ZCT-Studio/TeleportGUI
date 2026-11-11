@@ -17,14 +17,27 @@ Older changelogs are archived by major and minor versions in the [Changelog Arch
 See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 <br> 详见 [AGENTS.md#changelog](AGENTS.md#changelog)。
 
+Sections appear in this order when applicable: **Added / 新增**, **Changed / 变更**, **Deprecated / 弃用**, **Removed / 移除**, **Fixed / 修复**, **Security / 安全**. Performance improvements are listed under **Changed / 变更**.
+<br> 各分类按以上顺序排列，空分类省略；性能优化归入 **Changed / 变更**。
+
 ## [Unreleased / 未发布]
 
-### Changed / 更改
+### Changed / 变更
 
 - Improved English and Chinese in-game text and punctuation.
 <br> 优化英文和中文游戏内文本及标点。
 
+### Fixed / 修复
+
+- Fixed translation placeholders being replaced incorrectly or disappearing when arguments are missing.
+<br> 修复翻译占位符被错误替换或在参数缺失时消失的问题。
+
 ## [1.1.0-beta.3] - 2026-11-8
+
+### Added / 新增
+
+- Added bilingual changelog (will sync to Modrinth)
+<br> 新增双语言更新日志（将同步到Modrinth）
 
 ### Fixed / 修复
 
@@ -34,11 +47,6 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 <br> 修复brigadier日志都为早期开发调试的中文的问题
 
 [#3]:https://github.com/ZCT-Studio/TeleportGUI/issues/3
-
-### Added / 新增
-
-- Added bilingual changelog (will sync to Modrinth)
-<br> 新增双语言更新日志（将同步到Modrinth）
 
 ## [1.1.0-beta.2] - 2026-11-8
 
@@ -58,6 +66,11 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 - Changed the default permission level for `/randomtp` (`/rtp`) to administrator-only.
 <br> `/randomtp`（`/rtp`）默认权限调整为管理员。
 
+### Removed / 移除
+
+- Removed the legacy hopper-menu fallback.
+<br> 移除旧版漏斗菜单回退方案。
+
 ### Fixed / 修复
 
 - Fixed issues with the TPA request list and incorrect Emote GUI status display.
@@ -66,11 +79,6 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 <br> 修复 Geyser 依赖的 Mod ID 错误。
 - Improved wording in some localized texts.
 <br> 优化部分国际化文本。
-
-### Removed / 移除
-
-- Removed the legacy hopper-menu fallback.
-<br> 移除旧版漏斗菜单回退方案。
 
 ## [1.1.0-beta.1] - 2026-10-23
 
@@ -98,6 +106,13 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 - `settings.yml` now supports full YAML syntax, including lists and multiline text.
 <br> `settings.yml` 现在支持完整 YAML 语法（列表、多行文本等）。
 
+- Saving no longer repeatedly rewrites files as the number of entries grows, significantly reducing lag with many homes and warps.
+<br> 保存存档不再随条目数量反复重写文件，家园与传送点较多时卡顿明显减少。
+- Cached Bedrock Edition player detection results for faster command and GUI responses.
+<br> 基岩版玩家的判断改为缓存结果，命令与界面响应更快。
+- Optimized teleport destination searches to reduce waiting time for safe teleports.
+<br> 传送落点搜索优化，安全传送时的等待时间缩短。
+
 ### Fixed / 修复
 
 - Fixed players without `tpa.accept` or `tpa.deny` permissions being able to accept or deny teleport requests through the GUI or Bedrock Edition forms.
@@ -112,12 +127,3 @@ See [AGENTS.md#changelog](AGENTS.md#changelog) for details.
 <br> 修复玩家退出后 `/back` 位置与死亡点仍长期占用内存的问题。
 - Fixed `/warp create` being available when the permission level was `0`.
 <br> 修复 `/warp create` 在权限等级为 `0` 时仍可使用的问题。
-
-### Performance / 性能
-
-- Saving no longer repeatedly rewrites files as the number of entries grows, significantly reducing lag with many homes and warps.
-<br> 保存存档不再随条目数量反复重写文件，家园与传送点较多时卡顿明显减少。
-- Cached Bedrock Edition player detection results for faster command and GUI responses.
-<br> 基岩版玩家的判断改为缓存结果，命令与界面响应更快。
-- Optimized teleport destination searches to reduce waiting time for safe teleports.
-<br> 传送落点搜索优化，安全传送时的等待时间缩短。
