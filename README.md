@@ -5,7 +5,7 @@
 
 ## 简介
 
-TeleportGUI(传送视窗) 是支持 Fabric 和 NeoForge 的服务端传送模组，提供家园、公共传送点和玩家传送请求（TPA）的图形界面。Java 版玩家无需安装客户端模组；使用 Geyser 和 Floodgate 的基岩版玩家可以使用表单界面。
+TeleportGUI（传送视窗）是支持 Fabric 和 NeoForge 的传送模组，提供家园、公共传送点和玩家传送请求（TPA）的图形界面。Java 版玩家可以使用原版客户端；通过 Geyser 连接的基岩版玩家可以使用表单界面。从 1.1.0-beta.2 起，基岩版功能不再强制依赖 Floodgate。
 
 🏳️‍🌈🏳️‍⚧️ 本项目对 LGBTQ+ 社群友好。
 
@@ -16,13 +16,14 @@ TeleportGUI(传送视窗) 是支持 Fabric 和 NeoForge 的服务端传送模组
 - 传送到死亡点、世界出生点、个人出生点或上一次传送前的位置，也支持随机传送。
 - 可配置传送安全检查、冷却、权限和数量上限；不安全的传送可由玩家确认。
 - Java 版使用服务端菜单；基岩版可使用表单。支持英文、简体中文和繁体中文（香港、台湾）。
+- Java 版客户端安装模组后，可以自定义快捷键以打开传送界面。
 
 ## 安装
 
 1. 根据下载页面选择与你的 Minecraft 版本及 Fabric 或 NeoForge 加载器匹配的版本。当前源码配置的 Minecraft 版本为 26.3；其他版本的支持情况以发布文件为准。
 2. 在服务器安装 Architectury API；Fabric 还需要 Fabric API。
 3. 将对应加载器的 TeleportGUI 文件放入服务器的 mods 文件夹。
-4. 如需基岩版玩家连接和表单支持，可安装 Geyser 与 Floodgate。它们是可选依赖。
+4. 如需基岩版玩家连接和表单支持，可安装 Geyser。Floodgate 可按服务器的登录需求安装；它们均为可选依赖。
 
 ## 常用命令
 
@@ -61,7 +62,7 @@ TeleportGUI(传送视窗) 是支持 Fabric 和 NeoForge 的服务端传送模组
 
 ## About
 
-TeleportGUI(TPGUI) is a server-side teleportation mod for Fabric and NeoForge. It brings graphical menus to homes, shared warps, and player teleport requests (TPA). Java Edition players can join with an unmodified client; Bedrock Edition players using Geyser and Floodgate can use forms.
+TeleportGUI (TPGUI) is a teleportation mod for Fabric and NeoForge. It brings graphical menus to homes, shared warps, and player teleport requests (TPA). Java Edition players can join with an unmodified client; Bedrock Edition players connecting through Geyser can use forms. Since 1.1.0-beta.2, Bedrock features no longer require Floodgate.
 
 🏳️‍🌈🏳️‍⚧️ This project is LGBTQ+ friendly.
 
@@ -72,13 +73,14 @@ TeleportGUI(TPGUI) is a server-side teleportation mod for Fabric and NeoForge. I
 - Travel to a death point, world spawn, personal spawn, or your previous position, or use random teleportation.
 - Configure safety checks, cooldowns, permissions, and limits. Players can confirm an unsafe teleport.
 - Use server-side menus on Java Edition and forms on Bedrock Edition. English, Simplified Chinese, and Traditional Chinese (Hong Kong and Taiwan) are included.
+- Install the mod on a Java Edition client to use customizable shortcuts for teleport menus.
 
 ## Installation
 
 1. Choose a release for your Minecraft version and Fabric or NeoForge loader. The current source configuration targets Minecraft 26.3; check release files for other supported versions.
 2. Install Architectury API on the server; Fabric also requires Fabric API.
 3. Place the TeleportGUI jar for your loader in the server's mods folder.
-4. Optionally install Geyser and Floodgate for Bedrock connections and forms.
+4. Optionally install Geyser for Bedrock connections and forms. Floodgate can also be installed to suit the server's authentication setup; both are optional dependencies.
 
 ## Common commands
 
