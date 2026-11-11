@@ -13,7 +13,7 @@ plugins {
 }
 
 base {
-    archivesName.set("TeleportGUI-${mod.loader}")
+    archivesName.set("TPGUI-${mod.loader}")
 }
 
 sourceSets {

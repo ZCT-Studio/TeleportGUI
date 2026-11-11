@@ -5,7 +5,7 @@
 
 ## 简介
 
-TeleportGUI 是支持 Fabric 和 NeoForge 的服务端传送模组，提供家园、公共传送点和玩家传送请求（TPA）的图形界面。Java 版玩家无需安装客户端模组；使用 Geyser 和 Floodgate 的基岩版玩家可以使用表单界面。
+TeleportGUI(传送视窗) 是支持 Fabric 和 NeoForge 的服务端传送模组，提供家园、公共传送点和玩家传送请求（TPA）的图形界面。Java 版玩家无需安装客户端模组；使用 Geyser 和 Floodgate 的基岩版玩家可以使用表单界面。
 
 🏳️‍🌈🏳️‍⚧️ 本项目对 LGBTQ+ 社群友好。
 
@@ -55,7 +55,7 @@ TeleportGUI 是支持 Fabric 和 NeoForge 的服务端传送模组，提供家�
 
 ## About
 
-TeleportGUI is a server-side teleportation mod for Fabric and NeoForge. It brings graphical menus to homes, shared warps, and player teleport requests (TPA). Java Edition players can join with an unmodified client; Bedrock Edition players using Geyser and Floodgate can use forms.
+TeleportGUI(TPGUI) is a server-side teleportation mod for Fabric and NeoForge. It brings graphical menus to homes, shared warps, and player teleport requests (TPA). Java Edition players can join with an unmodified client; Bedrock Edition players using Geyser and Floodgate can use forms.
 
 🏳️‍🌈🏳️‍⚧️ This project is LGBTQ+ friendly.
 
