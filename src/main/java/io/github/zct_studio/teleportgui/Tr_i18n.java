@@ -11,31 +11,33 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Tr_i18n {
 
     private static final Pattern ARG_PATTERN = Pattern.compile("%(\\d+)%");
-    private static final ConcurrentHashMap<String, Map<String, String>> CACHE =
-            new ConcurrentHashMap<>();
+    private static final int MAX_CACHED_LANGUAGES = 64;
+    private static final int MAX_MISSING_KEYS = 1024;
+    private static final Map<String, Map<String, String>> CACHE = boundedMap(MAX_CACHED_LANGUAGES);
+    private static final Map<String, Boolean> MISSING_KEYS = boundedMap(MAX_MISSING_KEYS);
 
     private Tr_i18n() {
     }
 
-    @SuppressWarnings("LoggingSimilarMessage")
     public static MutableComponent translate(String key, ServerPlayer player, MutableComponent... args) {
         String translation = lookup(key, player);
         if (translation == null) {
-            Constants.LOGGER.error("Missing translation key: {}", key);
+            logMissingKey(key);
             return Component.literal(key);
         }
         return substitute(translation, args);
@@ -45,11 +47,10 @@ public final class Tr_i18n {
         return translate(key, player, args);
     }
 
-    @SuppressWarnings("LoggingSimilarMessage")
     public static String raw(String key, ServerPlayer player) {
         String translation = lookup(key, player);
         if (translation == null) {
-            Constants.LOGGER.error("Missing translation key: {}", key);
+            logMissingKey(key);
             return key;
         }
         return translation;
@@ -77,7 +78,26 @@ public final class Tr_i18n {
     }
 
     private static Map<String, String> languageMap(String language) {
-        return CACHE.computeIfAbsent(language, Tr_i18n::readLanguage);
+        synchronized (CACHE) {
+            return CACHE.computeIfAbsent(language, Tr_i18n::readLanguage);
+        }
+    }
+
+    private static void logMissingKey(String key) {
+        synchronized (MISSING_KEYS) {
+            if (MISSING_KEYS.put(key, Boolean.TRUE) == null) {
+                Constants.LOGGER.error("Missing translation key: {}", key);
+            }
+        }
+    }
+
+    private static <K, V> Map<K, V> boundedMap(int limit) {
+        return Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                return size() > limit;
+            }
+        });
     }
 
     private static Map<String, String> readLanguage(String language) {
