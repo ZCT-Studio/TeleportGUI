@@ -9,6 +9,8 @@ To contribute a translation:
 3. Keep JSON valid and encoded as UTF-8. Check the wording in game when possible, including menus and forms.
 4. Mention incomplete translations in your pull request. See [CONTRIBUTING.md](../../../../../../CONTRIBUTING.md).
 
+Run `node .github/scripts/check-languages.js` from the repository root to validate JSON and placeholders against English. Missing translations produce warnings and use the English fallback; invalid files and mismatched placeholders fail the check.
+
 这些 UTF-8 JSON 文件包含服务端文本。文件名对应玩家的 Minecraft 语言代码：`en_us`、`zh_cn`、`zh_hk` 和 `zh_tw`。服务端优先使用玩家语言，缺少的键回退到 `en_us`；如果英文也缺少该键，则显示键名并记录错误。
 
 贡献翻译时：
@@ -17,3 +19,5 @@ To contribute a translation:
 2. 保留 `%0%`、`%1%` 等占位符及其序号，以及必要的格式和转义；可按语言习惯调整占位符顺序。
 3. 确保 JSON 有效且使用 UTF-8 编码；尽可能在游戏内检查菜单和表单中的显示效果。
 4. 在 Pull Request 中说明尚未完成的翻译。参见[贡献指南](../../../../../../CONTRIBUTING.md)。
+
+在仓库根目录运行 `node .github/scripts/check-languages.js`，可以对照英文检查 JSON 和占位符。缺失的翻译会产生警告并回退到英文；文件无效或占位符不匹配时检查会失败。

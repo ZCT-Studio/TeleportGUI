@@ -105,7 +105,6 @@ Sections appear in this order when applicable: **Added / 新增**, **Changed / �
 
 - `settings.yml` now supports full YAML syntax, including lists and multiline text.
 <br> `settings.yml` 现在支持完整 YAML 语法（列表、多行文本等）。
-
 - Saving no longer repeatedly rewrites files as the number of entries grows, significantly reducing lag with many homes and warps.
 <br> 保存存档不再随条目数量反复重写文件，家园与传送点较多时卡顿明显减少。
 - Cached Bedrock Edition player detection results for faster command and GUI responses.

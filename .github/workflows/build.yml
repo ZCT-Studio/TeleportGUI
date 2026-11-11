@@ -17,6 +17,14 @@ permissions:
   contents: read
 
 jobs:
+  languages:
+    name: Validate language resources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check translations
+        run: node .github/scripts/check-languages.js
+
   build:
     name: Build ${{ matrix.loader }}
     runs-on: ubuntu-latest
