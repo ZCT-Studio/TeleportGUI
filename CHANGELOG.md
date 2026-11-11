@@ -22,6 +22,8 @@ Sections appear in this order when applicable: **Added / 新增**, **Changed / �
 
 ## [Unreleased / 未发布]
 
+## [1.1.0] - 2026-11-11
+
 ### Changed / 变更
 
 - Improved English and Chinese in-game text and punctuation.
